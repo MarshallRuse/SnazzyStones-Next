@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import styles from "../../../styles/modules/Retail.module.scss";
-import { fetchProducts } from "../../../utils/fetching/products";
+import { fetchAndCacheProducts } from "../../../utils/fetching/products/cachedProducts";
 import ProductList from "../../../components/ProductList";
 
 const categoryPitches = {
@@ -80,7 +80,7 @@ export async function getStaticProps(context) {
         (section) => section.title === params.categoryName.replace("_", " ")
     ).shop_section_id;
 
-    const activeShopListingsFormatted = await fetchProducts({ categoryId });
+    const activeShopListingsFormatted = await fetchAndCacheProducts({ categoryId });
 
     return {
         props: {

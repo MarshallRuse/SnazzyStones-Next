@@ -1,4 +1,5 @@
-import { fetchProducts } from "../../utils/fetching/products";
+import { fetchAndCacheProducts } from "../../utils/fetching/products/cachedProducts";
+import { fetchAndCacheCategories } from "../../utils/fetching/categories/cachedCategories";
 import CollectionCard from "../../components/CollectionCard";
 import styles from "../../styles/modules/Retail.module.scss";
 import ProductList from "../../components/ProductList";
@@ -36,24 +37,15 @@ export default function RetailPage({ products, categories }) {
 export async function getStaticProps() {
     console.log("fetching categories, products, product images...");
     // get a list of Etsy shop sections from which to draw category names
-    const sectionsResponse = await fetch(
-        `https://openapi.etsy.com/v3/application/shops/${process.env.ETSY_SHOP_ID}/sections`,
-        {
-            method: "GET",
-            headers: {
-                "x-api-key": process.env.ETSY_API_KEYSTRING,
-            },
-        }
-    );
-    const { results: sections } = await sectionsResponse.json();
+    const categories = await fetchAndCacheCategories();
 
-    const activeShopListingsFormatted = await fetchProducts();
+    const activeShopListingsFormatted = await fetchAndCacheProducts();
 
     return {
         props: {
-            categories: sections,
+            categories,
             products: activeShopListingsFormatted,
         },
-        revalidate: 60,
+        revalidate: 60 * 60, //revalidate once an hour
     };
 }

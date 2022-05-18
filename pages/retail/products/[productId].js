@@ -6,7 +6,7 @@ import useCountry from "../../../utils/fetching/country";
 import { Favorite, StarRateRounded } from "@mui/icons-material";
 import { Skeleton } from "@mui/material";
 import CTAButton from "../../../components/CTAButton";
-import { fetchProducts } from "../../../utils/fetching/products";
+import { fetchAndCacheProducts } from "../../../utils/fetching/products/cachedProducts";
 import ImageGallery from "../../../components/ImageGallery";
 
 export default function ProductPage({ product, category, reviews }) {
@@ -154,7 +154,7 @@ export default function ProductPage({ product, category, reviews }) {
 }
 
 export async function getStaticPaths() {
-    const activeShopListingsFormatted = await fetchProducts({ fetchImages: false });
+    const activeShopListingsFormatted = await fetchAndCacheProducts({ fetchImages: false });
 
     return {
         paths: activeShopListingsFormatted.map((listing) => ({
@@ -208,6 +208,6 @@ export async function getStaticProps(context) {
             category,
             reviews,
         },
-        revalidate: 60,
+        revalidate: 60 * 60, //revalidate once an hour
     };
 }

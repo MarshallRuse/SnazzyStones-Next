@@ -8,7 +8,8 @@ import TextContainer from "../components/TextContainer";
 import CollectionCard from "../components/CollectionCard";
 import ProductListingCard from "../components/ProductListingCard";
 import InstagramFeed from "../components/InstagramFeed";
-import { fetchProducts } from "../utils/fetching/products";
+import { fetchAndCacheCategories } from "../utils/fetching/categories/cachedCategories";
+import { fetchAndCacheProducts } from "../utils/fetching/products/cachedProducts";
 
 export default function Home({ feed, products, categories }) {
     return (
@@ -135,25 +136,15 @@ export const getStaticProps = async () => {
     const url = `https://graph.instagram.com/me/media?fields=id,caption,media_url,media_type,thumbnail_url,permalink&access_token=${process.env.INSTAGRAM_KEY}&limit=4`;
     const data = await fetch(url);
     const feed = await data.json();
-    console.log({ feed });
-    const sectionsResponse = await fetch(
-        `https://openapi.etsy.com/v3/application/shops/${process.env.ETSY_SHOP_ID}/sections`,
-        {
-            method: "GET",
-            headers: {
-                "x-api-key": process.env.ETSY_API_KEYSTRING,
-            },
-        }
-    );
-    const { results: sections } = await sectionsResponse.json();
-
-    const activeShopListingsFormatted = await fetchProducts({ limit: 4 });
+    const categories = await fetchAndCacheCategories();
+    const products = await fetchAndCacheProducts({ limit: 4 });
 
     return {
         props: {
             feed,
-            products: activeShopListingsFormatted,
-            categories: sections,
+            products,
+            categories,
         },
+        revalidate: 60 * 60, //revalidate once an hour
     };
 };

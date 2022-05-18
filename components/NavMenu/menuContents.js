@@ -1,4 +1,17 @@
-const menuContents = [
+export async function fetchCategoryMenuItems() {
+    const categoriesResponse = await fetch("/api/retail/categories");
+    const responseJson = await categoriesResponse.json();
+    const categories = responseJson.categories;
+    const menuItems = categories.map((cat) => ({
+        isLink: true,
+        link: `/retail/categories/${cat.title.replace(" ", "_")}`,
+        displayText: cat.title,
+    }));
+
+    return menuItems.sort((a, b) => (a.displayText > b.displayText ? 1 : b.displayText > a.displayText ? -1 : 0));
+}
+
+export const menuContents = [
     {
         isLink: true,
         link: "/",
@@ -8,33 +21,7 @@ const menuContents = [
         isLink: true,
         link: "/retail",
         displayText: "SHOP",
-        submenu: [
-            {
-                isLink: true,
-                link: "/retail/categories/Anklets",
-                displayText: "Anklets",
-            },
-            {
-                isLink: true,
-                link: "/retail/categories/Bracelets",
-                displayText: "Bracelets",
-            },
-            {
-                isLink: true,
-                link: "/retail/categories/Hoops",
-                displayText: "Hoops",
-            },
-            {
-                isLink: true,
-                link: "/retail/categories/Necklaces",
-                displayText: "Necklaces",
-            },
-            {
-                isLink: true,
-                link: "/retail/categories/Pendants",
-                displayText: "Pendants",
-            },
-        ],
+        submenu: [], // NavBar and MobileNav check if a submenu property exists before rendering contents.  SHOPs subcategories are dynamic based on Etsy's API results
     },
     {
         isLink: true,
@@ -63,5 +50,3 @@ const menuContents = [
         displayText: "CONTACT US",
     },
 ];
-
-export default menuContents;

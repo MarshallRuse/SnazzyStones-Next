@@ -1,12 +1,25 @@
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { KeyboardArrowDown } from "@mui/icons-material";
 import SiteSearch from "../SiteSearch";
-import menuContents from "./menuContents";
+import { menuContents, fetchCategoryMenuItems } from "./menuContents";
 import MenuListItem from "./MenuListItem";
 import HoverStyledAnchor from "./HoverStyledAnchor";
 import MobileNav from "./mobile/MobileNav";
+import { LinearProgress } from "@mui/material";
 
 export default function NavBar() {
+    const [shopMenuItems, setShopMenuItems] = useState([]);
+
+    useEffect(() => {
+        async function getCategories() {
+            const shopCategories = await fetchCategoryMenuItems();
+            setShopMenuItems(shopCategories);
+        }
+
+        getCategories();
+    }, []);
+
     return (
         <nav className='fixed top-0 left-0 w-full z-10 py-4 px-8 md:px-16 flex gap-6 items-center justify-center bg-white border-b border-b-bluegreen-500'>
             <Link href='/'>
@@ -43,16 +56,35 @@ export default function NavBar() {
                             )}
                             {menuItem.submenu && (
                                 <ul className='menuChildren'>
-                                    {menuItem.submenu.map((sub) => (
-                                        <MenuListItem
-                                            key={`sub-menu-${sub.displayText.replace(" ", "-")}`}
-                                            widescreen={true}
-                                        >
-                                            <Link href={sub.link} passHref>
-                                                <HoverStyledAnchor>{sub.displayText}</HoverStyledAnchor>
-                                            </Link>
-                                        </MenuListItem>
-                                    ))}
+                                    {menuItem.link === "/retail" ? (
+                                        shopMenuItems.length > 0 ? (
+                                            shopMenuItems.map((cat) => (
+                                                <MenuListItem
+                                                    key={`sub-menu-${cat.displayText.replace(" ", "-")}`}
+                                                    widescreen={true}
+                                                >
+                                                    <Link href={cat.link} passHref>
+                                                        <HoverStyledAnchor>{cat.displayText}</HoverStyledAnchor>
+                                                    </Link>
+                                                </MenuListItem>
+                                            ))
+                                        ) : (
+                                            <MenuListItem widescreen={true}>
+                                                <LinearProgress sx={{ bgcolor: "#14b6b8", color: "#526996" }} />
+                                            </MenuListItem>
+                                        )
+                                    ) : (
+                                        menuItem.submenu.map((sub) => (
+                                            <MenuListItem
+                                                key={`sub-menu-${sub.displayText.replace(" ", "-")}`}
+                                                widescreen={true}
+                                            >
+                                                <Link href={sub.link} passHref>
+                                                    <HoverStyledAnchor>{sub.displayText}</HoverStyledAnchor>
+                                                </Link>
+                                            </MenuListItem>
+                                        ))
+                                    )}
                                 </ul>
                             )}
                         </>
