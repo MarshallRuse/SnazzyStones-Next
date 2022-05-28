@@ -1,20 +1,38 @@
+import { NextSeo } from "next-seo";
 import { fetchAndCacheProducts } from "../../utils/fetching/products/cachedProducts";
 import { fetchAndCacheCategories } from "../../utils/fetching/categories/cachedCategories";
 import CollectionCard from "../../components/CollectionCard";
 import styles from "../../styles/modules/Retail.module.scss";
 import ProductList from "../../components/ProductList";
+import { collectionCardMap } from "../../utils/collectionCardMap";
+import { avoidRateLimit } from "../../utils/avoidRateLimit";
 
-const collectionCardMap = {
-    Bracelets: "collectionCard-ChainBracelets_2020-10-22.jpg",
-    Necklaces: "collectionCard-ChainNecklaces_2020-10-23.jpg",
-    Anklets: "collectionCard-Anklets_2020-10-23.jpg",
-    Hoops: "collectionCard-Hoops_2020-10-22.jpg",
-    Pendants: "collectionCard-Pendants_2020-10-26.jpg",
-};
-
-export default function RetailPage({ products, categories }) {
+export default function RetailPage({ products = [], categories = [] }) {
     return (
         <>
+            <NextSeo
+                title='Shop | Snazzy Stones'
+                description='Shop the entire Snazzy Stones catalogue!'
+                canonical='https://snazzystones.ca/shop'
+                openGraph={{
+                    url: "https://snazzystones.ca/shop",
+                    title: "Shop | SnazzyStones",
+                    description: "Shop the entire Snazzy Stones catalogue!",
+                    images: [
+                        {
+                            url: "https://res.cloudinary.com/marsh/image/upload/f_auto,q_auto/v1651926154/snazzystones-website/tableDisplay.jpg",
+                            width: 3920,
+                            height: 1960,
+                            alt: "A large assortment of earrings on backings in trays",
+                            type: "image/jpeg",
+                        },
+                    ],
+                    site_name: "SnazzyStones",
+                }}
+                twitter={{
+                    cardType: "summary_large_image",
+                }}
+            />
             <header className={`${styles.indexHeader} heroSection `}>
                 <div>
                     <h1 className='heroTitle text-white overlayText'>SHOP</h1>
@@ -24,7 +42,8 @@ export default function RetailPage({ products, categories }) {
                 {categories?.map((cat) => (
                     <CollectionCard
                         key={`collection-card-${cat.title.replace(" ", "_")}`}
-                        cardImageSrc={collectionCardMap[cat.title] && `/images/${collectionCardMap[cat.title]}`}
+                        cardImageSrc={collectionCardMap[cat.title] && collectionCardMap[cat.title].url}
+                        alt={collectionCardMap[cat.title]?.alt}
                         title={cat.title}
                     />
                 ))}
@@ -37,9 +56,12 @@ export default function RetailPage({ products, categories }) {
 export async function getStaticProps() {
     console.log("fetching categories, products, product images...");
     // get a list of Etsy shop sections from which to draw category names
-    const categories = await fetchAndCacheCategories();
-
-    const activeShopListingsFormatted = await fetchAndCacheProducts();
+    await avoidRateLimit(1000);
+    const fetchedCategories = await fetchAndCacheCategories();
+    const categories = fetchedCategories.results;
+    await avoidRateLimit(1000);
+    const fetchedProducts = await fetchAndCacheProducts();
+    const activeShopListingsFormatted = fetchedProducts.results;
 
     return {
         props: {

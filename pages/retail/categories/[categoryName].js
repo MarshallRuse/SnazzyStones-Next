@@ -1,7 +1,11 @@
+import { NextSeo } from "next-seo";
 import { motion } from "framer-motion";
 import styles from "../../../styles/modules/Retail.module.scss";
+import { avoidRateLimit } from "../../../utils/avoidRateLimit";
+import { fetchAndCacheCategories } from "../../../utils/fetching/categories/cachedCategories";
 import { fetchAndCacheProducts } from "../../../utils/fetching/products/cachedProducts";
 import ProductList from "../../../components/ProductList";
+import { collectionCardMap } from "../../../utils/collectionCardMap";
 
 const categoryPitches = {
     Anklets:
@@ -13,10 +17,40 @@ const categoryPitches = {
         "Find a chain you love with our delightful range of chain necklaces. All are high quality and Italian made. Beautiful to wear on their own, to double with another chain, or to compliment your favourite pendant.",
     Pendants:
         "Check out our collection of beautiful, handmade pendants to find the perfect match for that special someone or must-have treat to yourself.",
+    Default: "Check out our collection of beautiful, handmade pieces!",
 };
-export default function CategoryPage({ products, category }) {
+export default function CategoryPage({ products = [], category = null }) {
     return (
         <>
+            <NextSeo
+                title={`${category} | Snazzy Stones`}
+                description={
+                    categoryPitches[category]
+                        ? categoryPitches[category]?.split(/[?!.]/g)?.[0]
+                        : categoryPitches["Default"]
+                }
+                canonical={`https://snazzystones.ca/retail/categories/${category.replace(" ", "_")}`}
+                openGraph={{
+                    url: `https://snazzystones.ca/retail/categories/${category.replace(" ", "_")}`,
+                    title: `${category} | Snazzy Stones`,
+                    description: categoryPitches[category]
+                        ? categoryPitches[category]?.split(/[?!.]/g)?.[0]
+                        : categoryPitches["Default"],
+                    images: [
+                        {
+                            url: collectionCardMap[category]?.url,
+                            width: 1557,
+                            height: 1557,
+                            alt: collectionCardMap[category]?.alt,
+                            type: "image/jpeg",
+                        },
+                    ],
+                    site_name: "SnazzyStones",
+                }}
+                twitter={{
+                    cardType: "summary",
+                }}
+            />
             <header
                 className={`${styles.fallbackHeader} ${
                     styles[`${category.toLowerCase().replace(" ", "_")}Header`]
@@ -43,19 +77,12 @@ export default function CategoryPage({ products, category }) {
 
 export async function getStaticPaths() {
     // get a list of Etsy shop sections from which to draw category names
-    const sectionsResponse = await fetch(
-        `https://openapi.etsy.com/v3/application/shops/${process.env.ETSY_SHOP_ID}/sections`,
-        {
-            method: "GET",
-            headers: {
-                "x-api-key": process.env.ETSY_API_KEYSTRING,
-            },
-        }
-    );
-    const { results: sections } = await sectionsResponse.json();
+    await avoidRateLimit(1000);
+    const fetchedCategories = await fetchAndCacheCategories();
+    const categories = fetchedCategories.results;
 
     return {
-        paths: sections.map((section) => ({
+        paths: categories.map((section) => ({
             params: { categoryName: section.title.replace(" ", "_") },
         })),
         fallback: false,
@@ -64,29 +91,27 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
     const { params } = context;
+    await avoidRateLimit(1000);
+    const fetchedCategories = await fetchAndCacheCategories();
+    const categories = fetchedCategories.results;
 
-    const sectionsResponse = await fetch(
-        `https://openapi.etsy.com/v3/application/shops/${process.env.ETSY_SHOP_ID}/sections`,
-        {
-            method: "GET",
-            headers: {
-                "x-api-key": process.env.ETSY_API_KEYSTRING,
-            },
-        }
-    );
-    const { results: sections } = await sectionsResponse.json();
-
-    const categoryId = sections.find(
+    const categoryId = categories.find(
         (section) => section.title === params.categoryName.replace("_", " ")
-    ).shop_section_id;
+    )?.shop_section_id;
 
-    const activeShopListingsFormatted = await fetchAndCacheProducts({ categoryId });
+    let products = [];
+
+    if (categoryId) {
+        await avoidRateLimit(1000);
+        const fetchedProducts = await fetchAndCacheProducts({ categoryId });
+        products = fetchedProducts.results;
+    }
 
     return {
         props: {
-            products: activeShopListingsFormatted,
+            products,
             category: params.categoryName.replace("_", " "),
         },
-        revalidate: 60,
+        revalidate: 60 * 60, //revalidate once an hour
     };
 }

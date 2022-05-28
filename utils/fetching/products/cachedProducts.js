@@ -6,7 +6,9 @@ import { fetchProducts } from "./etsyProducts";
 const PRODUCTS_CACHE_FILE = "products-cache.json";
 
 export async function fetchAndCacheProducts({ categoryId = "", fetchImages = true, limit = 100 } = {}) {
-    const data = await fetchProducts({ categoryId, fetchImages, limit });
+    const data = {};
+    data.results = await fetchProducts({ categoryId, fetchImages, limit });
+    data.cache_creation_timestamp = Date.now();
 
     try {
         fs.writeFileSync(
@@ -14,7 +16,7 @@ export async function fetchAndCacheProducts({ categoryId = "", fetchImages = tru
             JSON.stringify(data),
             "utf8"
         );
-        console.log("Wrote to products cache");
+        //console.log("Wrote to products cache");
     } catch (error) {
         console.log("ERROR WRITING PRODUCTS CACHE TO FILE");
         console.log(error);
@@ -29,9 +31,13 @@ export async function getProducts() {
         cachedData = JSON.parse(
             fs.readFileSync(path.join(process.cwd(), "utils", "fetching", "products", PRODUCTS_CACHE_FILE), "utf8")
         );
-        console.log("Fetching products from cached file");
+        if (cachedData.cache_creation_timestamp < Date.now() - 1000 * 60 * 60) {
+            // more than an hour old
+            cachedData = await fetchAndCacheProducts();
+        }
+        //console.log("Fetching products from cached file");
     } catch (error) {
-        console.log("Products cache not initialized");
+        //console.log("Products cache not initialized");
     }
 
     if (!cachedData) {

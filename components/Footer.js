@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Instagram, Facebook } from "@mui/icons-material";
+import Instagram from "@mui/icons-material/Instagram";
+import Facebook from "@mui/icons-material/Facebook";
 
 const listStyle = "text-blueyonder-500 text-sm whitespace-nowrap my-4 hover:text-bluegreen-500 transition duration-300";
 const iconSpanStyle =

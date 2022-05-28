@@ -1,10 +1,34 @@
 import Image from "next/image";
+import { NextSeo } from "next-seo";
 import FadeInDiv from "../../components/FadeInDiv";
 import styles from "../../styles/modules/SilverCare.module.scss";
 
 export default function SilverCare() {
     return (
         <>
+            <NextSeo
+                title='Caring For Your Silver | SnazzyStones'
+                description='Learn some best practices for keeping your silver jewelry immaculate!'
+                canonical='https://snazzystones.ca/silver-care'
+                openGraph={{
+                    url: "https://snazzystones.ca/silver-care",
+                    title: "Caring For Your Silver | SnazzyStones",
+                    description: "Learn some best practices for keeping your silver jewelry immaculate!",
+                    images: [
+                        {
+                            url: "https://res.cloudinary.com/marsh/image/upload/q_auto/v1651748940/snazzystones-website/silverCare_2020-06-27.jpg",
+                            width: 3920,
+                            height: 1960,
+                            alt: "Silver bracelets artfully placed on a cleaning cloth",
+                            type: "image/jpeg",
+                        },
+                    ],
+                    site_name: "SnazzyStones",
+                }}
+                twitter={{
+                    cardType: "summary_large_image",
+                }}
+            />
             <header className={`heroSection ${styles.heroBackground}`}>
                 <div>
                     <h1 className='heroTitle text-white overlayText'>Caring For Your Silver</h1>

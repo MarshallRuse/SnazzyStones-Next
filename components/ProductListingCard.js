@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { styled } from "@mui/material/styles";
 import { Skeleton, Tooltip, tooltipClasses } from "@mui/material";
-import { Favorite } from "@mui/icons-material";
+import Favorite from "@mui/icons-material/Favorite";
 import useCountry from "../utils/fetching/country";
 
 const ThemeTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
@@ -21,6 +21,8 @@ const ThemeTooltip = styled(({ className, ...props }) => <Tooltip {...props} cla
 export default function ProductListingCard({
     imagePrimary = "",
     imagePlaceholder = "",
+    imageSecondary = "",
+    imageSecondaryPlaceholder = "",
     productCategory = "",
     productName = "",
     productPrice,
@@ -60,8 +62,8 @@ export default function ProductListingCard({
             exit={{ opacity: 0, x: -50 }}
         >
             <Link href={productPageLink}>
-                <a>
-                    <div className='flex transition cursor-pointer shadow-light rounded-md hover:shadow-bluegreenLight hover:scale-105'>
+                <a className='flex-grow'>
+                    <div className='flex relative transition cursor-pointer shadow-light rounded-md hover:shadow-bluegreenLight hover:scale-105 overflow-hidden'>
                         <Image
                             src={imagePrimary}
                             width={600}
@@ -72,6 +74,20 @@ export default function ProductListingCard({
                             blurDataURL={imagePlaceholder}
                             alt={`Main listing image for ${productName}`}
                         />
+                        {imageSecondary && (
+                            <div className='absolute top-0 left-0 w-full h-full opacity-0 transition hover:opacity-100'>
+                                <Image
+                                    src={imageSecondary}
+                                    width={600}
+                                    height={600}
+                                    objectFit='cover'
+                                    className='rounded-md'
+                                    placeholder={imageSecondaryPlaceholder ? "blur" : "empty"}
+                                    blurDataURL={imageSecondaryPlaceholder}
+                                    alt={`Secondary listing image for ${productName}`}
+                                />
+                            </div>
+                        )}
                     </div>
                 </a>
             </Link>
@@ -91,8 +107,8 @@ export default function ProductListingCard({
                 <a>
                     <div className='flex justify-between items-end w-full gap-6'>
                         <ThemeTooltip title={productName}>
-                            <span className='inline-block text-blueyonder-500 text-lg font-semibold line-clamp-2 overflow-ellipsis'>
-                                {productName}
+                            <span className='inline-block text-blueyonder-500 text-lg font-semibold'>
+                                {productName.split("|")[0].trim()}
                             </span>
                         </ThemeTooltip>
                         <span className='inline-block text-bluegreen-500 text-base font-semibold'>

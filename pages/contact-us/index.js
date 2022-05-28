@@ -1,10 +1,34 @@
-import { EmailRounded } from "@mui/icons-material";
+import { NextSeo } from "next-seo";
+import EmailRounded from "@mui/icons-material/EmailRounded";
 import ContactUsForm from "../../components/ContactUsForm";
 import styles from "../../styles/modules/ContactUs.module.scss";
 
 export default function ContactUs() {
     return (
         <>
+            <NextSeo
+                title='Contact Us | SnazzyStones'
+                description='I would love to hear from you!'
+                canonical='https://snazzystones.ca/contact-us'
+                openGraph={{
+                    url: "https://snazzystones.ca/contact-us",
+                    title: "Contact Us | SnazzyStones",
+                    description: "I would love to hear from you!",
+                    images: [
+                        {
+                            url: "https://res.cloudinary.com/marsh/image/upload/q_auto/v1652533589/snazzystones-website/CatBrowsingJewelry.jpg",
+                            width: 3920,
+                            height: 1960,
+                            alt: "A cat browsing the website",
+                            type: "image/jpeg",
+                        },
+                    ],
+                    site_name: "SnazzyStones",
+                }}
+                twitter={{
+                    cardType: "summary_large_image",
+                }}
+            />
             <header className={`${styles.heroBackground} heroSection `}>
                 <div>
                     <h1 className='heroTitle text-white overlayText'>Contact Us</h1>

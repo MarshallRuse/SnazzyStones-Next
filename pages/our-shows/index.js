@@ -1,10 +1,34 @@
 import Image from "next/image";
+import { NextSeo } from "next-seo";
 import TextContainer from "../../components/TextContainer";
 import styles from "../../styles/modules/OurShows.module.scss";
 
 export default function OurShows() {
     return (
         <>
+            <NextSeo
+                title='Our Shows | SnazzyStones'
+                description='Find us in person!'
+                canonical='https://snazzystones.ca/our-shows'
+                openGraph={{
+                    url: "https://snazzystones.ca/our-shows",
+                    title: "Our Shows | SnazzyStones",
+                    description: "Find us in person!",
+                    images: [
+                        {
+                            url: "https://res.cloudinary.com/marsh/image/upload/q_auto/v1651757847/snazzystones-website/briMarket_2021-08-01.jpg",
+                            width: 3920,
+                            height: 1960,
+                            alt: "Brianna presenting jewellery at a market",
+                            type: "image/jpeg",
+                        },
+                    ],
+                    site_name: "SnazzyStones",
+                }}
+                twitter={{
+                    cardType: "summary_large_image",
+                }}
+            />
             <header className={`${styles.heroBackground} heroSection`} style={{ backgroundPositionX: "30%" }}>
                 <div>
                     <h1 className='heroTitle text-white overlayText'>Our Shows</h1>
@@ -139,7 +163,7 @@ export default function OurShows() {
                 </div>
                 <div className='md:col-span-2'>
                     <h2 className='mt-0 text-5xl'>Wiarton</h2>
-                    <h3>Wiarton Lakeview Vendor's Market</h3>
+                    <h3>Wiarton Lakeview Vendor&apos;s Market</h3>
                     <p>
                         Every Wednesday from July to Labour Day, find us at the{" "}
                         <a
@@ -148,7 +172,7 @@ export default function OurShows() {
                             rel='noreferrer'
                             className='text-bluegreen-500'
                         >
-                            Wiarton Lakeview Vendor's Market
+                            Wiarton Lakeview Vendor&apos;s Market
                         </a>
                         .
                     </p>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { KeyboardArrowDown } from "@mui/icons-material";
+import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import SiteSearch from "../SiteSearch";
 import { menuContents, fetchCategoryMenuItems } from "./menuContents";
 import MenuListItem from "./MenuListItem";

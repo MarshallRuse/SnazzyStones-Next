@@ -209,7 +209,8 @@ a {
     font-weight: 400;
 }
 
-.subtleScrollbar {
+.subtleScrollbar,
+.MuiAutocomplete-listbox {
     /* width */
     &::-webkit-scrollbar {
         width: 5px;
@@ -303,4 +304,8 @@ a {
         height: 0.5em;
         width: 0.5em;
     }
+}
+
+.Mui-focused.MuiOutlinedInput-notchedOutline {
+    border-color: #14b6b8;
 }

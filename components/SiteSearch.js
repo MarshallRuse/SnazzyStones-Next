@@ -3,8 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Autocomplete, TextField } from "@mui/material";
-import { Search } from "@mui/icons-material";
+import Search from "@mui/icons-material/Search";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import formatProductTitleAsURL from "../utils/formatProductTitleAsURL";
 
 const theme = createTheme({
     palette: {
@@ -20,7 +21,7 @@ const theme = createTheme({
     },
 });
 
-export default function SiteSearch({ className, ...rest }) {
+export default function SiteSearch({ className = "", ...rest }) {
     const router = useRouter();
     const [products, setProducts] = useState([]);
     const [autocompleteVisible, setAutocompleteVisible] = useState(false);
@@ -79,7 +80,13 @@ export default function SiteSearch({ className, ...rest }) {
                         getOptionLabel={(product) => product?.title}
                         renderOption={(props, product) => (
                             <li {...props}>
-                                <Link href={`/retail/products/${product.listing_id}`}>
+                                <Link
+                                    href={`/retail/products/${
+                                        product.title.includes("|")
+                                            ? formatProductTitleAsURL(product.title)
+                                            : product.listing_id
+                                    }`}
+                                >
                                     <a className='flex items-center gap-4'>
                                         <div className='flex-grow flex-shrink-0 w-20 h-20 mr-4'>
                                             {product && product.images?.length > 0 && (
@@ -92,7 +99,9 @@ export default function SiteSearch({ className, ...rest }) {
                                                 />
                                             )}
                                         </div>
-                                        <div className='flex-grow-0 line-clamp-2'>{product?.title}</div>
+                                        <div className='flex-grow-0 line-clamp-2'>
+                                            {product?.title.split("|")[0].trim()}
+                                        </div>
                                     </a>
                                 </Link>
                             </li>

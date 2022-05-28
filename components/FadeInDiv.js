@@ -25,7 +25,7 @@ const variants = {
     },
 };
 
-export default function FadeInDiv({ children, from, threshold = 0.5, className }) {
+export default function FadeInDiv({ children, from = "left", threshold = 0.5, className = "" }) {
     const { ref, inView, entry } = useInView({
         /* Optional options */
         threshold,

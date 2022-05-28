@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { NextSeo } from "next-seo";
 import TextContainer from "../../components/TextContainer";
 import FadeInDiv from "../../components/FadeInDiv";
 import styles from "../../styles/modules/OurStory.module.scss";
@@ -6,6 +7,29 @@ import styles from "../../styles/modules/OurStory.module.scss";
 export default function OurShows() {
     return (
         <>
+            <NextSeo
+                title='Our Story | SnazzyStones'
+                description="Learn a bit more about us and what we're doing"
+                canonical='https://snazzystones.ca/our-story'
+                openGraph={{
+                    url: "https://snazzystones.ca/our-story",
+                    title: "Our Story | SnazzyStones",
+                    description: "Learn a bit more about us and what we're doing",
+                    images: [
+                        {
+                            url: "/images/briPresentingBooth_2019-07-25.jpg",
+                            width: 768,
+                            height: 768,
+                            alt: "Brianna presenting some trays of jewellery",
+                            type: "image/jpeg",
+                        },
+                    ],
+                    site_name: "SnazzyStones",
+                }}
+                twitter={{
+                    cardType: "summary",
+                }}
+            />
             <header className={`heroSection ${styles.heroBackground}`}>
                 <div>
                     <h1 className='heroTitle text-white overlayText'>Our Story</h1>

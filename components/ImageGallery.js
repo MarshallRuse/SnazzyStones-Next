@@ -2,7 +2,8 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { wrap } from "popmotion";
-import { ArrowForwardIosRounded, ArrowBackIosRounded } from "@mui/icons-material";
+import ArrowForwardIosRounded from "@mui/icons-material/ArrowForwardIosRounded";
+import ArrowBackIosRounded from "@mui/icons-material/ArrowBackIosRounded";
 
 const enterExitDistance = 250;
 const variants = {
@@ -37,7 +38,7 @@ const swipePower = (offset, velocity) => {
     return Math.abs(offset) * velocity;
 };
 
-export default function ImageGallery({ images, productTitle }) {
+export default function ImageGallery({ images = [], productTitle = "" }) {
     const [[page, direction], setPage] = useState([0, 0]);
     const [isAnimating, setIsAnimating] = useState(false);
 
@@ -92,6 +93,7 @@ export default function ImageGallery({ images, productTitle }) {
                                     objectFit='cover'
                                     className={`rounded-md aspect-square`}
                                     alt={`Product image thumbnail ${ind + 1} for ${productTitle}`}
+                                    priority
                                 />
                             </div>
                         ))}
@@ -135,6 +137,7 @@ export default function ImageGallery({ images, productTitle }) {
                                 placeholder='blur'
                                 blurDataURL={images[imageIndex].url_75x75}
                                 alt={`Product gallery image ${page + 1} for ${productTitle}`}
+                                priority
                             />
                         </motion.div>
                     </AnimatePresence>

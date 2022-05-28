@@ -1,6 +1,6 @@
 import Link from "next/link";
 import CTAButton from "../components/CTAButton";
-import { KeyboardBackspaceRounded } from "@mui/icons-material";
+import KeyboardBackspaceRounded from "@mui/icons-material/KeyboardBackspaceRounded";
 
 export default function Custom404() {
     return (
@@ -10,7 +10,7 @@ export default function Custom404() {
                 <span className='stones text-zinc-700'>Stones</span>
             </h1>
             <h2 className='text-6xl text-blueyonder-500'>404</h2>
-            <p className='text-blueyonder-500 mb-0'>Oh no, it looks like you're lost!</p>
+            <p className='text-blueyonder-500 mb-0'>Oh no, it looks like you&apos;re lost!</p>
             <p>
                 <Link href='/' passHref>
                     <CTAButton>

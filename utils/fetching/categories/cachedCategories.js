@@ -6,7 +6,9 @@ import fetchCategories from "./etsyCategories";
 const CATEGORIES_CACHE_FILE = "categories-cache.json";
 
 export async function fetchAndCacheCategories() {
-    const data = await fetchCategories();
+    const data = {};
+    data.results = await fetchCategories();
+    data.cache_creation_timestamp = Date.now();
 
     try {
         fs.writeFileSync(
@@ -32,6 +34,10 @@ export async function getCategories() {
         cachedData = JSON.parse(
             fs.readFileSync(path.join(process.cwd(), "utils", "fetching", "categories", CATEGORIES_CACHE_FILE), "utf8")
         );
+        if (cachedData.cache_creation_timestamp < Date.now() - 1000 * 60 * 60) {
+            // more than an hour old
+            cachedData = await fetchAndCacheCategories();
+        }
         console.log("Fetching categories from cached file");
     } catch (error) {
         console.log("Categories cache not initialized");

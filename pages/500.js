@@ -1,6 +1,6 @@
 import Link from "next/link";
 import CTAButton from "../components/CTAButton";
-import { KeyboardBackspaceRounded } from "@mui/icons-material";
+import KeyboardBackspaceRounded from "@mui/icons-material/KeyboardBackspaceRounded";
 
 export default function Custom500() {
     return (
