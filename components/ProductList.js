@@ -61,18 +61,22 @@ export default function ProductList({ products = [], categories = [] }) {
             </div>
             <section className='grid sm:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-14 px-4 md:px-32 py-6 relative'>
                 {sortedProducts()?.map((prod) => {
+                    const tag = "[mod:";
                     let secondaryImageUrl = "";
                     let secondaryImagePlaceholderUrl = "";
-                    let stringModIndex = prod.description.indexOf("[mod:");
+                    let stringModIndex = prod.description.indexOf(tag);
 
                     if (stringModIndex !== -1) {
                         const closingBracketIndex = prod.description.slice(stringModIndex).indexOf("]");
                         let secImageInd = parseInt(
-                            prod.description.slice(stringModIndex + 5, stringModIndex + closingBracketIndex).trim()
+                            prod.description
+                                .slice(stringModIndex + tag.length, stringModIndex + closingBracketIndex)
+                                .trim()
                         );
                         if (!isNaN(secImageInd)) {
-                            secondaryImageUrl = prod.images[secImageInd]?.url_fullxfull;
-                            secondaryImagePlaceholderUrl = prod.images[secImageInd]?.url_75x75;
+                            // Note secondary images are 1-indexed for simplicity of user's counting
+                            secondaryImageUrl = prod.images[secImageInd - 1]?.url_fullxfull;
+                            secondaryImagePlaceholderUrl = prod.images[secImageInd - 1]?.url_75x75;
                         }
                     }
                     return (

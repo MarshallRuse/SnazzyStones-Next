@@ -21,6 +21,7 @@
         "dayjs": "^1.11.2",
         "framer-motion": "^6.3.3",
         "he": "^1.2.0",
+        "memory-cache": "^0.2.0",
         "next": "12.1.5",
         "next-seo": "^5.4.0",
         "popmotion": "^11.0.3",

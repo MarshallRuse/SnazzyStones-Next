@@ -2,8 +2,8 @@ import { NextSeo } from "next-seo";
 import { motion } from "framer-motion";
 import styles from "../../../styles/modules/Retail.module.scss";
 import { avoidRateLimit } from "../../../utils/avoidRateLimit";
-import { fetchAndCacheCategories } from "../../../utils/fetching/categories/cachedCategories";
-import { fetchAndCacheProducts } from "../../../utils/fetching/products/cachedProducts";
+import fetchCategories from "../../../utils/fetching/categories/etsyCategories";
+import fetchProducts from "../../../utils/fetching/products/etsyProducts";
 import ProductList from "../../../components/ProductList";
 import { collectionCardMap } from "../../../utils/collectionCardMap";
 
@@ -78,8 +78,7 @@ export default function CategoryPage({ products = [], category = null }) {
 export async function getStaticPaths() {
     // get a list of Etsy shop sections from which to draw category names
     await avoidRateLimit(1000);
-    const fetchedCategories = await fetchAndCacheCategories();
-    const categories = fetchedCategories.results;
+    const categories = await fetchCategories();
 
     return {
         paths: categories.map((section) => ({
@@ -92,8 +91,7 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
     const { params } = context;
     await avoidRateLimit(1000);
-    const fetchedCategories = await fetchAndCacheCategories();
-    const categories = fetchedCategories.results;
+    const categories = await fetchCategories();
 
     const categoryId = categories.find(
         (section) => section.title === params.categoryName.replace("_", " ")
@@ -103,8 +101,7 @@ export async function getStaticProps(context) {
 
     if (categoryId) {
         await avoidRateLimit(1000);
-        const fetchedProducts = await fetchAndCacheProducts({ categoryId });
-        products = fetchedProducts.results;
+        products = await fetchProducts({ categoryId });
     }
 
     return {

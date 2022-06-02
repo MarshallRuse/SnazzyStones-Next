@@ -15,11 +15,11 @@ export default function WiggleWrapper({ rotate = 15, timing = 150, children }) {
         return () => {
             window.clearTimeout(timeoutId);
         };
-    }, [isBooped]);
+    }, [isBooped, timing]);
 
     const initiateWiggle = useCallback(() => {
         setIsBooped(true);
-    }, [isBooped]);
+    }, []);
 
     return (
         <motion.span

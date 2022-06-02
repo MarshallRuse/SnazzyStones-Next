@@ -1,6 +1,6 @@
 import { NextSeo } from "next-seo";
-import { fetchAndCacheProducts } from "../../utils/fetching/products/cachedProducts";
-import { fetchAndCacheCategories } from "../../utils/fetching/categories/cachedCategories";
+import fetchProducts from "../../utils/fetching/products/etsyProducts";
+import fetchCategories from "../../utils/fetching/categories/etsyCategories";
 import CollectionCard from "../../components/CollectionCard";
 import styles from "../../styles/modules/Retail.module.scss";
 import ProductList from "../../components/ProductList";
@@ -57,16 +57,14 @@ export async function getStaticProps() {
     console.log("fetching categories, products, product images...");
     // get a list of Etsy shop sections from which to draw category names
     await avoidRateLimit(1000);
-    const fetchedCategories = await fetchAndCacheCategories();
-    const categories = fetchedCategories.results;
+    const categories = await fetchCategories();
     await avoidRateLimit(1000);
-    const fetchedProducts = await fetchAndCacheProducts();
-    const activeShopListingsFormatted = fetchedProducts.results;
+    const products = await fetchProducts();
 
     return {
         props: {
             categories,
-            products: activeShopListingsFormatted,
+            products,
         },
         revalidate: 60 * 60, //revalidate once an hour
     };

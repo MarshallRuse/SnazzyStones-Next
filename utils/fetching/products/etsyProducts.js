@@ -3,7 +3,7 @@ import Bottleneck from "bottleneck";
 
 // fetchProducts shared by categories index page getStaticProps and will be
 // be shared by an api called by the client for infinite loading
-export const fetchProducts = async ({ categoryId = "", fetchImages = true, limit = 100 } = {}) => {
+export default async function fetchProducts({ categoryId = "", fetchImages = true, limit = 100 } = {}) {
     try {
         // using bottleneck for rate limiting
         const limiter = new Bottleneck({
@@ -54,4 +54,4 @@ export const fetchProducts = async ({ categoryId = "", fetchImages = true, limit
         console.log(err);
         return null;
     }
-};
+}

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Search, KeyboardArrowDown } from "@mui/icons-material";
+import Search from "@mui/icons-material/Search";
+import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import MenuListItem from "../MenuListItem";
 import HoverStyledAnchor from "../HoverStyledAnchor";
 

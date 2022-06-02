@@ -24,8 +24,8 @@ import {
 import WiggleWrapper from "../../../components/WiggleWrapper";
 import CTAButton from "../../../components/CTAButton";
 import formatProductTitleAsURL from "../../../utils/formatProductTitleAsURL";
-import { fetchAndCacheCategories } from "../../../utils/fetching/categories/cachedCategories";
-import { getProducts, fetchAndCacheProducts } from "../../../utils/fetching/products/cachedProducts";
+import fetchCategories from "../../../utils/fetching/categories/etsyCategories";
+import fetchProducts from "../../../utils/fetching/products/etsyProducts";
 import ImageGallery from "../../../components/ImageGallery";
 
 const shareButtonStyle = "rounded-full focus:outline-none focus:ring focus:ring-bluegreen-500 focus:ring-offset-2";
@@ -238,8 +238,7 @@ export default function ProductPage({ product = null, category = "", reviews = [
 }
 
 export async function getStaticPaths() {
-    const fetchedProducts = await fetchAndCacheProducts({ fetchImages: false });
-    const activeShopListingsFormatted = fetchedProducts.results;
+    const activeShopListingsFormatted = await fetchProducts({ fetchImages: false });
 
     return {
         paths: activeShopListingsFormatted.map((listing) => ({
@@ -258,8 +257,7 @@ export async function getStaticProps(context) {
 
     await avoidRateLimit(1500); // Bottleneck wasn't working for some reason
 
-    const fetchedProducts = await getProducts();
-    const products = fetchedProducts.results;
+    const products = await fetchProducts();
 
     const productToGet = products.find((prod) => {
         if (prod.title.includes("|")) {
@@ -290,10 +288,8 @@ export async function getStaticProps(context) {
     //     { encoding: "utf8", flag: "w" }
     // );
     const formattedListing = { ...listing, title: he.decode(listing.title) };
-
-    const fetchedCategories = await fetchAndCacheCategories();
-    const categories = fetchedCategories.results;
-
+    await avoidRateLimit(1000);
+    const categories = await fetchCategories();
     const category = categories.find((section) => section.shop_section_id === listing.shop_section_id).title;
 
     await avoidRateLimit(1500);

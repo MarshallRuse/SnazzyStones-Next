@@ -10,8 +10,8 @@ import ProductListingCard from "../components/ProductListingCard";
 import InstagramFeed from "../components/InstagramFeed";
 import { collectionCardMap } from "../utils/collectionCardMap";
 import { avoidRateLimit } from "../utils/avoidRateLimit";
-import { fetchAndCacheCategories } from "../utils/fetching/categories/cachedCategories";
-import { fetchAndCacheProducts } from "../utils/fetching/products/cachedProducts";
+import fetchCategories from "../utils/fetching/categories/etsyCategories";
+import fetchProducts from "../utils/fetching/products/etsyProducts";
 
 export default function Home({ feed, products, categories }) {
     return (
@@ -142,25 +142,21 @@ export default function Home({ feed, products, categories }) {
 }
 
 export const getStaticProps = async () => {
+    // Instagram
     const url = `https://graph.instagram.com/me/media?fields=id,caption,media_url,media_type,thumbnail_url,permalink&access_token=${process.env.INSTAGRAM_KEY}&limit=4`;
     const data = await fetch(url);
     const feed = await data.json();
-    await avoidRateLimit(1500);
-    const fetchedCategories = await fetchAndCacheCategories();
-    const categories = fetchedCategories.results;
-    await avoidRateLimit(1500);
-    const fetchedProducts = await fetchAndCacheProducts(); // fetch all products to cache for autocomplete if client hits home page first
-    const products = fetchedProducts.results;
-    const recentlyAddedProducts = products
-        .sort(
-            (prodA, prodB) => parseInt(prodB.original_creation_timestamp) - parseInt(prodA.original_creation_timestamp)
-        )
-        .slice(0, 4); // but only 4 most recent products are needed for home page
+
+    // Etsy
+    await avoidRateLimit(500);
+    const categories = await fetchCategories();
+    await avoidRateLimit(500);
+    const products = await fetchProducts({ limit: 4 });
 
     return {
         props: {
             feed,
-            products: recentlyAddedProducts,
+            products,
             categories,
         },
         revalidate: 60 * 60, //revalidate once an hour

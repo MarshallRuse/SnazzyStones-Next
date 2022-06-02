@@ -38,6 +38,8 @@ export default function SiteSearch({ className = "", ...rest }) {
             if (apiResponse.status === 200) {
                 const responseProducts = await apiResponse.json();
                 setProducts(responseProducts.products);
+            } else {
+                console.log(`Error fetching products: ${apiResponse.error}`);
             }
         };
 

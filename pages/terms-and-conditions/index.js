@@ -109,7 +109,13 @@ export default function TermsAndConditions() {
                 by the revised terms. If you do not agree to the new terms, please stop using the Service.
             </p>
             <h2>Contact Us</h2>
-            <p>If you have any questions about these Terms, please contact us.</p>
+            <p>
+                If you have any questions about these Terms,{" "}
+                <Link href='/contact-us'>
+                    <a className='text-bluegreen-500 navItem inline-flex'>please contact us</a>
+                </Link>
+                .
+            </p>
         </div>
     );
 }

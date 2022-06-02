@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { wrap } from "popmotion";
@@ -42,6 +42,9 @@ export default function ImageGallery({ images = [], productTitle = "" }) {
     const [[page, direction], setPage] = useState([0, 0]);
     const [isAnimating, setIsAnimating] = useState(false);
 
+    // array of thumbnail refs for scrolling to active thumbnail
+    const thumbnailRefs = images.map(() => useRef(null));
+
     // We only have 3 images, but we paginate them absolutely (ie 1, 2, 3, 4, 5...) and
     // then wrap that within 0-2 to find our image ID in the array below. By passing an
     // absolute page index as the `motion` component's `key` prop, `AnimatePresence` will
@@ -53,9 +56,6 @@ export default function ImageGallery({ images = [], productTitle = "" }) {
             if (newPage !== undefined && newPage < images.length && newPage >= 0) {
                 setPage([newPage, newDirection]);
             } else if (page + newDirection < images.length && page + newDirection >= 0) {
-                console.log(
-                    `page: ${page}, newDirection: ${newDirection}, page + newDirection: ${page + newDirection}`
-                );
                 setPage([page + newDirection, newDirection]);
             }
         }
@@ -73,14 +73,19 @@ export default function ImageGallery({ images = [], productTitle = "" }) {
         }
     };
 
+    useEffect(() => {
+        thumbnailRefs[page].current?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+    }, [page]);
+
     return (
         <div>
             <div className='flex flex-col md:flex-row gap-4 max-w-xs sm:max-w-screen-lg'>
                 <div className='order-2 md:order-1 max-w-screen md:w-auto overflow-auto md:overflow-auto noScrollbar'>
-                    <div className='flex md:flex-col gap-2 md:min-h-full md:h-0 p-2'>
+                    <div className='relative flex md:flex-col gap-2 md:min-h-full md:h-0 p-2'>
                         {images?.map((img, ind) => (
                             <div
                                 key={`thumbnail-${ind}`}
+                                ref={thumbnailRefs[ind]}
                                 className={`flex w-20 h-20 md:w-auto md:h-auto flex-shrink-0 rounded-lg cursor-pointer ${
                                     ind !== page ? "hover:scale-105" : ""
                                 } transition ${ind === page ? "scale-105 border-2 border-bluegreen-500" : ""}`}
@@ -127,6 +132,7 @@ export default function ImageGallery({ images = [], productTitle = "" }) {
                             }}
                             onAnimationStart={() => setIsAnimating(true)}
                             onAnimationComplete={() => setIsAnimating(false)}
+                            onClick={() => setLightboxOpen(true)}
                         >
                             <Image
                                 src={images[imageIndex].url_fullxfull}
