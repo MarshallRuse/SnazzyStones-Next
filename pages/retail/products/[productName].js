@@ -315,6 +315,6 @@ export async function getStaticProps(context) {
             category,
             reviews,
         },
-        revalidate: 60 * 60, //revalidate once an hour
+        revalidate: 12 * 60 * 60, //revalidate twice a day
     };
 }

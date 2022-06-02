@@ -109,6 +109,6 @@ export async function getStaticProps(context) {
             products,
             category: params.categoryName.replace("_", " "),
         },
-        revalidate: 60 * 60, //revalidate once an hour
+        revalidate: 12 * 60 * 60, //revalidate twice a day
     };
 }
