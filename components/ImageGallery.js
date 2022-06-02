@@ -43,7 +43,7 @@ export default function ImageGallery({ images = [], productTitle = "" }) {
     const [isAnimating, setIsAnimating] = useState(false);
 
     // array of thumbnail refs for scrolling to active thumbnail
-    const thumbnailRefs = images.map(() => useRef(null));
+    const thumbnailRefs = useRef([]);
 
     // We only have 3 images, but we paginate them absolutely (ie 1, 2, 3, 4, 5...) and
     // then wrap that within 0-2 to find our image ID in the array below. By passing an
@@ -74,8 +74,12 @@ export default function ImageGallery({ images = [], productTitle = "" }) {
     };
 
     useEffect(() => {
-        thumbnailRefs[page].current?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+        thumbnailRefs.current?.[page]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
     }, [page]);
+
+    useEffect(() => {
+        thumbnailRefs.current = thumbnailRefs.current.slice(0, images.length);
+    }, [images]);
 
     return (
         <div>
@@ -85,7 +89,7 @@ export default function ImageGallery({ images = [], productTitle = "" }) {
                         {images?.map((img, ind) => (
                             <div
                                 key={`thumbnail-${ind}`}
-                                ref={thumbnailRefs[ind]}
+                                ref={(el) => (thumbnailRefs.current[ind] = el)}
                                 className={`flex w-20 h-20 md:w-auto md:h-auto flex-shrink-0 rounded-lg cursor-pointer ${
                                     ind !== page ? "hover:scale-105" : ""
                                 } transition ${ind === page ? "scale-105 border-2 border-bluegreen-500" : ""}`}
