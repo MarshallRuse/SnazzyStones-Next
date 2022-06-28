@@ -12,6 +12,7 @@ import { collectionCardMap } from "../utils/collectionCardMap";
 import { avoidRateLimit } from "../utils/avoidRateLimit";
 import fetchCategories from "../utils/fetching/categories/etsyCategories";
 import fetchProducts from "../utils/fetching/products/etsyProducts";
+import formatProductTitleAsURL from "../utils/formatProductTitleAsURL";
 
 export default function Home({ feed, products, categories }) {
     return (
@@ -91,7 +92,9 @@ export default function Home({ feed, products, categories }) {
                             }
                             productName={prod.title}
                             productPrice={prod.price.amount / prod.price.divisor}
-                            productPageLink={`/retail/products/${prod.listing_id}`}
+                            productPageLink={`/retail/products/${
+                                prod.title.includes("|") ? formatProductTitleAsURL(prod.title) : prod.listing_id
+                            }`}
                         />
                     ))}
                 </div>
