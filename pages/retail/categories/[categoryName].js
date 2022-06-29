@@ -56,7 +56,7 @@ export default function CategoryPage({ products = [], category = null }) {
                     styles[`${category.toLowerCase().replace(" ", "_")}Header`]
                 } heroSection `}
             >
-                <div className='flex flex-col'>
+                <div className='flex flex-col w-full'>
                     <h1 className='heroTitle text-white overlayText'>{category}</h1>
                     {categoryPitches[category] && (
                         <motion.div
@@ -65,7 +65,7 @@ export default function CategoryPage({ products = [], category = null }) {
                             transition={{ duration: 0.4 }}
                             className='bg-blueyonder-500 px-4 md:px-32 text-left md:text-center py-4 opacity-80 shadow-light'
                         >
-                            {categoryPitches[category]}
+                            <div className='max-w-2xl text-center mx-auto'>{categoryPitches[category]}</div>
                         </motion.div>
                     )}
                 </div>

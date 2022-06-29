@@ -266,6 +266,7 @@ export async function getStaticProps(context) {
             return prod.listing_id === params.productName;
         }
     });
+    console.log("productToGet: ", productToGet.title);
 
     if (!productToGet) {
         return {
