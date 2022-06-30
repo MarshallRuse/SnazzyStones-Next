@@ -77,7 +77,7 @@ export default function CategoryPage({ products = [], category = null }) {
 
 export async function getStaticPaths() {
     // get a list of Etsy shop sections from which to draw category names
-    await avoidRateLimit(1000);
+    await avoidRateLimit(500);
     const categories = await fetchCategories();
 
     return {
@@ -90,19 +90,31 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
     const { params } = context;
-    await avoidRateLimit(1000);
+    await avoidRateLimit(500);
     const categories = await fetchCategories();
 
     const categoryId = categories.find(
         (section) => section.title === params.categoryName.replace("_", " ")
     )?.shop_section_id;
 
-    let products = [];
+    let fetchedProducts = [];
 
     if (categoryId) {
-        await avoidRateLimit(1000);
-        products = await fetchProducts({ categoryId });
+        await avoidRateLimit(500);
+        fetchedProducts = await fetchProducts({ categoryId });
     }
+    // optimize static page generation by only passing relevant properties to front end
+    // properties are used in this page, ProductList, ProductListingCard
+    const products = fetchedProducts.map((prod) => ({
+        listing_id: prod.listing_id,
+        title: prod.title,
+        description: prod.description,
+        images: prod.images,
+        shop_section_id: prod.shop_section_id,
+        original_creation_timestamp: prod.original_creation_timestamp,
+        num_favorers: prod.num_favorers,
+        price: prod.price,
+    }));
 
     return {
         props: {

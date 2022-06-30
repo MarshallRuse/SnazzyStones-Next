@@ -266,7 +266,6 @@ export async function getStaticProps(context) {
             return prod.listing_id === params.productName;
         }
     });
-    console.log("productToGet: ", productToGet.title);
 
     if (!productToGet) {
         return {
@@ -288,8 +287,19 @@ export async function getStaticProps(context) {
     //     JSON.stringify(listing),
     //     { encoding: "utf8", flag: "w" }
     // );
-    const formattedListing = { ...listing, title: he.decode(listing.title) };
-    await avoidRateLimit(1000);
+    const formattedListing = {
+        title: he.decode(listing.title),
+        description: listing.description,
+        url: listing.url,
+        images: listing.images,
+        production_partners: listing.production_partners,
+        price: listing.price,
+        quantity: listing.quantity,
+        num_favorers: listing.num_favorers,
+        tags: listing.tags,
+    };
+
+    await avoidRateLimit(1500);
     const categories = await fetchCategories();
     const category = categories.find((section) => section.shop_section_id === listing.shop_section_id).title;
 

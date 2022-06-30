@@ -24,27 +24,26 @@ export default async function fetchProducts({ categoryId = "", fetchImages = tru
                 },
             })
         );
-        const { results: activeShopListings = [] } = await activeShopListingsResponse.json();
+        let { results: activeShopListings = [] } = await activeShopListingsResponse.json();
 
         if (activeShopListings && activeShopListings.length > 0) {
-            const activeShopListingsFormatted = activeShopListings.map((l) => ({ ...l, title: he.decode(l.title) }));
-
             if (fetchImages) {
-                // Get images for listings
-
-                for (const listing of activeShopListingsFormatted) {
-                    const listingImagesResponse = await limiter.schedule(() =>
-                        fetch(`https://openapi.etsy.com/v3/application/listings/${listing.listing_id}/images`, {
+                const listingIds = activeShopListings.map((listing) => listing.listing_id).join(",");
+                const listingImagesResponse = await limiter.schedule(() =>
+                    fetch(
+                        `https://openapi.etsy.com/v3/application/listings/batch?listing_ids=${listingIds}&includes=Images`,
+                        {
                             method: "GET",
                             headers: {
                                 "x-api-key": process.env.ETSY_API_KEYSTRING,
                             },
-                        })
-                    );
-                    const images = await listingImagesResponse.json();
-                    listing.images = images.results;
-                }
+                        }
+                    )
+                );
+                const listingsWithImages = await listingImagesResponse.json();
+                activeShopListings = listingsWithImages.results;
             }
+            const activeShopListingsFormatted = activeShopListings.map((l) => ({ ...l, title: he.decode(l.title) }));
 
             return activeShopListingsFormatted;
         }

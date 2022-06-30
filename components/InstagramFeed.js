@@ -21,7 +21,7 @@ export default function InstagramFeed({ feed = {} }) {
 
     return (
         <>
-            <div className='grid md:grid-cols-4 gap-10 mt-10'>
+            <div className='grid md:grid-cols-4 gap-10 mt-10 max-w-screen-2xl mx-auto'>
                 {instagramImages &&
                     instagramImages.map((instImg) => (
                         <a
@@ -29,7 +29,7 @@ export default function InstagramFeed({ feed = {} }) {
                             href={instImg.permalink}
                             target='_blank'
                             rel='noreferrer'
-                            className='flex rounded-md shadow-light transition hover:shadow-bluegreenLight hover:scale-105'
+                            className='flex rounded-md w-max shadow-light transition hover:shadow-bluegreenLight hover:scale-105'
                         >
                             <Image
                                 src={

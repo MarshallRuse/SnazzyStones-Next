@@ -56,10 +56,24 @@ export default function RetailPage({ products = [], categories = [] }) {
 export async function getStaticProps() {
     console.log("fetching categories, products, product images...");
     // get a list of Etsy shop sections from which to draw category names
-    await avoidRateLimit(1000);
+    await avoidRateLimit(500);
     const categories = await fetchCategories();
-    await avoidRateLimit(1000);
-    const products = await fetchProducts();
+
+    await avoidRateLimit(500);
+    const fetchedProducts = await fetchProducts();
+
+    // optimize static page generation by only passing relevant properties to front end
+    // properties are used in this page, ProductList, ProductListingCard
+    const products = fetchedProducts.map((prod) => ({
+        listing_id: prod.listing_id,
+        title: prod.title,
+        description: prod.description,
+        images: prod.images,
+        shop_section_id: prod.shop_section_id,
+        original_creation_timestamp: prod.original_creation_timestamp,
+        num_favorers: prod.num_favorers,
+        price: prod.price,
+    }));
 
     return {
         props: {

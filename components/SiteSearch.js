@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -26,6 +26,7 @@ export default function SiteSearch({ className = "", ...rest }) {
     const [products, setProducts] = useState([]);
     const [autocompleteVisible, setAutocompleteVisible] = useState(false);
     const [value, setValue] = useState(null);
+    const inputRef = useRef(null);
 
     const handleClearAndCloseInput = () => {
         setValue(null);
@@ -34,7 +35,7 @@ export default function SiteSearch({ className = "", ...rest }) {
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const apiResponse = await fetch("/api/retail/products");
+            const apiResponse = await fetch("/api/retail/products?fields=title,listing_id,images");
             if (apiResponse.status === 200) {
                 const responseProducts = await apiResponse.json();
                 setProducts(responseProducts.products);
@@ -51,6 +52,12 @@ export default function SiteSearch({ className = "", ...rest }) {
             router.events.off("routeChangeComplete", handleClearAndCloseInput);
         };
     }, [router.events]);
+
+    useEffect(() => {
+        if (autocompleteVisible) {
+            inputRef.current.focus();
+        }
+    }, [autocompleteVisible]);
 
     return (
         <div
@@ -72,13 +79,16 @@ export default function SiteSearch({ className = "", ...rest }) {
                             borderRadius: "0.25rem",
                             "& .MuiFormLabel-root-MuiInputLabel-root.MuiFocused": { color: "red" },
                         }}
+                        open={autocompleteVisible}
                         options={products}
+                        loading={autocompleteVisible && products.length === 0}
+                        loadingText='Loading Snazziness...'
                         value={value}
                         onChange={(event, newValue) => setValue(newValue)}
-                        autoHighlight
                         openOnFocus
                         clearOnEscape
                         onBlur={handleClearAndCloseInput}
+                        onClose={handleClearAndCloseInput}
                         getOptionLabel={(product) => product?.title}
                         renderOption={(props, product) => (
                             <li {...props}>
@@ -111,6 +121,7 @@ export default function SiteSearch({ className = "", ...rest }) {
                         renderInput={(params) => (
                             <TextField
                                 {...params}
+                                inputRef={inputRef}
                                 label='Search Products'
                                 color='bluegreen'
                                 inputProps={{

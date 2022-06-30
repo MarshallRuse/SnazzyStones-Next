@@ -47,41 +47,45 @@ export default function Home({ feed, products, categories }) {
                     </p>
                 </TextContainer>
             </section>
-            <section className='grid md:grid-cols-3 gap-10 px-4 md:px-32 py-12 relative'>
-                <CollectionCard
-                    cardImageSrc={collectionCardMap["Hoops"].url}
-                    alt={collectionCardMap["Hoops"].alt}
-                    title='Hoops'
-                />
-                <CollectionCard
-                    cardImageSrc={collectionCardMap["Pendants"].url}
-                    alt={collectionCardMap["Pendants"].alt}
-                    title='Pendants'
-                />
-                <CollectionCard
-                    cardImageSrc={collectionCardMap["Necklaces"].url}
-                    alt={collectionCardMap["Necklaces"].alt}
-                    title='Necklaces'
-                />
+            <section>
+                <div className='grid md:grid-cols-3 gap-10 px-4 md:px-32 py-12 max-w-screen-2xl mx-auto relative'>
+                    <CollectionCard
+                        cardImageSrc={collectionCardMap["Hoops"].url}
+                        alt={collectionCardMap["Hoops"].alt}
+                        title='Hoops'
+                    />
+                    <CollectionCard
+                        cardImageSrc={collectionCardMap["Pendants"].url}
+                        alt={collectionCardMap["Pendants"].alt}
+                        title='Pendants'
+                    />
+                    <CollectionCard
+                        cardImageSrc={collectionCardMap["Necklaces"].url}
+                        alt={collectionCardMap["Necklaces"].alt}
+                        title='Necklaces'
+                    />
+                </div>
             </section>
-            <section className='bg-slate-100 grid md:grid-cols-3 gap-10 px-4 md:px-32 py-12 relative'>
-                <CollectionCard
-                    cardImageSrc={collectionCardMap["Bracelets"].url}
-                    alt={collectionCardMap["Bracelets"].alt}
-                    title='Bracelets'
-                />
-                <CollectionCard
-                    cardImageSrc={collectionCardMap["Anklets"].url}
-                    alt={collectionCardMap["Anklets"].alt}
-                    title='Anklets'
-                />
+            <section className='bg-slate-100 '>
+                <div className='grid md:grid-cols-3 gap-10 px-4 md:px-32 py-12  max-w-screen-2xl mx-auto relative'>
+                    <CollectionCard
+                        cardImageSrc={collectionCardMap["Bracelets"].url}
+                        alt={collectionCardMap["Bracelets"].alt}
+                        title='Bracelets'
+                    />
+                    <CollectionCard
+                        cardImageSrc={collectionCardMap["Anklets"].url}
+                        alt={collectionCardMap["Anklets"].alt}
+                        title='Anklets'
+                    />
+                </div>
             </section>
             <section className={`px-10 py-20 text-blueyonder-500 ${styles.featuredProductSection}`}>
                 <TextContainer>
                     <h2>Recently Added Products</h2>
                     <p>Check out our most recent snazziness!</p>
                 </TextContainer>
-                <div className='grid sm:grid-cols-4 lg:grid-cols-4 gap-10 py-5 px-8'>
+                <div className='grid sm:grid-cols-4 lg:grid-cols-4 gap-10 py-5 px-8 max-w-screen-2xl mx-auto'>
                     {products?.map((prod) => (
                         <ProductListingCard
                             key={`recent-product-${prod.listing_id}`}
@@ -151,9 +155,9 @@ export const getStaticProps = async () => {
     const feed = await data.json();
 
     // Etsy
-    await avoidRateLimit(500);
+    await avoidRateLimit(250);
     const categories = await fetchCategories();
-    await avoidRateLimit(500);
+    await avoidRateLimit(250);
     const products = await fetchProducts({ limit: 4 });
 
     return {
