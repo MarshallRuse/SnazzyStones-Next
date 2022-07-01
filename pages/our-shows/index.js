@@ -185,7 +185,7 @@ export default function OurShows() {
                         style={{ border: 0 }}
                         className='rounded-md shadow-light'
                         referrerPolicy='no-referrer-when-downgrade'
-                        src='https://www.google.com/maps/embed/v1/place?q=Wiarton%20Arena%2C%20Wiarton%20&key=AIzaSyCN5rwciQHCHF4Mi_U0PxRmWPtsofhRaXs'
+                        src='https://www.google.com/maps/embed/v1/place?q=place_id:ChIJSVwezh3JLE0RYhpdTAiHSC0&key=AIzaSyCN5rwciQHCHF4Mi_U0PxRmWPtsofhRaXs'
                         loading='lazy'
                         allowFullScreen
                     ></iframe>

@@ -34,6 +34,7 @@ const shareButtonIconSize = 40;
 export default function ProductPage({ product = null, category = "", reviews = [] }) {
     const { countryData, isLoading, isError } = useCountry();
     const router = useRouter();
+    const productURL = `https://snazzystones.ca${router.asPath}`;
     return (
         <>
             <NextSeo
@@ -41,7 +42,7 @@ export default function ProductPage({ product = null, category = "", reviews = [
                 description={he.decode(product.description.split("\n")[0].trim())}
                 canonical={product.url}
                 openGraph={{
-                    url: `https://snazzystones.ca/retail/products/`,
+                    url: productURL,
                     title: `${product.title.split("|")[0].trim()} | Snazzy Stones`,
                     description: he.decode(product.description.split("\n")[0].trim()),
                     images: product.images.map((img, ind) => ({
@@ -57,7 +58,7 @@ export default function ProductPage({ product = null, category = "", reviews = [
                     cardType: "summary",
                 }}
             />
-            <section className='grid md:grid-cols-2 md:grid-rows-2 gap-10 py-16 md:max-w-screen-lg justify-center mx-auto px-4'>
+            <section className='grid md:grid-cols-2 md:grid-flow-row auto-rows-max gap-10 py-16 md:max-w-screen-lg justify-center mx-auto px-4'>
                 <ImageGallery images={product.images} productTitle={product.title} />
                 <div className='flex flex-col row-span-2 text-sm text-slate-500 max-w-xs md:max-w-lg pt-2'>
                     <nav className='flex flex-nowrap'>
@@ -151,36 +152,32 @@ export default function ProductPage({ product = null, category = "", reviews = [
                             </div>
                         )}
                     </div>
-                    <div className='mt-6 pt-4 border-t border-slate-200 flex gap-4'>
-                        <div className='font-semibold text-blueyonder-500'>Tags:</div>
-                        <div className='text-bluegreen-500'>{product.tags.join(", ")}</div>
-                    </div>
                 </div>
                 <div className='flex flex-col'>
                     <h3 className='text-bluegreen-500 mb-4'>Share the Snazziness!</h3>
                     <div className='flex items-start gap-4'>
                         <WiggleWrapper>
-                            <FacebookShareButton url={router.pathname} className={shareButtonStyle}>
+                            <FacebookShareButton url={productURL} className={shareButtonStyle}>
                                 <FacebookIcon size={shareButtonIconSize} round />
                             </FacebookShareButton>
                         </WiggleWrapper>
                         <WiggleWrapper>
-                            <FacebookMessengerShareButton url={router.pathname} className={shareButtonStyle}>
+                            <FacebookMessengerShareButton url={productURL} className={shareButtonStyle}>
                                 <FacebookMessengerIcon size={shareButtonIconSize} round />
                             </FacebookMessengerShareButton>
                         </WiggleWrapper>
                         <WiggleWrapper>
-                            <TwitterShareButton url={router.pathname} className={shareButtonStyle}>
+                            <TwitterShareButton url={productURL} className={shareButtonStyle}>
                                 <TwitterIcon size={shareButtonIconSize} round />
                             </TwitterShareButton>
                         </WiggleWrapper>
                         <WiggleWrapper>
-                            <WhatsappShareButton url={router.pathname} className={shareButtonStyle}>
+                            <WhatsappShareButton url={productURL} className={shareButtonStyle}>
                                 <WhatsappIcon size={shareButtonIconSize} round />
                             </WhatsappShareButton>
                         </WiggleWrapper>
                         <WiggleWrapper>
-                            <EmailShareButton url={router.pathname} className={shareButtonStyle}>
+                            <EmailShareButton url={productURL} className={shareButtonStyle}>
                                 <EmailIcon size={shareButtonIconSize} round />
                             </EmailShareButton>
                         </WiggleWrapper>

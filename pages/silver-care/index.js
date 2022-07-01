@@ -57,7 +57,7 @@ export default function SilverCare() {
                 </FadeInDiv>
                 <FadeInDiv from='right'>
                     <figure>
-                        <div className='flex rounded-md shadow-light'>
+                        <div className='flex rounded-md max-w-max shadow-light'>
                             <Image
                                 src='/images/oxidizedSilverExample_2020-06-27.jpg'
                                 width={1024}
@@ -127,7 +127,7 @@ export default function SilverCare() {
                 </FadeInDiv>
                 <FadeInDiv from='left' className='md:col-span-2 md:order-1'>
                     <figure>
-                        <div className='flex rounded-md shadow-light'>
+                        <div className='flex rounded-md max-w-max shadow-light'>
                             <Image
                                 src='/images/wearYourJewellery_2020-10-11.jpg'
                                 width={3024}
@@ -224,7 +224,7 @@ export default function SilverCare() {
                         We hope this helps you in keeping your sterling silver clean and shiny! If you have any tips or
                         tricks you swear by, we would love to hear about them.
                     </p>
-                    <h3 className='text-blueyonder-500 text-4xl mt-8 text-center'>Shine bright everyone!</h3>
+                    <h3 className='text-blueyonder-500 text-4xl mt-20 text-center'>Shine bright everyone!</h3>
                 </div>
             </section>
         </>

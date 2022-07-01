@@ -54,7 +54,7 @@ export default function OurShows() {
                         quality with beautiful stones.
                     </p>
                 </FadeInDiv>
-                <FadeInDiv from='right' className='flex rounded-md shadow-light'>
+                <FadeInDiv from='right' className='flex rounded-md max-w-max shadow-light'>
                     <Image
                         src='/images/briPresentingBooth_2019-07-25.jpg'
                         width={768}
@@ -66,7 +66,7 @@ export default function OurShows() {
                 </FadeInDiv>
             </div>
             <div className='px-10 md:px-40 py-20 grid md:grid-cols-2 items-center gap-20'>
-                <FadeInDiv from='left' className='flex rounded-md shadow-light'>
+                <FadeInDiv from='left' className='flex rounded-md max-w-max shadow-light'>
                     <Image
                         src='/images/beadsDisplay.jpg'
                         width={768}
