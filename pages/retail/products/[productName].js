@@ -27,6 +27,7 @@ import formatProductTitleAsURL from "../../../utils/formatProductTitleAsURL";
 import fetchCategories from "../../../utils/fetching/categories/etsyCategories";
 import fetchProducts from "../../../utils/fetching/products/etsyProducts";
 import ImageGallery from "../../../components/ImageGallery";
+import ProductPageFallbackSkeleton from "../../../components/ProductPageFallbackSkeleton";
 
 const shareButtonStyle = "rounded-full focus:outline-none focus:ring focus:ring-bluegreen-500 focus:ring-offset-2";
 const shareButtonIconSize = 40;
@@ -35,6 +36,11 @@ export default function ProductPage({ product = null, category = "", reviews = [
     const { countryData, isLoading, isError } = useCountry();
     const router = useRouter();
     const productURL = `https://snazzystones.ca${router.asPath}`;
+
+    if (router.isFallback) {
+        return <ProductPageFallbackSkeleton />;
+    }
+
     return (
         <>
             <NextSeo
@@ -245,7 +251,7 @@ export async function getStaticPaths() {
                     : listing.listing_id.toString(),
             },
         })),
-        fallback: false,
+        fallback: true,
     };
 }
 
@@ -279,11 +285,7 @@ export async function getStaticProps(context) {
         }
     );
     const listing = await listingResponse.json();
-    // fs.writeFileSync(
-    //     path.join(process.cwd(), "productListingsBuilds", `${productToGet.listing_id}.json`),
-    //     JSON.stringify(listing),
-    //     { encoding: "utf8", flag: "w" }
-    // );
+
     const formattedListing = {
         title: he.decode(listing.title),
         description: listing.description,
