@@ -5,7 +5,7 @@ import KeyboardBackspaceRounded from "@mui/icons-material/KeyboardBackspaceRound
 export default function Custom404() {
     return (
         <div className='flex flex-col items-center py-10'>
-            <h1 className='heroTitle'>
+            <h1 className='heroTitle text-center'>
                 <span className='snazzy text-blueyonder-500'>Snazzy </span>
                 <span className='stones text-zinc-700'>Stones</span>
             </h1>
