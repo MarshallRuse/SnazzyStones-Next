@@ -165,7 +165,7 @@ export default function OurShows() {
                     <h2 className='mt-0 text-5xl'>Wiarton</h2>
                     <h3>Wiarton Lakeview Vendor&apos;s Market</h3>
                     <p>
-                        Every Wednesday from July to Labour Day, find us at the{" "}
+                        Every Wednesday and Friday from July to Labour Day, find us at the{" "}
                         <a
                             href='https://www.facebook.com/saublemarket/events'
                             target='_blank'

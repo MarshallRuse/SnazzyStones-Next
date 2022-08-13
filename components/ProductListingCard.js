@@ -62,7 +62,7 @@ export default function ProductListingCard({
             exit={{ opacity: 0, x: -50 }}
         >
             <Link href={productPageLink}>
-                <a className='flex-grow'>
+                <a>
                     <div className='flex relative transition cursor-pointer shadow-light rounded-md hover:shadow-bluegreenLight hover:scale-105 overflow-hidden'>
                         <Image
                             src={imagePrimary}

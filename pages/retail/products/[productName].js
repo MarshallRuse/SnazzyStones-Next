@@ -251,7 +251,7 @@ export async function getStaticPaths() {
                     : listing.listing_id.toString(),
             },
         })),
-        fallback: true,
+        fallback: "blocking",
     };
 }
 
@@ -325,6 +325,6 @@ export async function getStaticProps(context) {
             category,
             reviews,
         },
-        revalidate: 12 * 60 * 60, //revalidate twice a day
+        revalidate: 60, //revalidate after a minute
     };
 }
