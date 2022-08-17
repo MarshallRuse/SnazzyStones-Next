@@ -61,7 +61,7 @@ export default function ProductListingCard({
             animate={inView ? "open" : "closed"}
             exit={{ opacity: 0, x: -50 }}
         >
-            <Link href={productPageLink}>
+            <Link href={productPageLink} prefetch={false}>
                 <a>
                     <div className='flex relative transition cursor-pointer shadow-light rounded-md hover:shadow-bluegreenLight hover:scale-105 overflow-hidden'>
                         <Image
