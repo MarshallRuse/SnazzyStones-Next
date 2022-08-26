@@ -240,33 +240,16 @@ export default function ProductPage({ product = null, category = "", reviews = [
     );
 }
 
-export async function getStaticPaths() {
-    const activeShopListingsFormatted = await fetchProducts({ fetchImages: false });
-
-    return {
-        paths: activeShopListingsFormatted.map((listing) => ({
-            params: {
-                productName: listing.title.includes("|")
-                    ? formatProductTitleAsURL(listing.title)
-                    : listing.listing_id.toString(),
-            },
-        })),
-        fallback: "blocking",
-    };
-}
-
-export async function getStaticProps(context) {
-    const { params } = context;
-
-    await avoidRateLimit(1500); // Bottleneck wasn't working for some reason
+export async function getServerSideProps(context) {
+    const { productName } = context.params;
 
     const products = await fetchProducts();
 
     const productToGet = products.find((prod) => {
         if (prod.title.includes("|")) {
-            return formatProductTitleAsURL(prod.title) === params.productName;
+            return formatProductTitleAsURL(prod.title) === productName;
         } else {
-            return prod.listing_id === params.productName;
+            return prod.listing_id === productName;
         }
     });
 
@@ -298,11 +281,11 @@ export async function getStaticProps(context) {
         tags: listing.tags,
     };
 
-    await avoidRateLimit(1500);
+    await avoidRateLimit(500); // Bottleneck wasn't working for some reason
     const categories = await fetchCategories();
     const category = categories.find((section) => section.shop_section_id === listing.shop_section_id).title;
 
-    await avoidRateLimit(1500);
+    await avoidRateLimit(500);
     const listingReviewsResponse = await fetch(
         `https://openapi.etsy.com/v3/application/listings/${productToGet.listing_id}/reviews?limit=100`,
         {
@@ -325,6 +308,5 @@ export async function getStaticProps(context) {
             category,
             reviews,
         },
-        revalidate: 60, //revalidate after a minute
     };
 }
