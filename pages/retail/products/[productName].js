@@ -281,11 +281,9 @@ export async function getServerSideProps(context) {
         tags: listing.tags,
     };
 
-    await avoidRateLimit(500); // Bottleneck wasn't working for some reason
     const categories = await fetchCategories();
     const category = categories.find((section) => section.shop_section_id === listing.shop_section_id).title;
 
-    await avoidRateLimit(500);
     const listingReviewsResponse = await fetch(
         `https://openapi.etsy.com/v3/application/listings/${productToGet.listing_id}/reviews?limit=100`,
         {
