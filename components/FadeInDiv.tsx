@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import {ReactNode} from "react";
 
 const variants = {
     in: {
@@ -25,7 +26,14 @@ const variants = {
     },
 };
 
-export default function FadeInDiv({ children, from = "left", threshold = 0.5, className = "" }) {
+export interface FadeInDivProps {
+    children: ReactNode;
+    from?: "left" | "right";
+    threshold?: number;
+    className?: string;
+}
+
+export default function FadeInDiv({ children, from = "left", threshold = 0.5, className = "" }: FadeInDivProps) {
     const { ref, inView, entry } = useInView({
         /* Optional options */
         threshold,

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { NextSeo } from "next-seo";
 import styles from "../styles/modules/Home.module.scss";
 import Instagram from "@mui/icons-material/Instagram";
-import CTAButton from "../components/CTAButton";
+import CTAButton from "../components/CTAElements/CTAButton";
 import TextContainer from "../components/TextContainer";
 import CollectionCard from "../components/CollectionCard";
 import ProductListingCard from "../components/ProductListingCard";
@@ -13,8 +13,16 @@ import { avoidRateLimit } from "../utils/avoidRateLimit";
 import fetchCategories from "../utils/fetching/categories/etsyCategories";
 import fetchProducts from "../utils/fetching/products/etsyProducts";
 import formatProductTitleAsURL from "../utils/formatProductTitleAsURL";
+import CTALink from "../components/CTAElements/CTALink";
+import {ShopListingResponse, ShopSectionResponse} from "../types/EtsyAPITypes";
 
-export default function Home({ feed, products, categories }) {
+export interface HomeProps {
+    feed: any;
+    products: ShopListingResponse[];
+    categories: ShopSectionResponse[];
+}
+
+export default function Home({ feed, products, categories }: HomeProps) {
     return (
         <>
             <NextSeo canonical='https://snazzystones.ca/' />
@@ -27,8 +35,8 @@ export default function Home({ feed, products, categories }) {
                     <h2 className={`text-3xl pt-6 ${styles.headerSubtitle} text-white overlayText`}>
                         Specializing in Silver & Gemstone Jewellery
                     </h2>
-                    <Link href='/retail' passHref>
-                        <CTAButton className='mt-4'>SHOP NOW</CTAButton>
+                    <Link href='/index' passHref>
+                        <CTALink className='mt-4'>SHOP NOW</CTALink>
                     </Link>
                 </div>
             </header>
@@ -110,8 +118,8 @@ export default function Home({ feed, products, categories }) {
                         We can be found at multiple venues each week throughout the spring, summer, and autumn. Take a
                         look at our schedule to see if we’ll be at a show near you!
                     </p>
-                    <Link href='/our-shows' passHref>
-                        <CTAButton>FIND US!</CTAButton>
+                    <Link href='/index' passHref>
+                        <CTALink>FIND US!</CTALink>
                     </Link>
                 </TextContainer>
             </section>

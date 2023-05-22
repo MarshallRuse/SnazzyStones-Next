@@ -22,17 +22,29 @@ import {
     WhatsappShareButton,
 } from "react-share";
 import WiggleWrapper from "../../../components/WiggleWrapper";
-import CTAButton from "../../../components/CTAButton";
 import formatProductTitleAsURL from "../../../utils/formatProductTitleAsURL";
 import fetchCategories from "../../../utils/fetching/categories/etsyCategories";
 import fetchProducts from "../../../utils/fetching/products/etsyProducts";
 import ImageGallery from "../../../components/ImageGallery";
 import ProductPageFallbackSkeleton from "../../../components/ProductPageFallbackSkeleton";
+import {
+    ListingReview,
+    ListingReviewResponse,
+    ShopListingResponse,
+} from "../../../types/EtsyAPITypes";
+import {Product} from "../../../types/Types";
+import CTALink from "../../../components/CTAElements/CTALink";
 
 const shareButtonStyle = "rounded-full focus:outline-none focus:ring focus:ring-bluegreen-500 focus:ring-offset-2";
 const shareButtonIconSize = 40;
 
-export default function ProductPage({ product = null, category = "", reviews = [] }) {
+export interface ProductPageProps {
+    product?: Product;
+    category: string;
+    reviews: ListingReview[];
+}
+
+export default function ProductPage({product = null, category = "", reviews = [] }: ProductPageProps) {
     const { countryData, isLoading, isError } = useCountry();
     const router = useRouter();
     const productURL = `https://snazzystones.ca${router.asPath}`;
@@ -148,9 +160,9 @@ export default function ProductPage({ product = null, category = "", reviews = [
                         <span className='text-bluegreen-500'> {product.quantity} in stock</span>
                     </p>
                     <div className='flex flex-col md:flex-row items-center gap-4'>
-                        <CTAButton href={product.url} target='_blank' rel='noreferrer'>
+                        <CTALink href={product.url} target='_blank' rel='noreferrer'>
                             Purchase on Etsy
-                        </CTAButton>
+                        </CTALink>
                         {product.num_favorers > 0 && (
                             <div className='text-bluegreen-500 font-medium'>
                                 <Favorite /> {product.num_favorers} {product.num_favorers > 1 ? "people" : "person"}{" "}
@@ -168,7 +180,11 @@ export default function ProductPage({ product = null, category = "", reviews = [
                             </FacebookShareButton>
                         </WiggleWrapper>
                         <WiggleWrapper>
-                            <FacebookMessengerShareButton url={productURL} className={shareButtonStyle}>
+                            <FacebookMessengerShareButton
+                                url={productURL}
+                                className={shareButtonStyle}
+                                appId={product.facebookAppId}
+                            >
                                 <FacebookMessengerIcon size={shareButtonIconSize} round />
                             </FacebookMessengerShareButton>
                         </WiggleWrapper>
@@ -267,9 +283,9 @@ export async function getServerSideProps(context) {
             },
         }
     );
-    const listing = await listingResponse.json();
+    const listing: ShopListingResponse = await listingResponse.json();
 
-    const formattedListing = {
+    const formattedListing: Product = {
         title: he.decode(listing.title),
         description: listing.description,
         url: listing.url,
@@ -279,12 +295,13 @@ export async function getServerSideProps(context) {
         quantity: listing.quantity,
         num_favorers: listing.num_favorers,
         tags: listing.tags,
+        facebookAppId: process.env.FACEBOOK_SNAZZYSTONESCA_APPID,
     };
 
     const categories = await fetchCategories();
     const category = categories.find((section) => section.shop_section_id === listing.shop_section_id).title;
 
-    const listingReviewsResponse = await fetch(
+    const listingReviewsResponse= await fetch(
         `https://openapi.etsy.com/v3/application/listings/${productToGet.listing_id}/reviews?limit=100`,
         {
             method: "GET",
@@ -294,10 +311,10 @@ export async function getServerSideProps(context) {
         }
     );
 
-    const listingReviews = await listingReviewsResponse.json();
+    const listingReviews: ListingReviewResponse = await listingReviewsResponse.json();
     let reviews = [];
     if (listingReviews.results && Array.isArray(listingReviews.results)) {
-        reviews = listingReviews.results.filter((review) => review.listing_id === parseInt(productToGet.listing_id));
+        reviews = listingReviews.results.filter((review) => review.listing_id === productToGet.listing_id);
     }
 
     return {

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import CTAButton from "./CTAButton";
+import CTAButton from "./CTAElements/CTAButton";
+import CTALink from "./CTAElements/CTALink";
 
 export default function CollectionCard({ cardImageSrc = "", title = "", alt = "" }) {
     return (
@@ -31,7 +32,7 @@ export default function CollectionCard({ cardImageSrc = "", title = "", alt = ""
                     </a>
                 </Link>
                 <Link href={`/retail/categories/${title.replace(" ", "_")}`} passHref>
-                    <CTAButton>SEE COLLECTION</CTAButton>
+                    <CTALink>SEE COLLECTION</CTALink>
                 </Link>
             </div>
         </div>

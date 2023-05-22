@@ -111,7 +111,7 @@ export default function TermsAndConditions() {
             <h2>Contact Us</h2>
             <p>
                 If you have any questions about these Terms,{" "}
-                <Link href='/contact-us'>
+                <Link href='/index'>
                     <a className='text-bluegreen-500 navItem inline-flex'>please contact us</a>
                 </Link>
                 .

@@ -1,9 +1,20 @@
 import he from "he";
 import Bottleneck from "bottleneck";
+import {ShopListingResponse, ShopListingsResponse} from "../../../types/EtsyAPITypes";
+
+export interface FetchProductsParams {
+    categoryId?: number | null;
+    fetchImages?: boolean;
+    limit?: number;
+}
 
 // fetchProducts shared by categories index page getStaticProps and will be
 // be shared by an api called by the client for infinite loading
-export default async function fetchProducts({ categoryId = "", fetchImages = true, limit = 100 } = {}) {
+export default async function fetchProducts({
+    categoryId = null,
+    fetchImages = true,
+    limit = 100
+}: FetchProductsParams = {}): Promise<ShopListingResponse[]> {
     try {
         // using bottleneck for rate limiting
         const limiter = new Bottleneck({
@@ -24,7 +35,7 @@ export default async function fetchProducts({ categoryId = "", fetchImages = tru
                 },
             })
         );
-        let { results: activeShopListings = [] } = await activeShopListingsResponse.json();
+        let { results: activeShopListings = [] }: {results: ShopListingResponse[]} = await activeShopListingsResponse.json();
 
         if (activeShopListings && activeShopListings.length > 0) {
             if (fetchImages) {
@@ -40,12 +51,10 @@ export default async function fetchProducts({ categoryId = "", fetchImages = tru
                         }
                     )
                 );
-                const listingsWithImages = await listingImagesResponse.json();
+                const listingsWithImages: ShopListingsResponse = await listingImagesResponse.json();
                 activeShopListings = listingsWithImages.results;
             }
-            const activeShopListingsFormatted = activeShopListings.map((l) => ({ ...l, title: he.decode(l.title) }));
-
-            return activeShopListingsFormatted;
+            return activeShopListings.map((l) => ({ ...l, title: he.decode(l.title) }));
         }
 
         return activeShopListings;

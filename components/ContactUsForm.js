@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Alert, CircularProgress, Snackbar } from "@mui/material";
-import CTAButton from "./CTAButton";
+import CTAButton from "./CTAElements/CTAButton";
 
 const formGroupStyling = "w-full flex flex-col items-center gap-2 text-blueyonder-500";
 const inputStyling =
@@ -121,7 +121,6 @@ export default function ContactUsForm() {
                 />
             </div>
             <CTAButton
-                element='button'
                 disabled={name === "" || email === "" || !emailValid || message === ""}
                 onClick={handleSendMessage}
             >

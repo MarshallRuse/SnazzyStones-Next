@@ -1,4 +1,4 @@
-export default function formatProductTitleAsURL(title) {
+export default function formatProductTitleAsURL(title: string) {
     return title
         .split("|")[0]
         .trim()

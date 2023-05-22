@@ -1,4 +1,11 @@
-export const collectionCardMap = {
+export interface CollectionCardMap {
+    [key: string]: {
+        url: string;
+        alt: string;
+    }
+}
+
+export const collectionCardMap: CollectionCardMap = {
     Bracelets: {
         url: "/images/collectionCard-ChainBracelets_2020-10-22.jpg",
         alt: "A chain bracelet artfully placed on wood, with bits of lavendar scattered",

@@ -2,8 +2,14 @@ import { useState } from "react";
 import { Box, InputLabel, MenuItem, FormControl, Select } from "@mui/material";
 import ProductListingCard from "./ProductListingCard";
 import formatProductTitleAsURL from "../utils/formatProductTitleAsURL";
+import {ShopListingCondensed, ShopSectionResponse} from "../types/EtsyAPITypes";
 
-export default function ProductList({ products = [], categories = [] }) {
+export interface ProductListProps {
+    products: ShopListingCondensed[];
+    categories: string | ShopSectionResponse[] | null;
+}
+
+export default function ProductList({ products = [], categories = [] }: ProductListProps) {
     const [sortOption, setSortOption] = useState("date-added-newest");
 
     const sortedProducts = () => {
@@ -11,26 +17,27 @@ export default function ProductList({ products = [], categories = [] }) {
             case "date-added-newest":
                 return products?.sort(
                     (prodA, prodB) =>
-                        parseInt(prodB.original_creation_timestamp) - parseInt(prodA.original_creation_timestamp)
+                        prodB.original_creation_timestamp - prodA.original_creation_timestamp
                 );
             case "date-added-oldest":
                 return products?.sort(
                     (prodA, prodB) =>
-                        parseInt(prodA.original_creation_timestamp) - parseInt(prodB.original_creation_timestamp)
+                        prodA.original_creation_timestamp - prodB.original_creation_timestamp
                 );
             case "most-popular":
-                return products?.sort((prodA, prodB) => parseInt(prodB.num_favorers) - parseInt(prodA.num_favorers));
+                return products?.sort((prodA, prodB) =>
+                    prodB.num_favorers - prodA.num_favorers
+                );
             case "price-lowest":
                 return products?.sort(
                     (prodA, prodB) =>
-                        parseFloat(prodA.price.amount / prodA.price.divisor) -
-                        parseFloat(prodB.price.amount / prodB.price.divisor)
+                        prodA.price.amount / prodA.price.divisor -
+                        prodB.price.amount / prodB.price.divisor
                 );
             case "price-highest":
                 return products?.sort(
                     (prodA, prodB) =>
-                        parseFloat(prodB.price.amount / prodB.price.divisor) -
-                        parseFloat(prodA.price.amount / prodA.price.divisor)
+                        prodB.price.amount / prodB.price.divisor - prodA.price.amount / prodA.price.divisor
                 );
             default:
                 return products;

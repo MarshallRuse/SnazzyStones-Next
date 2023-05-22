@@ -1,7 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
+import {ReactNode, useCallback, useEffect, useState} from "react";
 import { motion } from "framer-motion";
 
-export default function WiggleWrapper({ rotate = 15, timing = 150, children }) {
+export interface WiggleWrapperProps {
+    rotate?: number;
+    timing?: number;
+    children: ReactNode;
+}
+
+export default function WiggleWrapper({ rotate = 15, timing = 150, children }: WiggleWrapperProps) {
     const [isBooped, setIsBooped] = useState(false);
 
     useEffect(() => {

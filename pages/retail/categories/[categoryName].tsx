@@ -6,6 +6,7 @@ import fetchCategories from "../../../utils/fetching/categories/etsyCategories";
 import fetchProducts from "../../../utils/fetching/products/etsyProducts";
 import ProductList from "../../../components/ProductList";
 import { collectionCardMap } from "../../../utils/collectionCardMap";
+import {ShopListingCondensed, ShopListingResponse, ShopListingsResponse} from "../../../types/EtsyAPITypes";
 
 const categoryPitches = {
     Anklets:
@@ -19,7 +20,13 @@ const categoryPitches = {
         "Check out our collection of beautiful, handmade pendants to find the perfect match for that special someone or must-have treat to yourself.",
     Default: "Check out our collection of beautiful, handmade pieces!",
 };
-export default function CategoryPage({ products = [], category = null }) {
+
+export interface CategoryPageProps {
+    products: ShopListingCondensed[];
+    category: string | null;
+}
+
+export default function CategoryPage({ products = [], category = null }: CategoryPageProps) {
     return (
         <>
             <NextSeo
@@ -97,7 +104,7 @@ export async function getStaticProps(context) {
         (section) => section.title === params.categoryName.replace("_", " ")
     )?.shop_section_id;
 
-    let fetchedProducts = [];
+    let fetchedProducts: ShopListingResponse[] = [];
 
     if (categoryId) {
         await avoidRateLimit(500);
@@ -105,7 +112,7 @@ export async function getStaticProps(context) {
     }
     // optimize static page generation by only passing relevant properties to front end
     // properties are used in this page, ProductList, ProductListingCard
-    const products = fetchedProducts.map((prod) => ({
+    const products: ShopListingCondensed[] = fetchedProducts.map((prod) => ({
         listing_id: prod.listing_id,
         title: prod.title,
         description: prod.description,

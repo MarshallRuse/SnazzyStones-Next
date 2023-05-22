@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { wrap } from "popmotion";
 import ArrowForwardIosRounded from "@mui/icons-material/ArrowForwardIosRounded";
 import ArrowBackIosRounded from "@mui/icons-material/ArrowBackIosRounded";
+import {ListingImage} from "../types/EtsyAPITypes";
 
 const enterExitDistance = 250;
 const variants = {
@@ -38,7 +39,12 @@ const swipePower = (offset, velocity) => {
     return Math.abs(offset) * velocity;
 };
 
-export default function ImageGallery({ images = [], productTitle = "" }) {
+export interface ImageGalleryProps {
+    images: ListingImage[];
+    productTitle?: string;
+}
+
+export default function ImageGallery({ images = [], productTitle = "" }: ImageGalleryProps) {
     const [[page, direction], setPage] = useState([0, 0]);
     const [isAnimating, setIsAnimating] = useState(false);
 
@@ -136,7 +142,6 @@ export default function ImageGallery({ images = [], productTitle = "" }) {
                             }}
                             onAnimationStart={() => setIsAnimating(true)}
                             onAnimationComplete={() => setIsAnimating(false)}
-                            onClick={() => setLightboxOpen(true)}
                         >
                             <Image
                                 src={images[imageIndex].url_fullxfull}

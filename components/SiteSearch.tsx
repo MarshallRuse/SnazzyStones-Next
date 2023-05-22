@@ -21,7 +21,11 @@ const theme = createTheme({
     },
 });
 
-export default function SiteSearch({ className = "", ...rest }) {
+export interface SiteSearchProps {
+    className?: string;
+}
+
+export default function SiteSearch({ className = "", ...rest }: SiteSearchProps) {
     const router = useRouter();
     const [products, setProducts] = useState([]);
     const [autocompleteVisible, setAutocompleteVisible] = useState(false);
@@ -40,11 +44,15 @@ export default function SiteSearch({ className = "", ...rest }) {
                 const responseProducts = await apiResponse.json();
                 setProducts(responseProducts.products);
             } else {
-                console.log(`Error fetching products: ${apiResponse.error}`);
+                throw new Error(`Error fetching products in SiteSearch: ${apiResponse.status}`);
             }
         };
 
-        fetchProducts();
+        try {
+            fetchProducts();
+        } catch (error) {
+            console.log(`Error fetching products: ${error}`);
+        }
 
         router.events.on("routeChangeComplete", handleClearAndCloseInput);
 

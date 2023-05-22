@@ -6,8 +6,14 @@ import styles from "../../styles/modules/Retail.module.scss";
 import ProductList from "../../components/ProductList";
 import { collectionCardMap } from "../../utils/collectionCardMap";
 import { avoidRateLimit } from "../../utils/avoidRateLimit";
+import {ShopListingCondensed, ShopSectionResponse} from "../../types/EtsyAPITypes";
 
-export default function RetailPage({ products = [], categories = [] }) {
+export interface RetailPageProps {
+    products: ShopListingCondensed[];
+    categories: ShopSectionResponse[];
+}
+
+export default function RetailPage({ products = [], categories = [] }: RetailPageProps) {
     return (
         <>
             <NextSeo
@@ -64,7 +70,7 @@ export async function getStaticProps() {
 
     // optimize static page generation by only passing relevant properties to front end
     // properties are used in this page, ProductList, ProductListingCard
-    const products = fetchedProducts.map((prod) => ({
+    const products: ShopListingCondensed[] = fetchedProducts.map((prod) => ({
         listing_id: prod.listing_id,
         title: prod.title,
         description: prod.description,

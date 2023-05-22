@@ -18,6 +18,18 @@ const ThemeTooltip = styled(({ className, ...props }) => <Tooltip {...props} cla
     })
 );
 
+export interface ProductListingCardProps {
+    imagePrimary?: string;
+    imagePlaceholder?: string;
+    imageSecondary?: string;
+    imageSecondaryPlaceholder?: string;
+    productCategory?: string;
+    productName?: string;
+    productPrice: number;
+    productPageLink?: string;
+    productFavourites?: number;
+}
+
 export default function ProductListingCard({
     imagePrimary = "",
     imagePlaceholder = "",
@@ -28,7 +40,7 @@ export default function ProductListingCard({
     productPrice,
     productPageLink = "",
     productFavourites = 0,
-}) {
+}: ProductListingCardProps) {
     const { countryData, isLoading, isError } = useCountry();
     const { ref, inView, entry } = useInView({
         /* Optional options */
