@@ -1,8 +1,11 @@
-export async function fetchCategoryMenuItems() {
+import type { APICategoriesResponse } from "../../pages/api/retail/categories";
+import { MenuItemType } from "../../types/Types";
+
+export async function fetchCategoryMenuItems(): Promise<MenuItemType[]> {
     const categoriesResponse = await fetch("/api/retail/categories");
-    const responseJson = await categoriesResponse.json();
+    const responseJson: APICategoriesResponse = await categoriesResponse.json();
     const categories = responseJson.categories;
-    const menuItems = categories.map((cat) => ({
+    const menuItems: MenuItemType[] = categories.map((cat) => ({
         isLink: true,
         link: `/retail/categories/${cat.title.replace(" ", "_")}`,
         displayText: cat.title,
@@ -11,7 +14,7 @@ export async function fetchCategoryMenuItems() {
     return menuItems.sort((a, b) => (a.displayText > b.displayText ? 1 : b.displayText > a.displayText ? -1 : 0));
 }
 
-export const menuContents = [
+export const menuContents: MenuItemType[] = [
     {
         isLink: true,
         link: "/",

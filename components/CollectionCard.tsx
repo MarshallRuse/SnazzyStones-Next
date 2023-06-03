@@ -1,9 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
-import CTAButton from "./CTAElements/CTAButton";
 import CTALink from "./CTAElements/CTALink";
 
-export default function CollectionCard({ cardImageSrc = "", title = "", alt = "" }) {
+interface CollectionCardProps {
+    cardImageSrc?: string;
+    title?: string;
+    alt?: string;
+}
+
+export default function CollectionCard({ cardImageSrc = "", title = "", alt = "" }: CollectionCardProps) {
     return (
         <div className={`flex relative group ${cardImageSrc ? "" : "w-full aspect-[2/3]"}`}>
             {cardImageSrc ? (

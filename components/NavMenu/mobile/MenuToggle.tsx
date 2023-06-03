@@ -1,10 +1,14 @@
-import { motion } from "framer-motion";
+import { motion, SVGMotionProps } from "framer-motion";
 
-const Path = (props) => (
+const Path = (props: SVGMotionProps<SVGPathElement>) => (
     <motion.path fill='transparent' strokeWidth='3' stroke='hsl(0, 0%, 18%)' strokeLinecap='round' {...props} />
 );
 
-export const MenuToggle = ({ toggle }) => (
+interface MenuToggleProps {
+    toggle: () => void;
+}
+
+export const MenuToggle = ({ toggle }: MenuToggleProps) => (
     <button
         onClick={toggle}
         className='outline-none border-none cursor-pointer absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-12 h-12 rounded-full bg-transparent'

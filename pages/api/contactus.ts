@@ -1,11 +1,10 @@
 import sendgrid from "@sendgrid/mail";
+import { NextApiRequest, NextApiResponse } from "next";
 
 sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
-        // console.log("REQ.BODY", req.body);
-        console.log("req.body.message: ", req.body.message);
         await sendgrid.send({
             to: "snazzystones@gmail.com", // Your email where you'll receive emails
             from: "inquiries@snazzystones.ca", // your website email address here

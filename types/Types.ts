@@ -1,4 +1,4 @@
-import {ListingImage, Money, ShopProductionPartner} from "./EtsyAPITypes";
+import { ListingImage, Money, ShopProductionPartner } from "./EtsyAPITypes";
 
 export interface Product {
     title: string;
@@ -11,4 +11,16 @@ export interface Product {
     num_favorers: number;
     tags: string[];
     facebookAppId?: string;
+}
+
+export interface MenuItemType {
+    isLink: boolean;
+    link?: string;
+    displayText: string;
+    submenu?: MenuItemType[];
+}
+
+export interface Dimensions {
+    width: number;
+    height: number;
 }

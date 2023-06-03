@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Alert, CircularProgress, Snackbar } from "@mui/material";
+import { MouseEvent, useState } from "react";
+import { Alert, AlertColor, CircularProgress, Snackbar } from "@mui/material";
 import CTAButton from "./CTAElements/CTAButton";
 
 const formGroupStyling = "w-full flex flex-col items-center gap-2 text-blueyonder-500";
@@ -13,7 +13,7 @@ export default function ContactUsForm() {
     const [subject, setSubject] = useState("");
     const [message, setMessage] = useState("");
     const [sendingEmail, setSendingEmail] = useState(false);
-    const [emailStatus, setEmailStatus] = useState("success");
+    const [emailStatus, setEmailStatus] = useState<AlertColor>("success");
     const [snackbarOpen, setSnackbarOpen] = useState(false);
 
     const handleEmailChange = (e) => {
@@ -27,7 +27,7 @@ export default function ContactUsForm() {
         }
     };
 
-    const handleSendMessage = async (e) => {
+    const handleSendMessage = async (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (name === "" || email === "" || !emailValid || message === "") {
             return;
@@ -114,7 +114,7 @@ export default function ContactUsForm() {
                 <label htmlFor='message'>Message (required)</label>
                 <textarea
                     name='message'
-                    rows='6'
+                    rows={6}
                     className={`${inputStyling} subtleScrollbar`}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}

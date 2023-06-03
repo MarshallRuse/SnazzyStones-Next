@@ -1,7 +1,8 @@
 import requestIp from "request-ip";
 import { WebServiceClient } from "@maxmind/geoip2-node";
+import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const detectedIp = requestIp.getClientIp(req);
     const client = new WebServiceClient(process.env.MAXMIND_ACCOUNTID, process.env.MAXMIND_GEOLOCATION_KEY, {
         host: "geolite.info",
