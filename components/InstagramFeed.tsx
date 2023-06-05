@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Image from "next/image";
 
-export default function InstagramFeed({ feed = {} }) {
+export default function InstagramFeed({ feed }) {
     const [instagramImages, setInstagramImages] = useState(feed?.data);
     const [nextPageUrl, setNextPageUrl] = useState(feed?.paging?.next);
     const [morePostsAvailable, setMorePostsAvailable] = useState(!!feed?.paging?.next);

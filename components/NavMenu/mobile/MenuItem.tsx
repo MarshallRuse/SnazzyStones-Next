@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import Search from "@mui/icons-material/Search";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import MenuListItem from "../MenuListItem";
 import HoverStyledAnchor from "../HoverStyledAnchor";
+import { MenuItemType } from "../../../types/Types";
 
 const variants = {
     open: {
@@ -23,7 +23,11 @@ const variants = {
     },
 };
 
-export const MenuItem = ({ menuItem, ...rest }) => {
+interface MenuItemProps {
+    menuItem: MenuItemType;
+}
+
+export const MenuItem = ({ menuItem, ...rest }: MenuItemProps) => {
     const [submenuOpen, setsubmenuOpen] = useState(false);
 
     return (

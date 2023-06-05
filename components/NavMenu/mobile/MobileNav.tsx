@@ -28,7 +28,7 @@ const sidebar = {
 export default function MobileNav() {
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
-    const containerRef = useRef(null);
+    const containerRef = useRef<HTMLElement>(null);
     const { height } = useDimensions(containerRef);
 
     useEffect(() => {
