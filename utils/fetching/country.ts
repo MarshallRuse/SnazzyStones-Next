@@ -1,8 +1,15 @@
-import useSWR from "swr";
+import useSWR, { Fetcher } from "swr";
+import { APIIPResponse } from "../../pages/api/ip";
 
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
+const fetcher: Fetcher<APIIPResponse, string> = (...args) => fetch(...args).then((res) => res.json());
 
-export default function useCountry() {
+interface UseCountryReturn {
+    countryData: APIIPResponse | undefined;
+    isLoading: boolean;
+    isError: boolean;
+}
+
+export default function useCountry(): UseCountryReturn {
     const { data, error } = useSWR(`/api/ip`, fetcher, {
         revalidateIfStale: false,
         revalidateOnFocus: false,

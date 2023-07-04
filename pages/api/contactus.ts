@@ -33,7 +33,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     </html>`,
         });
     } catch (error) {
-        // console.log(error);
         return res.status(error.statusCode || 500).json({ error: error.message });
     }
 

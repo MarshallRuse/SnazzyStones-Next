@@ -27,12 +27,8 @@ import fetchCategories from "../../../utils/fetching/categories/etsyCategories";
 import fetchProducts from "../../../utils/fetching/products/etsyProducts";
 import ImageGallery from "../../../components/ImageGallery";
 import ProductPageFallbackSkeleton from "../../../components/ProductPageFallbackSkeleton";
-import {
-    ListingReview,
-    ListingReviewResponse,
-    ShopListingResponse,
-} from "../../../types/EtsyAPITypes";
-import {Product} from "../../../types/Types";
+import { ListingReview, ListingReviewResponse, ShopListingResponse } from "../../../types/EtsyAPITypes";
+import { Product } from "../../../types/Types";
 import CTALink from "../../../components/CTAElements/CTALink";
 
 const shareButtonStyle = "rounded-full focus:outline-none focus:ring focus:ring-bluegreen-500 focus:ring-offset-2";
@@ -44,7 +40,7 @@ export interface ProductPageProps {
     reviews: ListingReview[];
 }
 
-export default function ProductPage({product = null, category = "", reviews = [] }: ProductPageProps) {
+export default function ProductPage({ product = null, category = "", reviews = [] }: ProductPageProps) {
     const { countryData, isLoading, isError } = useCountry();
     const router = useRouter();
     const productURL = `https://snazzystones.ca${router.asPath}`;
@@ -301,7 +297,7 @@ export async function getServerSideProps(context) {
     const categories = await fetchCategories();
     const category = categories.find((section) => section.shop_section_id === listing.shop_section_id).title;
 
-    const listingReviewsResponse= await fetch(
+    const listingReviewsResponse = await fetch(
         `https://openapi.etsy.com/v3/application/listings/${productToGet.listing_id}/reviews?limit=100`,
         {
             method: "GET",

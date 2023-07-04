@@ -1,6 +1,6 @@
 import he from "he";
 import Bottleneck from "bottleneck";
-import {ShopListingResponse, ShopListingsResponse} from "../../../types/EtsyAPITypes";
+import { ShopListingResponse, ShopListingsResponse } from "../../../types/EtsyAPITypes";
 
 export interface FetchProductsParams {
     categoryId?: number | null;
@@ -13,7 +13,7 @@ export interface FetchProductsParams {
 export default async function fetchProducts({
     categoryId = null,
     fetchImages = true,
-    limit = 100
+    limit = 100,
 }: FetchProductsParams = {}): Promise<ShopListingResponse[]> {
     try {
         // using bottleneck for rate limiting
@@ -35,7 +35,8 @@ export default async function fetchProducts({
                 },
             })
         );
-        let { results: activeShopListings = [] }: {results: ShopListingResponse[]} = await activeShopListingsResponse.json();
+        let { results: activeShopListings = [] }: { results: ShopListingResponse[] } =
+            await activeShopListingsResponse.json();
 
         if (activeShopListings && activeShopListings.length > 0) {
             if (fetchImages) {

@@ -3,20 +3,24 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { styled } from "@mui/material/styles";
-import { Skeleton, Tooltip, tooltipClasses } from "@mui/material";
+import { Skeleton, Tooltip, tooltipClasses, TooltipProps } from "@mui/material";
 import Favorite from "@mui/icons-material/Favorite";
 import useCountry from "../utils/fetching/country";
 
-const ThemeTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
-    () => ({
-        [`& .${tooltipClasses.tooltip}`]: {
-            backgroundColor: "#6980ad",
-            color: "#fff",
-            boxShadow: "8px 10px 10px 0px rgba(0, 0, 0, 0.1)",
-            fontSize: 11,
-        },
-    })
-);
+type ThemeTooltipProps = TooltipProps & {
+    className?: string;
+};
+
+const ThemeTooltip = styled(({ className, ...props }: ThemeTooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+))(() => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+        backgroundColor: "#6980ad",
+        color: "#fff",
+        boxShadow: "8px 10px 10px 0px rgba(0, 0, 0, 0.1)",
+        fontSize: 11,
+    },
+}));
 
 export interface ProductListingCardProps {
     imagePrimary?: string;

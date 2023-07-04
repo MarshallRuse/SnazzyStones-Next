@@ -2,11 +2,15 @@ import { ShopListingResponse } from "../../../../types/EtsyAPITypes";
 import fetchProducts from "../../../../utils/fetching/products/etsyProducts";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export interface APIProductsResponse {
+    products: Partial<ShopListingResponse>[] | ShopListingResponse[];
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse<APIProductsResponse>) {
     const shopListings = await fetchProducts();
     const query = req.query;
     const { fields } = query;
-    let activeShopListingsFormatted;
+    let activeShopListingsFormatted: Partial<ShopListingResponse>[] | undefined = undefined;
 
     if (fields) {
         const fieldList = typeof fields === "string" ? fields.split(",") : fields; // string list of fields should be comma delimited
@@ -18,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return obj;
         });
     }
-    console.log("activeShopListingsFormatted", activeShopListingsFormatted);
+
     res.status(200).json({
         products: activeShopListingsFormatted !== undefined ? activeShopListingsFormatted : shopListings,
     });
