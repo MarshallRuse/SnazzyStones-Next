@@ -12,7 +12,7 @@ export default function Footer() {
         <footer className='bg-slate-100 '>
             <div className='px-10 py-20 items-baseline grid md:grid-cols-3'>
                 <div className='py-10'>
-                    <h4 className='text-bluegreen-500 text-xl font-normal'>
+                    <h4 className='text-bluegreen-500 text-xl font-normal text-center'>
                         Follow us all over the web, or get in touch with us!
                     </h4>
                 </div>
@@ -49,8 +49,8 @@ export default function Footer() {
                     </div>
                 </div>
                 <div className='py-10'>
-                    <div className='px-10 items-baseline grid md:grid-cols-2'>
-                        <div>
+                    <div className='px-10 items-baseline grid grid-cols-1 lg:grid-cols-2'>
+                        <div className='text-center md:text-left'>
                             <h4 className='text-bluegreen-500 text-xl py-5 md:py-0'>Important Links</h4>
                             <ul className='p-0'>
                                 <li className={listStyle}>
@@ -70,8 +70,8 @@ export default function Footer() {
                                 </li>
                             </ul>
                         </div>
-                        <div>
-                            <h4 className='text-bluegreen-500 text-xl py-5 md:py-0'>Quick Links</h4>
+                        <div className='text-center md:text-left'>
+                            <h4 className='text-bluegreen-500 text-xl py-5 md:py-0 mx-auto'>Quick Links</h4>
                             <ul className='p-0'>
                                 <li className={listStyle}>
                                     <Link href='/index'>

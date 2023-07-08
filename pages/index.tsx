@@ -3,18 +3,17 @@ import Link from "next/link";
 import { NextSeo } from "next-seo";
 import styles from "../styles/modules/Home.module.scss";
 import Instagram from "@mui/icons-material/Instagram";
-import CTAButton from "../components/CTAElements/CTAButton";
 import TextContainer from "../components/TextContainer";
 import CollectionCard from "../components/CollectionCard";
 import ProductListingCard from "../components/ProductListingCard";
 import InstagramFeed from "../components/InstagramFeed";
 import { collectionCardMap } from "../utils/collectionCardMap";
 import { avoidRateLimit } from "../utils/avoidRateLimit";
-import fetchCategories from "../utils/fetching/categories/etsyCategories";
-import fetchProducts from "../utils/fetching/products/etsyProducts";
+import { fetchCategoriesFromCache } from "../utils/fetching/categories/etsyCategories";
+import { fetchProductsFromCache } from "../utils/fetching/products/etsyProducts";
 import formatProductTitleAsURL from "../utils/formatProductTitleAsURL";
 import CTALink from "../components/CTAElements/CTALink";
-import {ShopListingResponse, ShopSectionResponse} from "../types/EtsyAPITypes";
+import { ShopListingResponse, ShopSectionResponse } from "../types/EtsyAPITypes";
 
 export interface HomeProps {
     feed: any;
@@ -164,9 +163,9 @@ export const getStaticProps = async () => {
 
     // Etsy
     await avoidRateLimit(250);
-    const categories = await fetchCategories();
+    const categories = await fetchCategoriesFromCache();
     await avoidRateLimit(250);
-    const products = await fetchProducts({ limit: 4 });
+    const products = await fetchProductsFromCache({ limit: 4 });
 
     return {
         props: {

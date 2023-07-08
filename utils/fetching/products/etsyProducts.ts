@@ -1,5 +1,6 @@
 import he from "he";
 import Bottleneck from "bottleneck";
+import { kv } from "@vercel/kv";
 import { ShopListingResponse, ShopListingsResponse } from "../../../types/EtsyAPITypes";
 
 export interface FetchProductsParams {
@@ -10,7 +11,7 @@ export interface FetchProductsParams {
 
 // fetchProducts shared by categories index page getStaticProps and will be
 // be shared by an api called by the client for infinite loading
-export default async function fetchProducts({
+export async function fetchProductsFromEtsy({
     categoryId = null,
     fetchImages = true,
     limit = 100,
@@ -62,5 +63,44 @@ export default async function fetchProducts({
     } catch (err) {
         console.log(err);
         return null;
+    }
+}
+
+async function setProductsCache({ categoryId = null, fetchImages = true, limit = 100 }: FetchProductsParams = {}) {
+    const products = await fetchProductsFromEtsy({ categoryId, fetchImages, limit });
+    await kv.set("products", JSON.stringify(products));
+    await kv.set("timeSinceLastEtsyFetch", Date.now());
+    return products;
+}
+
+export async function fetchProductsFromCache({
+    categoryId = null,
+    fetchImages = true,
+    limit = 100,
+}: FetchProductsParams = {}): Promise<ShopListingResponse[]> {
+    const timeSinceLastEtsyFetch = await kv.get("timeSinceLastEtsyFetch");
+
+    // if more than 24 hours since last fetch, fetch again
+    if (timeSinceLastEtsyFetch === undefined || Date.now() - Number(timeSinceLastEtsyFetch) > 1000 * 60 * 60 * 24) {
+        console.log("fetching products from etsy");
+        const products = await setProductsCache({ categoryId: null, fetchImages: true, limit });
+        return products;
+    }
+
+    const cachedProducts: ShopListingResponse[] = await kv.get("products");
+
+    if (cachedProducts && cachedProducts.length > 0) {
+        let selectedProducts = cachedProducts;
+        if (categoryId) {
+            selectedProducts = cachedProducts.filter((product) => product.shop_section_id === categoryId);
+        }
+        if (limit && limit < selectedProducts.length) {
+            selectedProducts = selectedProducts.slice(0, limit);
+        }
+
+        return selectedProducts;
+    } else {
+        const products = await setProductsCache({ categoryId: null, fetchImages: true, limit });
+        return products;
     }
 }
