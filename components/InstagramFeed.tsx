@@ -29,7 +29,7 @@ export default function InstagramFeed({ feed }) {
                             href={instImg.permalink}
                             target='_blank'
                             rel='noreferrer'
-                            className='flex rounded-md w-max shadow-light transition hover:shadow-bluegreenLight hover:scale-105'
+                            className='flex rounded-md w-max shadow-light mx-auto transition hover:shadow-bluegreenLight hover:scale-105'
                         >
                             <Image
                                 src={
@@ -52,7 +52,7 @@ export default function InstagramFeed({ feed }) {
                     onClick={fetchMorePosts}
                     className='bg-cerise-500 disabled:bg-cerise-200 text-white rounded-md px-4 py-2 transition hover:bg-cerise-600'
                 >
-                    {morePostsAvailable ? "Load More..." : "All done!"}
+                    {morePostsAvailable ? "Load More..." : ""}
                 </button>
             </div>
         </>

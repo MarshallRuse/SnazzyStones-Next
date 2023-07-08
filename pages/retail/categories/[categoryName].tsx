@@ -2,11 +2,11 @@ import { NextSeo } from "next-seo";
 import { motion } from "framer-motion";
 import styles from "../../../styles/modules/Retail.module.scss";
 import { avoidRateLimit } from "../../../utils/avoidRateLimit";
-import fetchCategories from "../../../utils/fetching/categories/etsyCategories";
-import fetchProducts from "../../../utils/fetching/products/etsyProducts";
+import { fetchCategoriesFromCache } from "../../../utils/fetching/categories/etsyCategories";
+import { fetchProductsFromCache } from "../../../utils/fetching/products/etsyProducts";
 import ProductList from "../../../components/ProductList";
 import { collectionCardMap } from "../../../utils/collectionCardMap";
-import {ShopListingCondensed, ShopListingResponse, ShopListingsResponse} from "../../../types/EtsyAPITypes";
+import { ShopListingCondensed, ShopListingResponse, ShopListingsResponse } from "../../../types/EtsyAPITypes";
 
 const categoryPitches = {
     Anklets:
@@ -85,7 +85,7 @@ export default function CategoryPage({ products = [], category = null }: Categor
 export async function getStaticPaths() {
     // get a list of Etsy shop sections from which to draw category names
     await avoidRateLimit(500);
-    const categories = await fetchCategories();
+    const categories = await fetchCategoriesFromCache();
 
     return {
         paths: categories.map((section) => ({
@@ -98,7 +98,7 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
     const { params } = context;
     await avoidRateLimit(500);
-    const categories = await fetchCategories();
+    const categories = await fetchCategoriesFromCache();
 
     const categoryId = categories.find(
         (section) => section.title === params.categoryName.replace("_", " ")
@@ -108,7 +108,7 @@ export async function getStaticProps(context) {
 
     if (categoryId) {
         await avoidRateLimit(500);
-        fetchedProducts = await fetchProducts({ categoryId });
+        fetchedProducts = await fetchProductsFromCache({ categoryId });
     }
     // optimize static page generation by only passing relevant properties to front end
     // properties are used in this page, ProductList, ProductListingCard

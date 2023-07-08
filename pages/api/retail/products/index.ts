@@ -1,5 +1,5 @@
 import { ShopListingResponse } from "../../../../types/EtsyAPITypes";
-import fetchProducts from "../../../../utils/fetching/products/etsyProducts";
+import { fetchProductsFromCache } from "../../../../utils/fetching/products/etsyProducts";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export interface APIProductsResponse {
@@ -7,7 +7,7 @@ export interface APIProductsResponse {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<APIProductsResponse>) {
-    const shopListings = await fetchProducts();
+    const shopListings = await fetchProductsFromCache();
     const query = req.query;
     const { fields } = query;
     let activeShopListingsFormatted: Partial<ShopListingResponse>[] | undefined = undefined;

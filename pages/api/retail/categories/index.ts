@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import fetchCategories from "../../../../utils/fetching/categories/etsyCategories";
+import { fetchCategoriesFromCache } from "../../../../utils/fetching/categories/etsyCategories";
 import { ShopSectionResponse } from "../../../../types/EtsyAPITypes";
 
 export interface APICategoriesResponse {
@@ -7,7 +7,7 @@ export interface APICategoriesResponse {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<APICategoriesResponse>) {
-    const categories = await fetchCategories();
+    const categories = await fetchCategoriesFromCache();
     res.status(200).json({
         categories,
     });
