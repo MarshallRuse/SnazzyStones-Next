@@ -29,12 +29,13 @@ export default function SilverCare() {
                     cardType: "summary_large_image",
                 }}
             />
-            <header className={`heroSection ${styles.heroBackground}`}>
+            <header className='heroSectionHeader'>
+                <div className={`heroSection ${styles.heroBackground}`}></div>
                 <div>
                     <h1 className='heroTitle text-white overlayText'>Caring For Your Silver</h1>
                 </div>
             </header>
-            <section className='px-10 md:px-40 py-20 grid md:grid-cols-2 items-center gap-20'>
+            <section className='px-10 md:px-40 py-20 bg-white grid md:grid-cols-2 items-center gap-20'>
                 <FadeInDiv from='left' threshold={0.2} className='text-blueyonder-500'>
                     <h2>Background Information on Sterling Silver</h2>
                     <p>
