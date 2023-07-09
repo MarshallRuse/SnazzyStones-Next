@@ -35,6 +35,7 @@ export default function SiteSearch({ className = "", ...rest }: SiteSearchProps)
     const handleClearAndCloseInput = () => {
         setValue(null);
         setAutocompleteVisible(false);
+        inputRef.current?.blur();
     };
 
     useEffect(() => {
@@ -74,7 +75,7 @@ export default function SiteSearch({ className = "", ...rest }: SiteSearchProps)
         >
             <Search className='cursor-pointer' onClick={() => setAutocompleteVisible(!autocompleteVisible)} />
             <div
-                className={`absolute top-full right-1/2 translate-x-1/3 pt-4 z-30 rounded-sm transition ${
+                className={`absolute top-full right-1/2 translate-x-1/3 pt-7 z-30 rounded-sm transition ${
                     autocompleteVisible ? "opacity-100" : "opacity-0"
                 } ${autocompleteVisible ? "pointer-events-auto" : "pointer-events-none"}`}
             >

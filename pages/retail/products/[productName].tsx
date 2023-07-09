@@ -88,7 +88,7 @@ export default function ProductPage({ product = null, category = "" }: ProductPa
             />
             <section className='grid md:grid-cols-2 md:grid-flow-row auto-rows-max gap-10 py-16 md:max-w-screen-lg justify-center mx-auto px-4'>
                 <ImageGallery images={product.images} productTitle={product.title} />
-                <div className='flex flex-col row-span-2 text-sm text-slate-500 max-w-xs md:max-w-lg pt-2'>
+                <div className='flex flex-col row-span-2 text-sm text-slate-500 max-w-sm md:max-w-lg pt-2'>
                     <nav className='flex flex-nowrap'>
                         <Link href='/'>
                             <a className='text-bluegreen-500 navItem max-w-max inline-flex mx-1'>Home</a>
@@ -103,10 +103,10 @@ export default function ProductPage({ product = null, category = "" }: ProductPa
                         )}
                         {product && <>/ {product.title.split("|")[0].trim()}</>}
                     </nav>
-                    <div className='flex gap-4 items-center text-blueyonder-500'>
-                        <h1 className='text-2xl mt-4 font-semibold'>{product.title}</h1>
+                    <div className='flex flex-col md:flex-row items-start md:items-center md:gap-4 mb-12 md:mb-0 text-blueyonder-500'>
+                        <h1 className='text-2xl mt-4 font-semibold mb-4 md:mb-auto'>{product.title}</h1>
                         {product.production_partners.length > 0 && product.production_partners[0].location && (
-                            <div className='flex rounded-md shadow-light'>
+                            <div className='flex rounded-md shadow-light w-14 md:w-auto'>
                                 <Image
                                     src={`/svg/flags/${product.production_partners?.[0]?.location}.svg`}
                                     width={105}

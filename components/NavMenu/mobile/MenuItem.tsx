@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, easeOut } from "framer-motion";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import MenuListItem from "../MenuListItem";
 import HoverStyledAnchor from "../HoverStyledAnchor";
@@ -63,11 +63,20 @@ export const MenuItem = ({ menuItem, ...rest }: MenuItemProps) => {
                         key={`sub-menu-list-${menuItem.displayText.replace(" ", "-")}`}
                         animate={submenuOpen ? "open" : "collapsed"}
                         variants={{
-                            open: { opacity: 1, height: "auto" },
-                            collapsed: { opacity: 0, height: 0, overflow: "hidden" },
+                            open: {
+                                opacity: 1,
+                                height: menuItem.submenu.length * 60, // 60px is the height of each menu item
+                                transition: { staggerChildren: 0.07, delayChildren: 0.2 },
+                            },
+                            collapsed: {
+                                opacity: 0,
+                                height: 0,
+                                overflow: "hidden",
+                                transition: { staggerChildren: 0.05, staggerDirection: -1 },
+                            },
                         }}
                         initial='collapsed'
-                        transition={{ type: "tween", duration: 0.2, ease: [0.04, 0.62, 0.23, 0.98] }}
+                        transition={{ type: "tween", duration: 0.2, ease: [0.27, 0.03, 0.58, 1] }} // https://cubic-bezier.com/#.27,.03,.58,1
                     >
                         {menuItem.submenu.map((sub) => (
                             <MenuListItem key={`sub-menu-${sub.displayText.replace(" ", "-")}`}>
