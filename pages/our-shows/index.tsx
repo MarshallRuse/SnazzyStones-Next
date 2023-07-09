@@ -71,7 +71,7 @@ export default function OurShows() {
                             </a>
                         </p>
                         <p className='italic text-xs'>
-                            * July 10th and September 4th, we'll be at the Tiverton & District Sports Centre at 20
+                            * July 10th and September 4th, we&apos;ll be at the Tiverton & District Sports Centre at 20
                             McClaren Street
                         </p>
                     </div>
@@ -139,7 +139,7 @@ export default function OurShows() {
                 </div> */}
             </section>
             <section className='px-10 md:px-40 py-20 bg-white text-blueyonder-500 grid items-start md:grid-cols-4 gap-10'>
-                <div className='flex rounded-md aspect-square'>
+                <div className='flex rounded-md aspect-square col-span-3 md:col-span-1'>
                     <Image
                         src='/images/keadyMarketLogo-noBG.png'
                         width={1024}
@@ -149,7 +149,7 @@ export default function OurShows() {
                         alt='Keady Market sign'
                     />
                 </div>
-                <div className='md:col-span-2'>
+                <div className='col-span-3 md:col-span-2'>
                     <h2 className='mt-0 text-5xl'>Keady</h2>
                     <h3>Keady Vendor Market</h3>
                     <p>
@@ -180,7 +180,7 @@ export default function OurShows() {
                 </div>
             </section>
             <section className='px-10 md:px-40 py-20 bg-slate-100 text-blueyonder-500 grid items-start md:grid-cols-4 gap-10'>
-                <div className='flex rounded-md aspect-square'>
+                <div className='flex rounded-md aspect-square  col-span-3 md:col-span-1'>
                     <Image
                         src='/images/owensoundlogo.png'
                         width={318}
@@ -190,7 +190,7 @@ export default function OurShows() {
                         alt='Wiarton, Ontario logo'
                     />
                 </div>
-                <div className='md:col-span-2'>
+                <div className='col-span-3 md:col-span-2'>
                     <h2 className='mt-0 text-5xl'>Owen Sound</h2>
                     <h3>Owen Sound Lakeview Vendor&apos;s Market</h3>
                     <p>
@@ -221,7 +221,7 @@ export default function OurShows() {
                 </div>
             </section>
             <section className='px-10 md:px-40 py-20 bg-white text-blueyonder-500 grid items-start md:grid-cols-4 gap-10'>
-                <div className='flex rounded-md aspect-square'>
+                <div className='flex rounded-md aspect-square  col-span-3 md:col-span-1'>
                     <Image
                         src='/images/wiartonLogo.png'
                         width={318}
@@ -231,7 +231,7 @@ export default function OurShows() {
                         alt='Wiarton, Ontario logo'
                     />
                 </div>
-                <div className='md:col-span-2'>
+                <div className='col-span-3 md:col-span-2'>
                     <h2 className='mt-0 text-5xl'>Wiarton</h2>
                     <h3>Wiarton Lakeview Vendor&apos;s Market</h3>
                     <p>
