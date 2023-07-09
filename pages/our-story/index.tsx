@@ -30,17 +30,21 @@ export default function OurShows() {
                     cardType: "summary",
                 }}
             />
-            <header className={`heroSection ${styles.heroBackground}`}>
+            <header className={`heroSectionHeader`}>
+                <div className={`heroSection ${styles.heroBackground}`}></div>
                 <div>
                     <h1 className='heroTitle text-white overlayText'>Our Story</h1>
                 </div>
             </header>
-            <TextContainer className='py-20'>
-                <p className='text-blueyonder-500'>
-                    Snazzy Stones is a small home based business that specialises in high quality, handcrafted jewellery
-                    made with sterling silver and natural gemstones.
-                </p>
-            </TextContainer>
+            <div className='bg-white py-20 px-10 w-full'>
+                <TextContainer>
+                    <p className='text-blueyonder-500'>
+                        Snazzy Stones is a small home based business that specialises in high quality, handcrafted
+                        jewellery made with sterling silver and natural gemstones.
+                    </p>
+                </TextContainer>
+            </div>
+
             <div className='px-10 md:px-40 py-20 bg-blueyonder-500 grid md:grid-cols-2 items-center gap-20'>
                 <FadeInDiv from='left' className='text-white'>
                     <p className='leading-loose'>
@@ -65,7 +69,7 @@ export default function OurShows() {
                     />
                 </FadeInDiv>
             </div>
-            <div className='px-10 md:px-40 py-20 grid md:grid-cols-2 items-center gap-20'>
+            <div className='px-10 md:px-40 py-20 bg-white grid md:grid-cols-2 items-center gap-20'>
                 <FadeInDiv from='left' className='flex rounded-md max-w-max shadow-light'>
                     <Image
                         src='/images/beadsDisplay.jpg'

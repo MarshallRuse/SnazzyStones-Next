@@ -7,6 +7,7 @@ import { fetchProductsFromCache } from "../../../utils/fetching/products/etsyPro
 import ProductList from "../../../components/ProductList";
 import { collectionCardMap } from "../../../utils/collectionCardMap";
 import { ShopListingCondensed, ShopListingResponse, ShopListingsResponse } from "../../../types/EtsyAPITypes";
+import FadingHeader from "../../../components/FadingHeader";
 
 const categoryPitches = {
     Anklets:
@@ -58,11 +59,12 @@ export default function CategoryPage({ products = [], category = null }: Categor
                     cardType: "summary",
                 }}
             />
-            <header
-                className={`${styles.fallbackHeader} ${
-                    styles[`${category.toLowerCase().replace(" ", "_")}Header`]
-                } heroSection `}
-            >
+            <FadingHeader>
+                <div
+                    className={`${styles.fallbackHeader} ${
+                        styles[`${category.toLowerCase().replace(" ", "_")}Header`]
+                    } heroSection `}
+                ></div>
                 <div className='flex flex-col w-full'>
                     <h1 className='heroTitle text-white overlayText'>{category}</h1>
                     {categoryPitches[category] && (
@@ -72,11 +74,11 @@ export default function CategoryPage({ products = [], category = null }: Categor
                             transition={{ duration: 0.4 }}
                             className='bg-blueyonder-500 px-4 md:px-32 text-left md:text-center py-4 opacity-80 shadow-light'
                         >
-                            <div className='max-w-2xl text-center mx-auto'>{categoryPitches[category]}</div>
+                            <div className='max-w-2xl text-center text-white mx-auto'>{categoryPitches[category]}</div>
                         </motion.div>
                     )}
                 </div>
-            </header>
+            </FadingHeader>
             <ProductList products={products} categories={category} />
         </>
     );
