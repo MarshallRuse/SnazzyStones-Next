@@ -105,7 +105,7 @@ export default function ProductPage({ product = null, category = "", reviews = [
                             </div>
                         )}
                     </div>
-                    <p className='text-bluegreen-500 text-2xl font-semibold m-0'>
+                    {/* <p className='text-bluegreen-500 text-2xl font-semibold m-0'>
                         {isLoading ? (
                             <Skeleton width={85} height={30} sx={{ bgColor: "#14b6b8" }} />
                         ) : isError ? (
@@ -119,7 +119,7 @@ export default function ProductPage({ product = null, category = "", reviews = [
                                     : product.price.amount) / product.price.divisor
                             )
                         )}
-                    </p>
+                    </p> */}
                     <div className='max-h-56 mt-4 overflow-y-auto subtleScrollbar'>
                         {product &&
                             product.description
