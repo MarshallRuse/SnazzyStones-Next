@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Box, InputLabel, MenuItem, FormControl, Select } from "@mui/material";
 import ProductListingCard from "./ProductListingCard";
 import formatProductTitleAsURL from "../utils/formatProductTitleAsURL";
-import {ShopListingCondensed, ShopSectionResponse} from "../types/EtsyAPITypes";
+import { ShopListingCondensed, ShopSectionResponse } from "../types/EtsyAPITypes";
 
 export interface ProductListProps {
     products: ShopListingCondensed[];
@@ -16,23 +16,18 @@ export default function ProductList({ products = [], categories = [] }: ProductL
         switch (sortOption) {
             case "date-added-newest":
                 return products?.sort(
-                    (prodA, prodB) =>
-                        prodB.original_creation_timestamp - prodA.original_creation_timestamp
+                    (prodA, prodB) => prodB.original_creation_timestamp - prodA.original_creation_timestamp
                 );
             case "date-added-oldest":
                 return products?.sort(
-                    (prodA, prodB) =>
-                        prodA.original_creation_timestamp - prodB.original_creation_timestamp
+                    (prodA, prodB) => prodA.original_creation_timestamp - prodB.original_creation_timestamp
                 );
             case "most-popular":
-                return products?.sort((prodA, prodB) =>
-                    prodB.num_favorers - prodA.num_favorers
-                );
+                return products?.sort((prodA, prodB) => prodB.num_favorers - prodA.num_favorers);
             case "price-lowest":
                 return products?.sort(
                     (prodA, prodB) =>
-                        prodA.price.amount / prodA.price.divisor -
-                        prodB.price.amount / prodB.price.divisor
+                        prodA.price.amount / prodA.price.divisor - prodB.price.amount / prodB.price.divisor
                 );
             case "price-highest":
                 return products?.sort(
@@ -44,9 +39,11 @@ export default function ProductList({ products = [], categories = [] }: ProductL
         }
     };
 
+    // NOTE: Nested grid cols is weird and redundant, but stops the framer-motion related bug of the Sort input
+    // going transparent and fading up as the header image fades out.  NO idea why this works, was trial and error
     return (
-        <>
-            <div className='px-4 md:px-32 py-12'>
+        <section className='bg-white grid sm:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-14 px-4 md:px-32 py-6 relative'>
+            <div className='opacity-100 py-4 col-span-3'>
                 <Box sx={{ minWidth: 120 }}>
                     <FormControl>
                         <InputLabel id='sort-products-select'>Sort by...</InputLabel>
@@ -66,7 +63,7 @@ export default function ProductList({ products = [], categories = [] }: ProductL
                     </FormControl>
                 </Box>
             </div>
-            <section className='grid sm:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-14 px-4 md:px-32 py-6 relative'>
+            <div className='col-span-3 lg:col-span-4 grid sm:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-14 py-6 relative'>
                 {sortedProducts()?.map((prod) => {
                     const tag = "[mod:";
                     let secondaryImageUrl = "";
@@ -107,7 +104,7 @@ export default function ProductList({ products = [], categories = [] }: ProductL
                         />
                     );
                 })}
-            </section>
-        </>
+            </div>
+        </section>
     );
 }

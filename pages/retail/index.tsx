@@ -1,12 +1,13 @@
 import { NextSeo } from "next-seo";
-import fetchProducts from "../../utils/fetching/products/etsyProducts";
-import fetchCategories from "../../utils/fetching/categories/etsyCategories";
+import { fetchProductsFromCache } from "../../utils/fetching/products/etsyProducts";
+import { fetchCategoriesFromCache } from "../../utils/fetching/categories/etsyCategories";
 import CollectionCard from "../../components/CollectionCard";
 import styles from "../../styles/modules/Retail.module.scss";
 import ProductList from "../../components/ProductList";
 import { collectionCardMap } from "../../utils/collectionCardMap";
 import { avoidRateLimit } from "../../utils/avoidRateLimit";
-import {ShopListingCondensed, ShopSectionResponse} from "../../types/EtsyAPITypes";
+import { ShopListingCondensed, ShopSectionResponse } from "../../types/EtsyAPITypes";
+import FadingHeader from "../../components/FadingHeader";
 
 export interface RetailPageProps {
     products: ShopListingCondensed[];
@@ -39,11 +40,12 @@ export default function RetailPage({ products = [], categories = [] }: RetailPag
                     cardType: "summary_large_image",
                 }}
             />
-            <header className={`${styles.indexHeader} heroSection `}>
+            <FadingHeader>
+                <div className={`${styles.indexHeader} heroSection`}></div>
                 <div>
                     <h1 className='heroTitle text-white overlayText'>SHOP</h1>
                 </div>
-            </header>
+            </FadingHeader>
             <section className='bg-slate-100 grid sm:grid-cols-3 lg:grid-cols-4 gap-10 px-4 md:px-32 py-12 relative'>
                 {categories?.map((cat) => (
                     <CollectionCard
@@ -63,10 +65,10 @@ export async function getStaticProps() {
     console.log("fetching categories, products, product images...");
     // get a list of Etsy shop sections from which to draw category names
     await avoidRateLimit(500);
-    const categories = await fetchCategories();
+    const categories = await fetchCategoriesFromCache();
 
     await avoidRateLimit(500);
-    const fetchedProducts = await fetchProducts();
+    const fetchedProducts = await fetchProductsFromCache();
 
     // optimize static page generation by only passing relevant properties to front end
     // properties are used in this page, ProductList, ProductListingCard

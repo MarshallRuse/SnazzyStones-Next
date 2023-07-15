@@ -175,28 +175,41 @@ a {
     }
 }
 
+.heroSectionHeader {
+    width: 100%;
+    height: 90svh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @screen md {
+        height: 75svh;
+
+        &.fullScreen {
+            height: 90svh;
+        }
+    }
+}
+
 .heroSection {
     align-items: center;
-    background-attachment: fixed;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100svh; /* Not using vh units on mobile due to image shift with address bar movement, keyboard opening, etc.*/
+    z-index: -1;
     background-position: center;
     background-size: cover;
     color: #fff;
     display: flex;
     justify-content: center;
-    height: 600px; /* Not using vh units on mobile due to image shift with address bar movement, keyboard opening, etc.*/
     text-align: center;
-
-    @screen md {
-        height: 75vh;
-
-        &.fullScreen {
-            height: 100vh;
-        }
-    }
 }
 
 .heroTitle {
     font-size: 6rem;
+    text-align: center;
 }
 
 .snazzy {

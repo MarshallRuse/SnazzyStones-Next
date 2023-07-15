@@ -1,8 +1,8 @@
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { NextSeo } from "next-seo";
-import { avoidRateLimit } from "../../../utils/avoidRateLimit";
 import he from "he";
 import dayjs from "dayjs";
 import useCountry from "../../../utils/fetching/country";
@@ -23,13 +23,14 @@ import {
 } from "react-share";
 import WiggleWrapper from "../../../components/WiggleWrapper";
 import formatProductTitleAsURL from "../../../utils/formatProductTitleAsURL";
-import fetchCategories from "../../../utils/fetching/categories/etsyCategories";
-import fetchProducts from "../../../utils/fetching/products/etsyProducts";
+import { fetchCategoriesFromCache } from "../../../utils/fetching/categories/etsyCategories";
+import { fetchProductsFromCache } from "../../../utils/fetching/products/etsyProducts";
 import ImageGallery from "../../../components/ImageGallery";
 import ProductPageFallbackSkeleton from "../../../components/ProductPageFallbackSkeleton";
-import { ListingReview, ListingReviewResponse, ShopListingResponse } from "../../../types/EtsyAPITypes";
+import { ListingReview } from "../../../types/EtsyAPITypes";
 import { Product } from "../../../types/Types";
 import CTALink from "../../../components/CTAElements/CTALink";
+import { APIReviewsResponse } from "../../api/retail/products/reviews/[listing_id]";
 
 const shareButtonStyle = "rounded-full focus:outline-none focus:ring focus:ring-bluegreen-500 focus:ring-offset-2";
 const shareButtonIconSize = 40;
@@ -37,13 +38,26 @@ const shareButtonIconSize = 40;
 export interface ProductPageProps {
     product?: Product;
     category: string;
-    reviews: ListingReview[];
 }
 
-export default function ProductPage({ product = null, category = "", reviews = [] }: ProductPageProps) {
+export default function ProductPage({ product = null, category = "" }: ProductPageProps) {
     const { countryData, isLoading, isError } = useCountry();
     const router = useRouter();
     const productURL = `https://snazzystones.ca${router.asPath}`;
+
+    const [reviews, setReviews] = useState<ListingReview[]>([]);
+
+    useEffect(() => {
+        const fetchReviews = async () => {
+            const reviewsResponse = await fetch(`/api/retail/products/reviews/${product.listing_id}`);
+            const reviewsData: APIReviewsResponse = await reviewsResponse.json();
+            setReviews(reviewsData.reviews);
+        };
+
+        if (product) {
+            fetchReviews();
+        }
+    }, [product]);
 
     if (router.isFallback) {
         return <ProductPageFallbackSkeleton />;
@@ -74,7 +88,7 @@ export default function ProductPage({ product = null, category = "", reviews = [
             />
             <section className='grid md:grid-cols-2 md:grid-flow-row auto-rows-max gap-10 py-16 md:max-w-screen-lg justify-center mx-auto px-4'>
                 <ImageGallery images={product.images} productTitle={product.title} />
-                <div className='flex flex-col row-span-2 text-sm text-slate-500 max-w-xs md:max-w-lg pt-2'>
+                <div className='flex flex-col row-span-2 text-sm text-slate-500 max-w-sm md:max-w-lg pt-2'>
                     <nav className='flex flex-nowrap'>
                         <Link href='/'>
                             <a className='text-bluegreen-500 navItem max-w-max inline-flex mx-1'>Home</a>
@@ -89,10 +103,10 @@ export default function ProductPage({ product = null, category = "", reviews = [
                         )}
                         {product && <>/ {product.title.split("|")[0].trim()}</>}
                     </nav>
-                    <div className='flex gap-4 items-center text-blueyonder-500'>
-                        <h1 className='text-2xl mt-4 font-semibold'>{product.title}</h1>
+                    <div className='flex flex-col md:flex-row items-start md:items-center md:gap-4 mb-12 md:mb-0 text-blueyonder-500'>
+                        <h1 className='text-2xl mt-4 font-semibold mb-4 md:mb-auto'>{product.title}</h1>
                         {product.production_partners.length > 0 && product.production_partners[0].location && (
-                            <div className='flex rounded-md shadow-light'>
+                            <div className='flex rounded-md shadow-light w-14 md:w-auto'>
                                 <Image
                                     src={`/svg/flags/${product.production_partners?.[0]?.location}.svg`}
                                     width={105}
@@ -217,7 +231,7 @@ export default function ProductPage({ product = null, category = "", reviews = [
                     )}
                 </h2>
                 {reviews
-                    .sort((a, b) => b.created_timestamp - a.created_timestamp)
+                    ?.sort((a, b) => b.created_timestamp - a.created_timestamp)
                     .map((review, ind) => (
                         <div key={`review-${ind}`} className='py-4'>
                             <div className='flex items-end gap-4'>
@@ -252,16 +266,31 @@ export default function ProductPage({ product = null, category = "", reviews = [
     );
 }
 
-export async function getServerSideProps(context) {
-    const { productName } = context.params;
+export async function getStaticPaths() {
+    const activeShopListingsFormatted = await fetchProductsFromCache();
 
-    const products = await fetchProducts();
+    return {
+        paths: activeShopListingsFormatted.map((listing) => ({
+            params: {
+                productName: listing.title.includes("|")
+                    ? formatProductTitleAsURL(listing.title)
+                    : listing.listing_id.toString(),
+            },
+        })),
+        fallback: "blocking",
+    };
+}
+
+export async function getStaticProps(context) {
+    const { params } = context;
+
+    const products = await fetchProductsFromCache();
 
     const productToGet = products.find((prod) => {
         if (prod.title.includes("|")) {
-            return formatProductTitleAsURL(prod.title) === productName;
+            return formatProductTitleAsURL(prod.title) === params.productName;
         } else {
-            return prod.listing_id === productName;
+            return prod.listing_id === params.productName;
         }
     });
 
@@ -270,54 +299,28 @@ export async function getServerSideProps(context) {
             notFound: true,
         };
     }
-    const listingResponse = await fetch(
-        `https://openapi.etsy.com/v3/application/listings/${productToGet.listing_id}?includes=Images`,
-        {
-            method: "GET",
-            headers: {
-                "x-api-key": process.env.ETSY_API_KEYSTRING,
-            },
-        }
-    );
-    const listing: ShopListingResponse = await listingResponse.json();
 
-    const formattedListing: Product = {
-        title: he.decode(listing.title),
-        description: listing.description,
-        url: listing.url,
-        images: listing.images,
-        production_partners: listing.production_partners,
-        price: listing.price,
-        quantity: listing.quantity,
-        num_favorers: listing.num_favorers,
-        tags: listing.tags,
-        facebookAppId: process.env.FACEBOOK_SNAZZYSTONESCA_APPID,
+    const formattedListing = {
+        listing_id: productToGet.listing_id,
+        title: he.decode(productToGet.title),
+        description: productToGet.description,
+        url: productToGet.url,
+        images: productToGet.images,
+        production_partners: productToGet.production_partners,
+        price: productToGet.price,
+        quantity: productToGet.quantity,
+        num_favorers: productToGet.num_favorers,
+        tags: productToGet.tags,
     };
 
-    const categories = await fetchCategories();
-    const category = categories.find((section) => section.shop_section_id === listing.shop_section_id).title;
-
-    const listingReviewsResponse = await fetch(
-        `https://openapi.etsy.com/v3/application/listings/${productToGet.listing_id}/reviews?limit=100`,
-        {
-            method: "GET",
-            headers: {
-                "x-api-key": process.env.ETSY_API_KEYSTRING,
-            },
-        }
-    );
-
-    const listingReviews: ListingReviewResponse = await listingReviewsResponse.json();
-    let reviews = [];
-    if (listingReviews.results && Array.isArray(listingReviews.results)) {
-        reviews = listingReviews.results.filter((review) => review.listing_id === productToGet.listing_id);
-    }
+    const categories = await fetchCategoriesFromCache();
+    const category = categories.find((section) => section.shop_section_id === productToGet.shop_section_id).title;
 
     return {
         props: {
             product: formattedListing,
             category,
-            reviews,
         },
+        revalidate: 60 * 60 * 24, //revalidate after a day
     };
 }

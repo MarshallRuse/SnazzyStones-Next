@@ -29,10 +29,11 @@ export default function ContactUs() {
                     cardType: "summary_large_image",
                 }}
             />
-            <header className={`${styles.heroBackground} heroSection `}>
+            <header className='heroSectionHeader'>
+                <div className={`${styles.heroBackground} heroSection `}></div>
                 <div>
                     <h1 className='heroTitle text-white overlayText'>Contact Us</h1>
-                    <h2 className='text-2xl pt-6 text-white overlayText'>I would love to hear from you!</h2>
+                    <h2 className='text-2xl text-center pt-6 text-white overlayText'>I would love to hear from you!</h2>
                 </div>
             </header>
             <section className='flex justify-center'>

@@ -2,11 +2,12 @@ import { NextSeo } from "next-seo";
 import { motion } from "framer-motion";
 import styles from "../../../styles/modules/Retail.module.scss";
 import { avoidRateLimit } from "../../../utils/avoidRateLimit";
-import fetchCategories from "../../../utils/fetching/categories/etsyCategories";
-import fetchProducts from "../../../utils/fetching/products/etsyProducts";
+import { fetchCategoriesFromCache } from "../../../utils/fetching/categories/etsyCategories";
+import { fetchProductsFromCache } from "../../../utils/fetching/products/etsyProducts";
 import ProductList from "../../../components/ProductList";
 import { collectionCardMap } from "../../../utils/collectionCardMap";
-import {ShopListingCondensed, ShopListingResponse, ShopListingsResponse} from "../../../types/EtsyAPITypes";
+import { ShopListingCondensed, ShopListingResponse, ShopListingsResponse } from "../../../types/EtsyAPITypes";
+import FadingHeader from "../../../components/FadingHeader";
 
 const categoryPitches = {
     Anklets:
@@ -58,11 +59,12 @@ export default function CategoryPage({ products = [], category = null }: Categor
                     cardType: "summary",
                 }}
             />
-            <header
-                className={`${styles.fallbackHeader} ${
-                    styles[`${category.toLowerCase().replace(" ", "_")}Header`]
-                } heroSection `}
-            >
+            <FadingHeader>
+                <div
+                    className={`${styles.fallbackHeader} ${
+                        styles[`${category.toLowerCase().replace(" ", "_")}Header`]
+                    } heroSection `}
+                ></div>
                 <div className='flex flex-col w-full'>
                     <h1 className='heroTitle text-white overlayText'>{category}</h1>
                     {categoryPitches[category] && (
@@ -72,11 +74,11 @@ export default function CategoryPage({ products = [], category = null }: Categor
                             transition={{ duration: 0.4 }}
                             className='bg-blueyonder-500 px-4 md:px-32 text-left md:text-center py-4 opacity-80 shadow-light'
                         >
-                            <div className='max-w-2xl text-center mx-auto'>{categoryPitches[category]}</div>
+                            <div className='max-w-2xl text-center text-white mx-auto'>{categoryPitches[category]}</div>
                         </motion.div>
                     )}
                 </div>
-            </header>
+            </FadingHeader>
             <ProductList products={products} categories={category} />
         </>
     );
@@ -85,7 +87,7 @@ export default function CategoryPage({ products = [], category = null }: Categor
 export async function getStaticPaths() {
     // get a list of Etsy shop sections from which to draw category names
     await avoidRateLimit(500);
-    const categories = await fetchCategories();
+    const categories = await fetchCategoriesFromCache();
 
     return {
         paths: categories.map((section) => ({
@@ -98,7 +100,7 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
     const { params } = context;
     await avoidRateLimit(500);
-    const categories = await fetchCategories();
+    const categories = await fetchCategoriesFromCache();
 
     const categoryId = categories.find(
         (section) => section.title === params.categoryName.replace("_", " ")
@@ -108,7 +110,7 @@ export async function getStaticProps(context) {
 
     if (categoryId) {
         await avoidRateLimit(500);
-        fetchedProducts = await fetchProducts({ categoryId });
+        fetchedProducts = await fetchProductsFromCache({ categoryId });
     }
     // optimize static page generation by only passing relevant properties to front end
     // properties are used in this page, ProductList, ProductListingCard

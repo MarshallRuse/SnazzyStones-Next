@@ -6,6 +6,8 @@ import { Autocomplete, TextField } from "@mui/material";
 import Search from "@mui/icons-material/Search";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import formatProductTitleAsURL from "../utils/formatProductTitleAsURL";
+import { APIProductsResponse } from "../pages/api/retail/products";
+import { ShopListingResponse } from "../types/EtsyAPITypes";
 
 const theme = createTheme({
     palette: {
@@ -27,21 +29,22 @@ export interface SiteSearchProps {
 
 export default function SiteSearch({ className = "", ...rest }: SiteSearchProps) {
     const router = useRouter();
-    const [products, setProducts] = useState([]);
+    const [products, setProducts] = useState<Partial<ShopListingResponse>[]>([]);
     const [autocompleteVisible, setAutocompleteVisible] = useState(false);
-    const [value, setValue] = useState(null);
-    const inputRef = useRef(null);
+    const [value, setValue] = useState<Partial<ShopListingResponse> | null>(null);
+    const inputRef = useRef<HTMLInputElement | null>(null);
 
     const handleClearAndCloseInput = () => {
         setValue(null);
         setAutocompleteVisible(false);
+        inputRef.current?.blur();
     };
 
     useEffect(() => {
         const fetchProducts = async () => {
             const apiResponse = await fetch("/api/retail/products?fields=title,listing_id,images");
             if (apiResponse.status === 200) {
-                const responseProducts = await apiResponse.json();
+                const responseProducts: APIProductsResponse = await apiResponse.json();
                 setProducts(responseProducts.products);
             } else {
                 throw new Error(`Error fetching products in SiteSearch: ${apiResponse.status}`);
@@ -63,7 +66,9 @@ export default function SiteSearch({ className = "", ...rest }: SiteSearchProps)
 
     useEffect(() => {
         if (autocompleteVisible) {
-            inputRef.current.focus();
+            inputRef.current?.focus();
+        } else {
+            inputRef.current?.blur();
         }
     }, [autocompleteVisible]);
 
@@ -74,7 +79,7 @@ export default function SiteSearch({ className = "", ...rest }: SiteSearchProps)
         >
             <Search className='cursor-pointer' onClick={() => setAutocompleteVisible(!autocompleteVisible)} />
             <div
-                className={`absolute top-full right-1/2 translate-x-1/3 pt-4 z-30 rounded-sm transition ${
+                className={`absolute top-full right-1/2 translate-x-1/3 pt-7 z-30 rounded-sm transition ${
                     autocompleteVisible ? "opacity-100" : "opacity-0"
                 } ${autocompleteVisible ? "pointer-events-auto" : "pointer-events-none"}`}
             >
@@ -92,12 +97,12 @@ export default function SiteSearch({ className = "", ...rest }: SiteSearchProps)
                         loading={autocompleteVisible && products.length === 0}
                         loadingText='Loading Snazziness...'
                         value={value}
-                        onChange={(event, newValue) => setValue(newValue)}
+                        onChange={(event, newValue) => typeof newValue !== "string" && setValue(newValue)}
                         openOnFocus
                         clearOnEscape
                         onBlur={handleClearAndCloseInput}
                         onClose={handleClearAndCloseInput}
-                        getOptionLabel={(product) => product?.title}
+                        getOptionLabel={(product) => (typeof product !== "string" ? product?.title : "")}
                         renderOption={(props, product) => (
                             <li {...props}>
                                 <Link

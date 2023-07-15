@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { wrap } from "popmotion";
 import ArrowForwardIosRounded from "@mui/icons-material/ArrowForwardIosRounded";
 import ArrowBackIosRounded from "@mui/icons-material/ArrowBackIosRounded";
-import {ListingImage} from "../types/EtsyAPITypes";
+import { ListingImage } from "../types/EtsyAPITypes";
 
 const enterExitDistance = 250;
 const variants = {
@@ -47,6 +47,7 @@ export interface ImageGalleryProps {
 export default function ImageGallery({ images = [], productTitle = "" }: ImageGalleryProps) {
     const [[page, direction], setPage] = useState([0, 0]);
     const [isAnimating, setIsAnimating] = useState(false);
+    const [initialAnimationComplete, setInitialAnimationComplete] = useState(false);
 
     // array of thumbnail refs for scrolling to active thumbnail
     const thumbnailRefs = useRef([]);
@@ -87,9 +88,22 @@ export default function ImageGallery({ images = [], productTitle = "" }: ImageGa
         thumbnailRefs.current = thumbnailRefs.current.slice(0, images.length);
     }, [images]);
 
+    // Hacky workaround for a bug introduce in framer-motion.
+    // Previously AnimatePresence had the exitBeforeEnter prop, and things worked as expected -
+    // init state of isAnimating would remain false and paging buttons and thumbnails would work as
+    // expected on page load.  Now exitBeforeEnter is deprecated and replaced with mode='wait', and it
+    // sets isAnimating to true on page load by calling onAnimationStart but not onAnimationComplete,
+    // which breaks the paging buttons and thumbnails
+    useEffect(() => {
+        if (isAnimating && !initialAnimationComplete) {
+            setIsAnimating(false);
+            setInitialAnimationComplete(true);
+        }
+    }, [isAnimating, initialAnimationComplete]);
+
     return (
         <div>
-            <div className='flex flex-col md:flex-row gap-4 max-w-xs sm:max-w-screen-lg'>
+            <div className='flex flex-col md:flex-row gap-4 max-w-sm md:max-w-screen-lg'>
                 <div className='order-2 md:order-1 max-w-screen md:w-auto overflow-auto md:overflow-auto noScrollbar'>
                     <div className='relative flex md:flex-col gap-2 md:min-h-full md:h-0 p-2'>
                         {images?.map((img, ind) => (
@@ -115,7 +129,7 @@ export default function ImageGallery({ images = [], productTitle = "" }: ImageGa
                     </div>
                 </div>
                 <div className='relative order-1 md:order-2 group p-2'>
-                    <AnimatePresence initial={false} custom={direction} exitBeforeEnter>
+                    <AnimatePresence initial={false} custom={direction} mode='wait'>
                         <motion.div
                             key={`gallery-image-${page}`}
                             className='flex self-start justify-center items-center  rounded-sm aspect-square shadow-light'

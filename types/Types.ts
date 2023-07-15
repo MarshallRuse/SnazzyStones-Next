@@ -1,6 +1,7 @@
 import { ListingImage, Money, ShopProductionPartner } from "./EtsyAPITypes";
 
 export interface Product {
+    listing_id: number;
     title: string;
     description: string;
     url: string;

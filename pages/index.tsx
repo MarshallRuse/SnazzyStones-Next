@@ -3,18 +3,17 @@ import Link from "next/link";
 import { NextSeo } from "next-seo";
 import styles from "../styles/modules/Home.module.scss";
 import Instagram from "@mui/icons-material/Instagram";
-import CTAButton from "../components/CTAElements/CTAButton";
 import TextContainer from "../components/TextContainer";
 import CollectionCard from "../components/CollectionCard";
 import ProductListingCard from "../components/ProductListingCard";
 import InstagramFeed from "../components/InstagramFeed";
 import { collectionCardMap } from "../utils/collectionCardMap";
 import { avoidRateLimit } from "../utils/avoidRateLimit";
-import fetchCategories from "../utils/fetching/categories/etsyCategories";
-import fetchProducts from "../utils/fetching/products/etsyProducts";
+import { fetchCategoriesFromCache } from "../utils/fetching/categories/etsyCategories";
+import { fetchProductsFromCache } from "../utils/fetching/products/etsyProducts";
 import formatProductTitleAsURL from "../utils/formatProductTitleAsURL";
 import CTALink from "../components/CTAElements/CTALink";
-import {ShopListingResponse, ShopSectionResponse} from "../types/EtsyAPITypes";
+import { ShopListingResponse, ShopSectionResponse } from "../types/EtsyAPITypes";
 
 export interface HomeProps {
     feed: any;
@@ -26,21 +25,24 @@ export default function Home({ feed, products, categories }: HomeProps) {
     return (
         <>
             <NextSeo canonical='https://snazzystones.ca/' />
-            <header className={`heroSection ${styles.heroBackground}`}>
+            <header className='heroSectionHeader'>
+                <div className={`heroSection ${styles.heroBackground}`}></div>
                 <div>
                     <h1 className='heroTitle overlayText'>
                         <span className='snazzy text-white'>Snazzy </span>
                         <span className='stones text-white'>Stones</span>
                     </h1>
-                    <h2 className={`text-3xl pt-6 ${styles.headerSubtitle} text-white overlayText`}>
+                    <h2 className={`text-3xl text-center pt-6 ${styles.headerSubtitle} text-white overlayText`}>
                         Specializing in Silver & Gemstone Jewellery
                     </h2>
-                    <Link href='/index' passHref>
-                        <CTALink className='mt-4'>SHOP NOW</CTALink>
-                    </Link>
+                    <div className='flex justify-center'>
+                        <Link href='/retail' passHref>
+                            <CTALink className='mt-4'>SHOP NOW</CTALink>
+                        </Link>
+                    </div>
                 </div>
             </header>
-            <section className='px-10 py-20 text-blueyonder-500'>
+            <section className='px-10 py-20 bg-white text-blueyonder-500'>
                 <TextContainer>
                     <h2>Welcome to Snazzy Stones</h2>
                     <p>
@@ -55,7 +57,7 @@ export default function Home({ feed, products, categories }: HomeProps) {
                     </p>
                 </TextContainer>
             </section>
-            <section>
+            <section className='bg-white'>
                 <div className='grid md:grid-cols-3 gap-10 px-4 md:px-32 py-12 max-w-screen-2xl mx-auto relative'>
                     <CollectionCard
                         cardImageSrc={collectionCardMap["Hoops"].url}
@@ -123,7 +125,7 @@ export default function Home({ feed, products, categories }: HomeProps) {
                     </Link>
                 </TextContainer>
             </section>
-            <section className='px-10 py-20 text-blueyonder-500'>
+            <section className='px-10 py-20 bg-white text-blueyonder-500'>
                 <TextContainer className='flex flex-col items-center'>
                     <h2>Visit us on Instagram</h2>
                     <a
@@ -164,9 +166,9 @@ export const getStaticProps = async () => {
 
     // Etsy
     await avoidRateLimit(250);
-    const categories = await fetchCategories();
+    const categories = await fetchCategoriesFromCache();
     await avoidRateLimit(250);
-    const products = await fetchProducts({ limit: 4 });
+    const products = await fetchProductsFromCache({ limit: 4 });
 
     return {
         props: {
