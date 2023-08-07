@@ -1,3 +1,5 @@
+import { ListingImageMin } from "./Types";
+
 export interface ShopSectionResponse {
     shop_section_id: number;
     title: string;
@@ -6,7 +8,8 @@ export interface ShopSectionResponse {
     active_listing_count: number;
 }
 
-export type WhenMade = "made_to_order"
+export type WhenMade =
+    | "made_to_order"
     | "2020_2023"
     | "2010_2019"
     | "2004_2009"
@@ -24,7 +27,7 @@ export type WhenMade = "made_to_order"
     | "1900s"
     | "1800s"
     | "1700s"
-    | "before_1700"
+    | "before_1700";
 
 export interface Money {
     currency_code: string;
@@ -173,15 +176,14 @@ export interface ShopProductionPartner {
     location: string;
 }
 
-
 export interface ShopListingCondensed {
     listing_id: number;
     title: string;
     description: string;
-    images: ListingImage[];
+    images: ListingImageMin[];
     shop_section_id: number;
     original_creation_timestamp: number;
     num_favorers: number;
-    price: Money;
+    price?: Money;
     production_partners?: ShopProductionPartner[];
 }

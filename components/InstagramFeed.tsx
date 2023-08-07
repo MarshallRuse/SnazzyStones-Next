@@ -47,13 +47,14 @@ export default function InstagramFeed({ feed }) {
                     ))}
             </div>
             <div className='flex justify-center gap-3 mt-6'>
-                <button
-                    disabled={!morePostsAvailable}
-                    onClick={fetchMorePosts}
-                    className='bg-cerise-500 disabled:bg-cerise-200 text-white rounded-md px-4 py-2 transition hover:bg-cerise-600'
-                >
-                    {morePostsAvailable ? "Load More..." : ""}
-                </button>
+                {morePostsAvailable && (
+                    <button
+                        onClick={fetchMorePosts}
+                        className='bg-cerise-500 disabled:bg-cerise-200 text-white rounded-md px-4 py-2 transition hover:bg-cerise-600'
+                    >
+                        Load More...
+                    </button>
+                )}
             </div>
         </>
     );

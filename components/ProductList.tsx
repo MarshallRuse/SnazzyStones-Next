@@ -25,14 +25,16 @@ export default function ProductList({ products = [], categories = [] }: ProductL
             case "most-popular":
                 return products?.sort((prodA, prodB) => prodB.num_favorers - prodA.num_favorers);
             case "price-lowest":
-                return products?.sort(
-                    (prodA, prodB) =>
-                        prodA.price.amount / prodA.price.divisor - prodB.price.amount / prodB.price.divisor
+                return products?.sort((prodA, prodB) =>
+                    prodA.price && prodB.price
+                        ? prodA.price.amount / prodA.price.divisor - prodB.price.amount / prodB.price.divisor
+                        : 0
                 );
             case "price-highest":
-                return products?.sort(
-                    (prodA, prodB) =>
-                        prodB.price.amount / prodB.price.divisor - prodA.price.amount / prodA.price.divisor
+                return products?.sort((prodA, prodB) =>
+                    prodB.price && prodA.price
+                        ? prodB.price.amount / prodB.price.divisor - prodA.price.amount / prodA.price.divisor
+                        : 0
                 );
             default:
                 return products;
@@ -57,8 +59,8 @@ export default function ProductList({ products = [], categories = [] }: ProductL
                             <MenuItem value={"date-added-newest"}>Date Added (Newest)</MenuItem>
                             <MenuItem value={"date-added-oldest"}>Date Added (Oldest)</MenuItem>
                             <MenuItem value={"most-popular"}>Most Popular</MenuItem>
-                            <MenuItem value={"price-lowest"}>Price (Lowest)</MenuItem>
-                            <MenuItem value={"price-highest"}>Price (Highest)</MenuItem>
+                            {/* <MenuItem value={"price-lowest"}>Price (Lowest)</MenuItem>
+                            <MenuItem value={"price-highest"}>Price (Highest)</MenuItem> */}
                         </Select>
                     </FormControl>
                 </Box>
@@ -96,7 +98,7 @@ export default function ProductList({ products = [], categories = [] }: ProductL
                                     : categories.find((cat) => cat.shop_section_id === prod.shop_section_id).title
                             }
                             productName={prod.title}
-                            productPrice={prod.price.amount / prod.price.divisor}
+                            //productPrice={prod.price.amount / prod.price.divisor}
                             productPageLink={`/retail/products/${
                                 prod.title.includes("|") ? formatProductTitleAsURL(prod.title) : prod.listing_id
                             }`}

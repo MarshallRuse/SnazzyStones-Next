@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { fetchCategoriesFromCache } from "../../../../utils/fetching/categories/etsyCategories";
-import { ShopSectionResponse } from "../../../../types/EtsyAPITypes";
+import { CategoriesMinAPIData } from "../../../../types/Types";
 
 export interface APICategoriesResponse {
-    categories: ShopSectionResponse[];
+    categories: CategoriesMinAPIData[];
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<APICategoriesResponse>) {

@@ -307,7 +307,7 @@ export async function getStaticProps(context) {
         url: productToGet.url,
         images: productToGet.images,
         production_partners: productToGet.production_partners,
-        price: productToGet.price,
+        //price: productToGet.price,
         quantity: productToGet.quantity,
         num_favorers: productToGet.num_favorers,
         tags: productToGet.tags,
@@ -321,6 +321,6 @@ export async function getStaticProps(context) {
             product: formattedListing,
             category,
         },
-        revalidate: 60 * 60 * 24, //revalidate after a day
+        revalidate: 48 * 60 * 60, //revalidate after 2 days
     };
 }

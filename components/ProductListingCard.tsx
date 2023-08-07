@@ -29,7 +29,7 @@ export interface ProductListingCardProps {
     imageSecondaryPlaceholder?: string;
     productCategory?: string;
     productName?: string;
-    productPrice: number;
+    productPrice?: number;
     productPageLink?: string;
     productFavourites?: number;
 }
@@ -127,7 +127,7 @@ export default function ProductListingCard({
                                 {productName.split("|")[0].trim()}
                             </span>
                         </ThemeTooltip>
-                        <span className='inline-block text-bluegreen-500 text-base font-semibold'>
+                        {/* <span className='inline-block text-bluegreen-500 text-base font-semibold'>
                             {isLoading ? (
                                 <Skeleton />
                             ) : (
@@ -139,7 +139,7 @@ export default function ProductListingCard({
                                         : productPrice
                                 )
                             )}
-                        </span>
+                        </span> */}
                     </div>
                 </a>
             </Link>

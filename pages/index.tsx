@@ -105,7 +105,7 @@ export default function Home({ feed, products, categories }: HomeProps) {
                                 categories.find((cat) => cat.shop_section_id === prod.shop_section_id).title
                             }
                             productName={prod.title}
-                            productPrice={prod.price.amount / prod.price.divisor}
+                            //productPrice={prod.price.amount / prod.price.divisor}
                             productPageLink={`/retail/products/${
                                 prod.title.includes("|") ? formatProductTitleAsURL(prod.title) : prod.listing_id
                             }`}
@@ -176,6 +176,6 @@ export const getStaticProps = async () => {
             products,
             categories,
         },
-        revalidate: 12 * 60 * 60, //revalidate twice a day
+        revalidate: 48 * 60 * 60, //revalidate every two days
     };
 };
