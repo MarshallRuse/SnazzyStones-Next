@@ -7,7 +7,6 @@ export type ProductMinAPIData = Pick<
     | "listing_id"
     | "title"
     | "description"
-    | "price"
     | "shop_section_id"
     | "original_creation_timestamp"
     | "num_favorers"
@@ -17,6 +16,7 @@ export type ProductMinAPIData = Pick<
     | "tags"
 > & {
     images: ListingImageMin[];
+    price?: Money;
 };
 
 export interface Product {
@@ -26,7 +26,7 @@ export interface Product {
     url: string;
     images: ListingImage[];
     production_partners?: ShopProductionPartner[];
-    price: Money;
+    price?: Money;
     quantity: number;
     num_favorers: number;
     tags: string[];

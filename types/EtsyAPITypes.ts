@@ -184,6 +184,6 @@ export interface ShopListingCondensed {
     shop_section_id: number;
     original_creation_timestamp: number;
     num_favorers: number;
-    price: Money;
+    price?: Money;
     production_partners?: ShopProductionPartner[];
 }

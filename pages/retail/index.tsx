@@ -80,7 +80,7 @@ export async function getStaticProps() {
         shop_section_id: prod.shop_section_id,
         original_creation_timestamp: prod.original_creation_timestamp,
         num_favorers: prod.num_favorers,
-        price: prod.price,
+        //price: prod.price,
     }));
 
     return {

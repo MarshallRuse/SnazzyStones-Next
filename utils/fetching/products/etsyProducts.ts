@@ -87,7 +87,7 @@ async function setProductsCache({ categoryId = null, fetchImages = true, limit =
                 url_170x135: image.url_170x135,
                 url_fullxfull: image.url_fullxfull,
             })),
-            price: product.price,
+            //price: product.price,
             shop_section_id: product.shop_section_id,
             original_creation_timestamp: product.original_creation_timestamp,
             num_favorers: product.num_favorers,

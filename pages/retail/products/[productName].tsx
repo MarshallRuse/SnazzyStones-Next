@@ -307,7 +307,7 @@ export async function getStaticProps(context) {
         url: productToGet.url,
         images: productToGet.images,
         production_partners: productToGet.production_partners,
-        price: productToGet.price,
+        //price: productToGet.price,
         quantity: productToGet.quantity,
         num_favorers: productToGet.num_favorers,
         tags: productToGet.tags,
