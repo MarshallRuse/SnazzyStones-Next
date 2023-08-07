@@ -25,7 +25,6 @@
         "he": "^1.2.0",
         "memory-cache": "^0.2.0",
         "next": "12.1.5",
-        "next-auth": "^4.9.0",
         "next-seo": "^5.4.0",
         "popmotion": "^11.0.3",
         "react": "18.1.0",
