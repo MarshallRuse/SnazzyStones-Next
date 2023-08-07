@@ -1,5 +1,14 @@
-import { kv } from "@vercel/kv";
+//Name both cache SDK imports redis so they can be swapped out if one were to blow through the cache limit
+//import { kv as redis } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 import { ShopSectionResponse } from "../../../types/EtsyAPITypes";
+import { CategoriesMinAPIData } from "../../../types/Types";
+
+// Comment out if using kv
+const redis = new Redis({
+    url: process.env.UPSTASH_REDIS_REST_URL,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 export async function fetchCategoriesFromEtsy(): Promise<ShopSectionResponse[]> {
     // get a list of Etsy shop sections from which to draw category names
@@ -18,25 +27,29 @@ export async function fetchCategoriesFromEtsy(): Promise<ShopSectionResponse[]> 
 
 async function setCategoriesCache() {
     const categories = await fetchCategoriesFromEtsy();
-    kv.set("categories", JSON.stringify(categories));
-    kv.set("timeSinceLastEtsyCategoriesFetch", Date.now());
-    return categories;
+    const minimalCategoriesData: CategoriesMinAPIData[] = categories.map((cat) => ({
+        shop_section_id: cat.shop_section_id,
+        title: cat.title,
+    }));
+    redis.set("categories", JSON.stringify(minimalCategoriesData));
+    redis.set("timeSinceLastEtsyCategoriesFetch", Date.now());
+    return minimalCategoriesData;
 }
 
-export async function fetchCategoriesFromCache(): Promise<ShopSectionResponse[]> {
-    const timeSinceLastEtsyCategoriesFetch = await kv.get("timeSinceLastEtsyCategoriesFetch");
+export async function fetchCategoriesFromCache(): Promise<CategoriesMinAPIData[]> {
+    const timeSinceLastEtsyCategoriesFetch = await redis.get("timeSinceLastEtsyCategoriesFetch");
 
-    // if more than 24 hours since last fetch, fetch again
+    // if more than 48 hours since last fetch, fetch again
     if (
         timeSinceLastEtsyCategoriesFetch === undefined ||
-        Date.now() - Number(timeSinceLastEtsyCategoriesFetch) > 1000 * 60 * 60 * 24
+        Date.now() - Number(timeSinceLastEtsyCategoriesFetch) > 1000 * 60 * 60 * 48
     ) {
         console.log("fetching categories from etsy");
         const categories = await setCategoriesCache();
         return categories;
     }
 
-    const cachedCategories: ShopSectionResponse[] = await kv.get("categories");
+    const cachedCategories: CategoriesMinAPIData[] = await redis.get("categories");
 
     if (cachedCategories && cachedCategories.length > 0) {
         return cachedCategories;

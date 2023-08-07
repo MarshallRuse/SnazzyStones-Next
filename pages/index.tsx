@@ -176,6 +176,6 @@ export const getStaticProps = async () => {
             products,
             categories,
         },
-        revalidate: 12 * 60 * 60, //revalidate twice a day
+        revalidate: 48 * 60 * 60, //revalidate every two days
     };
 };

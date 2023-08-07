@@ -1,7 +1,16 @@
 import he from "he";
 import Bottleneck from "bottleneck";
-import { kv } from "@vercel/kv";
+//Name both cache SDK imports redis so they can be swapped out if one were to blow through the cache limit
+//import { kv as redis } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 import { ShopListingResponse, ShopListingsResponse } from "../../../types/EtsyAPITypes";
+import { ProductMinAPIData } from "../../../types/Types";
+
+// Comment out if using kv
+const redis = new Redis({
+    url: process.env.UPSTASH_REDIS_REST_URL,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 export interface FetchProductsParams {
     categoryId?: number | null;
@@ -68,26 +77,46 @@ export async function fetchProductsFromEtsy({
 
 async function setProductsCache({ categoryId = null, fetchImages = true, limit = 100 }: FetchProductsParams = {}) {
     const products = await fetchProductsFromEtsy({ categoryId, fetchImages, limit });
-    await kv.set("products", JSON.stringify(products));
-    await kv.set("timeSinceLastEtsyFetch", Date.now());
-    return products;
+    const minimalProductsData: ProductMinAPIData[] = products.map((product) => {
+        return {
+            listing_id: product.listing_id,
+            title: product.title,
+            description: product.description,
+            images: product.images.map((image) => ({
+                url_75x75: image.url_75x75,
+                url_170x135: image.url_170x135,
+                url_fullxfull: image.url_fullxfull,
+            })),
+            price: product.price,
+            shop_section_id: product.shop_section_id,
+            original_creation_timestamp: product.original_creation_timestamp,
+            num_favorers: product.num_favorers,
+            url: product.url,
+            production_partners: product.production_partners,
+            quantity: product.quantity,
+            tags: product.tags,
+        };
+    });
+    await redis.set("products", JSON.stringify(minimalProductsData));
+    await redis.set("timeSinceLastEtsyFetch", Date.now());
+    return minimalProductsData;
 }
 
 export async function fetchProductsFromCache({
     categoryId = null,
     fetchImages = true,
     limit = 100,
-}: FetchProductsParams = {}): Promise<ShopListingResponse[]> {
-    const timeSinceLastEtsyFetch = await kv.get("timeSinceLastEtsyFetch");
+}: FetchProductsParams = {}): Promise<ProductMinAPIData[]> {
+    const timeSinceLastEtsyFetch = await redis.get("timeSinceLastEtsyFetch");
 
-    // if more than 24 hours since last fetch, fetch again
-    if (timeSinceLastEtsyFetch === undefined || Date.now() - Number(timeSinceLastEtsyFetch) > 1000 * 60 * 60 * 24) {
+    // if more than 48 hours since last fetch, fetch again
+    if (timeSinceLastEtsyFetch === undefined || Date.now() - Number(timeSinceLastEtsyFetch) > 1000 * 60 * 60 * 48) {
         console.log("fetching products from etsy");
-        const products = await setProductsCache({ categoryId: null, fetchImages: true, limit });
+        const products = await setProductsCache({ categoryId: null, fetchImages: true }); // fetch all products
         return products;
     }
 
-    const cachedProducts: ShopListingResponse[] = await kv.get("products");
+    const cachedProducts: ProductMinAPIData[] = await redis.get("products");
 
     if (cachedProducts && cachedProducts.length > 0) {
         let selectedProducts = cachedProducts;
@@ -98,9 +127,9 @@ export async function fetchProductsFromCache({
             selectedProducts = selectedProducts.slice(0, limit);
         }
 
-        return selectedProducts;
+        return selectedProducts.slice(0, limit);
     } else {
-        const products = await setProductsCache({ categoryId: null, fetchImages: true, limit });
-        return products;
+        const products = await setProductsCache({ categoryId: null, fetchImages: true });
+        return products.slice(0, limit);
     }
 }

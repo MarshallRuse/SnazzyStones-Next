@@ -6,8 +6,9 @@ import { fetchCategoriesFromCache } from "../../../utils/fetching/categories/ets
 import { fetchProductsFromCache } from "../../../utils/fetching/products/etsyProducts";
 import ProductList from "../../../components/ProductList";
 import { collectionCardMap } from "../../../utils/collectionCardMap";
-import { ShopListingCondensed, ShopListingResponse, ShopListingsResponse } from "../../../types/EtsyAPITypes";
+import { ShopListingCondensed } from "../../../types/EtsyAPITypes";
 import FadingHeader from "../../../components/FadingHeader";
+import { ProductMinAPIData } from "../../../types/Types";
 
 const categoryPitches = {
     Anklets:
@@ -106,7 +107,7 @@ export async function getStaticProps(context) {
         (section) => section.title === params.categoryName.replace("_", " ")
     )?.shop_section_id;
 
-    let fetchedProducts: ShopListingResponse[] = [];
+    let fetchedProducts: ProductMinAPIData[] = [];
 
     if (categoryId) {
         await avoidRateLimit(500);
@@ -130,6 +131,6 @@ export async function getStaticProps(context) {
             products,
             category: params.categoryName.replace("_", " "),
         },
-        revalidate: 12 * 60 * 60, //revalidate twice a day
+        revalidate: 48 * 60 * 60, //revalidate every two days
     };
 }

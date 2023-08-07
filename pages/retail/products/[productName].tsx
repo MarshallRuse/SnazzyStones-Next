@@ -321,6 +321,6 @@ export async function getStaticProps(context) {
             product: formattedListing,
             category,
         },
-        revalidate: 60 * 60 * 24, //revalidate after a day
+        revalidate: 48 * 60 * 60, //revalidate after 2 days
     };
 }

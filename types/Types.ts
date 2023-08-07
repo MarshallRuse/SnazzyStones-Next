@@ -1,4 +1,23 @@
-import { ListingImage, Money, ShopProductionPartner } from "./EtsyAPITypes";
+import { ListingImage, Money, ShopListingResponse, ShopProductionPartner, ShopSectionResponse } from "./EtsyAPITypes";
+
+export type ListingImageMin = Pick<ListingImage, "url_75x75" | "url_170x135" | "url_fullxfull">;
+
+export type ProductMinAPIData = Pick<
+    ShopListingResponse,
+    | "listing_id"
+    | "title"
+    | "description"
+    | "price"
+    | "shop_section_id"
+    | "original_creation_timestamp"
+    | "num_favorers"
+    | "url"
+    | "production_partners"
+    | "quantity"
+    | "tags"
+> & {
+    images: ListingImageMin[];
+};
 
 export interface Product {
     listing_id: number;
@@ -25,3 +44,5 @@ export interface Dimensions {
     width: number;
     height: number;
 }
+
+export type CategoriesMinAPIData = Pick<ShopSectionResponse, "shop_section_id" | "title">;
