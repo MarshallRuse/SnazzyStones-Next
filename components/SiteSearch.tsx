@@ -7,7 +7,7 @@ import Search from "@mui/icons-material/Search";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import formatProductTitleAsURL from "../utils/formatProductTitleAsURL";
 import { APIProductsResponse } from "../pages/api/retail/products";
-import { ShopListingResponse } from "../types/EtsyAPITypes";
+import { ProductMinAPIData } from "../types/Types";
 
 const theme = createTheme({
     palette: {
@@ -29,9 +29,9 @@ export interface SiteSearchProps {
 
 export default function SiteSearch({ className = "", ...rest }: SiteSearchProps) {
     const router = useRouter();
-    const [products, setProducts] = useState<Partial<ShopListingResponse>[]>([]);
+    const [products, setProducts] = useState<Partial<ProductMinAPIData>[]>([]);
     const [autocompleteVisible, setAutocompleteVisible] = useState(false);
-    const [value, setValue] = useState<Partial<ShopListingResponse> | null>(null);
+    const [value, setValue] = useState<Partial<ProductMinAPIData> | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     const handleClearAndCloseInput = () => {
