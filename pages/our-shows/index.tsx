@@ -1,7 +1,7 @@
-import Image from "next/image";
-import { NextSeo } from "next-seo";
-import TextContainer from "../../components/TextContainer";
-import styles from "../../styles/modules/OurShows.module.scss";
+import Image from 'next/image';
+import { NextSeo } from 'next-seo';
+import TextContainer from '../../components/TextContainer';
+import styles from '../../styles/modules/OurShows.module.scss';
 
 export default function OurShows() {
     return (
@@ -11,27 +11,33 @@ export default function OurShows() {
                 description='Find us in person!'
                 canonical='https://snazzystones.ca/our-shows'
                 openGraph={{
-                    url: "https://snazzystones.ca/our-shows",
-                    title: "Our Shows | SnazzyStones",
-                    description: "Find us in person!",
+                    url: 'https://snazzystones.ca/our-shows',
+                    title: 'Our Shows | SnazzyStones',
+                    description: 'Find us in person!',
                     images: [
                         {
-                            url: "https://res.cloudinary.com/marsh/image/upload/q_auto/v1651757847/snazzystones-website/briMarket_2021-08-01.jpg",
+                            url: 'https://res.cloudinary.com/marsh/image/upload/q_auto/v1651757847/snazzystones-website/briMarket_2021-08-01.jpg',
                             width: 3920,
                             height: 1960,
-                            alt: "Brianna presenting jewellery at a market",
-                            type: "image/jpeg",
+                            alt: 'Brianna presenting jewellery at a market',
+                            type: 'image/jpeg',
                         },
                     ],
-                    site_name: "SnazzyStones",
+                    site_name: 'SnazzyStones',
                 }}
                 twitter={{
-                    cardType: "summary_large_image",
+                    cardType: 'summary_large_image',
                 }}
             />
 
-            <header className={"heroSectionHeader"} style={{ backgroundPositionX: "30%" }}>
-                <div className={`${styles.heroBackground} heroSection`} style={{ backgroundPositionX: "30%" }}></div>
+            <header
+                className={'heroSectionHeader'}
+                style={{ backgroundPositionX: '30%' }}
+            >
+                <div
+                    className={`${styles.heroBackground} heroSection`}
+                    style={{ backgroundPositionX: '30%' }}
+                ></div>
                 <div>
                     <h1 className='heroTitle text-white overlayText'>Our Shows</h1>
                 </div>
@@ -60,7 +66,7 @@ export default function OurShows() {
                     <div className='col-span-3 md:col-span-2'>
                         <h3>Market in the Park</h3>
                         <p>
-                            Every <strong>Monday</strong> from July to Labour Day, find us at Connaught Park* for the{" "}
+                            Every <strong>Monday</strong> from July to Labour Day, find us at Victoria Park for the{' '}
                             <a
                                 href='https://www.kincardine.ca/en/visit/market-in-the-park.aspx'
                                 target='_blank'
@@ -69,10 +75,6 @@ export default function OurShows() {
                             >
                                 weekly Market in the Park
                             </a>
-                        </p>
-                        <p className='italic text-xs'>
-                            * July 10th and September 4th, we&apos;ll be at the Tiverton & District Sports Centre at 20
-                            McClaren Street
                         </p>
                     </div>
                     <div className='col-span-3 md:col-span-1 mx-auto'>
@@ -83,7 +85,7 @@ export default function OurShows() {
                             style={{ border: 0 }}
                             className='rounded-md shadow-light'
                             referrerPolicy='no-referrer-when-downgrade'
-                            src='https://www.google.com/maps/embed/v1/place?q=place_id:ChIJE9oR1CJRKIgRy_m5pSKfqao&key=AIzaSyCN5rwciQHCHF4Mi_U0PxRmWPtsofhRaXs'
+                            src='https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ-9ec3DFRKIgREY69A9CDwmM&key=AIzaSyCN5rwciQHCHF4Mi_U0PxRmWPtsofhRaXs'
                             loading='lazy'
                             allowFullScreen
                         ></iframe>
@@ -153,7 +155,7 @@ export default function OurShows() {
                     <h2 className='mt-0 text-5xl'>Keady</h2>
                     <h3>Keady Vendor Market</h3>
                     <p>
-                        Every <strong>Tuesday</strong> from July to Labour Day, find us at the{" "}
+                        Every <strong>Tuesday</strong> from July to Labour Day, find us at the{' '}
                         <a
                             href='http://keadymarket.com/'
                             target='_blank'
@@ -179,7 +181,7 @@ export default function OurShows() {
                     ></iframe>
                 </div>
             </section>
-            <section className='px-10 md:px-40 py-20 bg-slate-100 text-blueyonder-500 grid items-start md:grid-cols-4 gap-10'>
+            {/* <section className='px-10 md:px-40 py-20 bg-slate-100 text-blueyonder-500 grid items-start md:grid-cols-4 gap-10'>
                 <div className='flex rounded-md aspect-square  col-span-3 md:col-span-1'>
                     <Image
                         src='/images/owensoundlogo.png'
@@ -219,8 +221,8 @@ export default function OurShows() {
                         allowFullScreen
                     ></iframe>
                 </div>
-            </section>
-            <section className='px-10 md:px-40 py-20 bg-white text-blueyonder-500 grid items-start md:grid-cols-4 gap-10'>
+            </section> */}
+            <section className='px-10 md:px-40 py-20 bg-slate-100 text-blueyonder-500 grid items-start md:grid-cols-4 gap-10'>
                 <div className='flex rounded-md aspect-square  col-span-3 md:col-span-1'>
                     <Image
                         src='/images/wiartonLogo.png'
@@ -235,7 +237,7 @@ export default function OurShows() {
                     <h2 className='mt-0 text-5xl'>Wiarton</h2>
                     <h3>Wiarton Lakeview Vendor&apos;s Market</h3>
                     <p>
-                        Every <strong>Friday</strong> from July to Labour Day, find us in Bluewater Park at the{" "}
+                        Every <strong>Wednesday</strong> from July to Labour Day, find us in Bluewater Park at the{' '}
                         <a
                             href='https://www.facebook.com/saublemarket/events'
                             target='_blank'
@@ -256,6 +258,48 @@ export default function OurShows() {
                         className='rounded-md shadow-light'
                         referrerPolicy='no-referrer-when-downgrade'
                         src='https://www.google.com/maps/embed/v1/place?q=place_id:ChIJSVwezh3JLE0RYhpdTAiHSC0&key=AIzaSyCN5rwciQHCHF4Mi_U0PxRmWPtsofhRaXs'
+                        loading='lazy'
+                        allowFullScreen
+                    ></iframe>
+                </div>
+            </section>
+            <section className='px-10 md:px-40 py-20 bg-white text-blueyonder-500 grid items-start md:grid-cols-4 gap-10'>
+                <div className='flex rounded-md aspect-square  col-span-3 md:col-span-1'>
+                    <Image
+                        src='/images/SaubleBeachLogo.png'
+                        width={318}
+                        height={318}
+                        objectFit='contain'
+                        className='rounded-md aspect-square drop-shadow-light'
+                        alt='Sauble Beach, Ontario logo'
+                    />
+                </div>
+                <div className='col-span-3 md:col-span-2'>
+                    <h2 className='mt-0 text-5xl'>Sauble Beach</h2>
+                    <h3>Sauble Beach Lakeview Vendor&apos;s Market</h3>
+                    <p>
+                        Every <strong>Friday</strong> and <strong>Sunday</strong> from July to Labour Day, find us near
+                        the Ascent Aerial Park at the{' '}
+                        <a
+                            href='https://www.facebook.com/saublemarket/events'
+                            target='_blank'
+                            rel='noreferrer'
+                            className='text-bluegreen-500'
+                        >
+                            Sauble Beach Lakeview Vendor&apos;s Market
+                        </a>
+                        .
+                    </p>
+                </div>
+                <div className='col-span-3 md:col-span-1 mx-auto'>
+                    <iframe
+                        width='300'
+                        height='300'
+                        frameBorder='0'
+                        style={{ border: 0 }}
+                        className='rounded-md shadow-light'
+                        referrerPolicy='no-referrer-when-downgrade'
+                        src='https://www.google.com/maps/embed/v1/view?key=AIzaSyCN5rwciQHCHF4Mi_U0PxRmWPtsofhRaXs&center=44.63019987396363,-81.26980022005358&zoom=16'
                         loading='lazy'
                         allowFullScreen
                     ></iframe>
