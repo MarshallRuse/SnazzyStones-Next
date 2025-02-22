@@ -1,7 +1,7 @@
-import Image from "next/image";
-import { NextSeo } from "next-seo";
-import FadeInDiv from "../../components/FadeInDiv";
-import styles from "../../styles/modules/SilverCare.module.scss";
+import Image from 'next/image';
+import { NextSeo } from 'next-seo';
+import FadeInDiv from '../../components/FadeInDiv';
+import styles from '../../styles/modules/SilverCare.module.css';
 
 export default function SilverCare() {
     return (
@@ -11,22 +11,22 @@ export default function SilverCare() {
                 description='Learn some best practices for keeping your silver jewelry immaculate!'
                 canonical='https://snazzystones.ca/silver-care'
                 openGraph={{
-                    url: "https://snazzystones.ca/silver-care",
-                    title: "Caring For Your Silver | SnazzyStones",
-                    description: "Learn some best practices for keeping your silver jewelry immaculate!",
+                    url: 'https://snazzystones.ca/silver-care',
+                    title: 'Caring For Your Silver | SnazzyStones',
+                    description: 'Learn some best practices for keeping your silver jewelry immaculate!',
                     images: [
                         {
-                            url: "https://res.cloudinary.com/marsh/image/upload/q_auto/v1651748940/snazzystones-website/silverCare_2020-06-27.jpg",
+                            url: 'https://res.cloudinary.com/marsh/image/upload/q_auto/v1651748940/snazzystones-website/silverCare_2020-06-27.jpg',
                             width: 3920,
                             height: 1960,
-                            alt: "Silver bracelets artfully placed on a cleaning cloth",
-                            type: "image/jpeg",
+                            alt: 'Silver bracelets artfully placed on a cleaning cloth',
+                            type: 'image/jpeg',
                         },
                     ],
-                    site_name: "SnazzyStones",
+                    site_name: 'SnazzyStones',
                 }}
                 twitter={{
-                    cardType: "summary_large_image",
+                    cardType: 'summary_large_image',
                 }}
             />
             <header className='heroSectionHeader'>
@@ -36,7 +36,11 @@ export default function SilverCare() {
                 </div>
             </header>
             <section className='px-10 md:px-40 py-20 bg-white grid md:grid-cols-2 items-center gap-20'>
-                <FadeInDiv from='left' threshold={0.2} className='text-blueyonder-500'>
+                <FadeInDiv
+                    from='left'
+                    threshold={0.2}
+                    className='text-blueyonder-500'
+                >
                     <h2>Background Information on Sterling Silver</h2>
                     <p>
                         Sterling silver is composed of 92.5% pure silver and 7.5% another metal. Hence the
@@ -87,18 +91,22 @@ export default function SilverCare() {
                     </p>
                     <p>Here are our top tips on keeping your pieces shiny:</p>
                 </div>
-                <FadeInDiv from='right' threshold={0.3} className='text-white md:col-span-3 md:order-2'>
+                <FadeInDiv
+                    from='right'
+                    threshold={0.3}
+                    className='text-white md:col-span-3 md:order-2'
+                >
                     <ul className='snazzyList whiteList text-slate-50'>
                         <li>
-                            Our top tip is simple: <strong className='text-white text-lg'>wear your jewellery!</strong>{" "}
+                            Our top tip is simple: <strong className='text-white text-lg'>wear your jewellery!</strong>{' '}
                             Sterling silver wants to be shown off. To keep your piece happy and shiny, show it some love
                             and wear it regularly. (The oils in your skin are to thank for this).
                         </li>
                         <li>
-                            When you are not wearing your piece,{" "}
+                            When you are not wearing your piece,{' '}
                             <strong className='text-white text-lg'>
                                 keep it away from open air and direct sunlight.
-                            </strong>{" "}
+                            </strong>{' '}
                             Small zip lock plastic bags (like the ones you get with your purchase) work great for this;
                             squeeze the air out, shut it, and tuck it away until next time.
                             <ul className='snazzySubList'>
@@ -112,21 +120,24 @@ export default function SilverCare() {
                         <li>
                             <strong className='text-white text-lg'>
                                 Avoid wearing your silver while doing household chores.
-                            </strong>{" "}
+                            </strong>{' '}
                             Contact with household chemicals, perspiration, rubber, products containing sulphur, and
                             chlorinated water will react with your sterling silver and cause tarnishing on your
                             favourite piece.
                         </li>
                         <li>
                             Make jewellery the finishing touch to your ensemble! Perfumes, hair products and lotions can
-                            also accelerate tarnishing, so{" "}
+                            also accelerate tarnishing, so{' '}
                             <strong className='text-white text-lg'>
                                 while getting ready we recommend being silver-free.
                             </strong>
                         </li>
                     </ul>
                 </FadeInDiv>
-                <FadeInDiv from='left' className='md:col-span-2 md:order-1'>
+                <FadeInDiv
+                    from='left'
+                    className='md:col-span-2 md:order-1'
+                >
                     <figure>
                         <div className='flex rounded-md max-w-max shadow-light'>
                             <Image
@@ -152,10 +163,13 @@ export default function SilverCare() {
                         gloves while cleaning it!
                     </p>
                     <p>Here are our top tips for when your piece needs a little TLC.</p>
-                    <FadeInDiv from='left' threshold={0.1}>
+                    <FadeInDiv
+                        from='left'
+                        threshold={0.1}
+                    >
                         <ul className='snazzyList blueList text-blueyonder-400'>
                             <li>
-                                For the majority of cleaning (as long as the tarnishing is not too severe),{" "}
+                                For the majority of cleaning (as long as the tarnishing is not too severe),{' '}
                                 <strong className='text-blueyonder-500'>a polishing cloth</strong> is just what you need
                                 to bring the shine back to your piece! These are generally a microfiber cloth or a
                                 lint-free flannel with a cleaning agent on one side (Snazzy Stones offers both these
@@ -164,7 +178,7 @@ export default function SilverCare() {
                                 from fibers in the material you are using.
                             </li>
                             <li>
-                                There are a lot of{" "}
+                                There are a lot of{' '}
                                 <strong className='text-blueyonder-500'>sterling silver dips and polishes</strong> that
                                 work well in cleaning your items, which can be found at hardware stores. We recommend
                                 using them in a well ventilated area, looking into proper disposal methods, and avoid
@@ -176,7 +190,7 @@ export default function SilverCare() {
                             <li>
                                 <strong className='text-blueyonder-500'>
                                     Transfer the tarnish from your jewellery to a piece of aluminum foil!
-                                </strong>{" "}
+                                </strong>{' '}
                                 This option we love especially for chains which can be hard to clean in all those little
                                 hard to reach places.
                                 <ul className='snazzySubList'>
@@ -201,15 +215,15 @@ export default function SilverCare() {
                             </li>
                             <li>
                                 You may have heard before that using toothpaste is also an option for cleaning your
-                                sterling silver jewellery. While this is true, the toothpaste this is referring to is{" "}
+                                sterling silver jewellery. While this is true, the toothpaste this is referring to is{' '}
                                 <strong className='text-blueyonder-500'>
                                     non-whitening, non-gel, basic (and getting harder to come by) toothpaste.
-                                </strong>{" "}
+                                </strong>{' '}
                                 An alternative to this is using a clean, soft cloth (remember, silver is easily
-                                scratched if the cloth is too abrasive) and applying a{" "}
+                                scratched if the cloth is too abrasive) and applying a{' '}
                                 <strong className='text-blueyonder-500'>
                                     small amount of paste made from baking soda and water
-                                </strong>{" "}
+                                </strong>{' '}
                                 to your piece. If the piece has any indentations, add more water to dilute the paste so
                                 it doesn’t stick and dry in the cracks. Rinse and buff with a soft cloth!
                             </li>

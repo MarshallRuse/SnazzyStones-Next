@@ -1,19 +1,19 @@
-import Image from "next/image";
-import Link from "next/link";
-import { NextSeo } from "next-seo";
-import styles from "../styles/modules/Home.module.scss";
-import Instagram from "@mui/icons-material/Instagram";
-import TextContainer from "../components/TextContainer";
-import CollectionCard from "../components/CollectionCard";
-import ProductListingCard from "../components/ProductListingCard";
-import InstagramFeed from "../components/InstagramFeed";
-import { collectionCardMap } from "../utils/collectionCardMap";
-import { avoidRateLimit } from "../utils/avoidRateLimit";
-import { fetchCategoriesFromCache } from "../utils/fetching/categories/etsyCategories";
-import { fetchProductsFromCache } from "../utils/fetching/products/etsyProducts";
-import formatProductTitleAsURL from "../utils/formatProductTitleAsURL";
-import CTALink from "../components/CTAElements/CTALink";
-import { ShopListingResponse, ShopSectionResponse } from "../types/EtsyAPITypes";
+import Image from 'next/image';
+import Link from 'next/link';
+import { NextSeo } from 'next-seo';
+import styles from '../styles/modules/Home.module.css';
+import Instagram from '@mui/icons-material/Instagram';
+import TextContainer from '../components/TextContainer';
+import CollectionCard from '../components/CollectionCard';
+import ProductListingCard from '../components/ProductListingCard';
+import InstagramFeed from '../components/InstagramFeed';
+import { collectionCardMap } from '../utils/collectionCardMap';
+import { avoidRateLimit } from '../utils/avoidRateLimit';
+import { fetchCategoriesFromCache } from '../utils/fetching/categories/etsyCategories';
+import { fetchProductsFromCache } from '../utils/fetching/products/etsyProducts';
+import formatProductTitleAsURL from '../utils/formatProductTitleAsURL';
+import CTALink from '../components/CTAElements/CTALink';
+import { ShopListingResponse, ShopSectionResponse } from '../types/EtsyAPITypes';
 
 export interface HomeProps {
     feed: any;
@@ -36,7 +36,10 @@ export default function Home({ feed, products, categories }: HomeProps) {
                         Specializing in Silver & Gemstone Jewellery
                     </h2>
                     <div className='flex justify-center'>
-                        <Link href='/retail' passHref>
+                        <Link
+                            href='/retail'
+                            passHref
+                        >
                             <CTALink className='mt-4'>SHOP NOW</CTALink>
                         </Link>
                     </div>
@@ -60,18 +63,18 @@ export default function Home({ feed, products, categories }: HomeProps) {
             <section className='bg-white'>
                 <div className='grid md:grid-cols-3 gap-10 px-4 md:px-32 py-12 max-w-screen-2xl mx-auto relative'>
                     <CollectionCard
-                        cardImageSrc={collectionCardMap["Hoops"].url}
-                        alt={collectionCardMap["Hoops"].alt}
+                        cardImageSrc={collectionCardMap['Hoops'].url}
+                        alt={collectionCardMap['Hoops'].alt}
                         title='Hoops'
                     />
                     <CollectionCard
-                        cardImageSrc={collectionCardMap["Pendants"].url}
-                        alt={collectionCardMap["Pendants"].alt}
+                        cardImageSrc={collectionCardMap['Pendants'].url}
+                        alt={collectionCardMap['Pendants'].alt}
                         title='Pendants'
                     />
                     <CollectionCard
-                        cardImageSrc={collectionCardMap["Necklaces"].url}
-                        alt={collectionCardMap["Necklaces"].alt}
+                        cardImageSrc={collectionCardMap['Necklaces'].url}
+                        alt={collectionCardMap['Necklaces'].alt}
                         title='Necklaces'
                     />
                 </div>
@@ -79,13 +82,13 @@ export default function Home({ feed, products, categories }: HomeProps) {
             <section className='bg-slate-100 '>
                 <div className='grid md:grid-cols-3 gap-10 px-4 md:px-32 py-12  max-w-screen-2xl mx-auto relative'>
                     <CollectionCard
-                        cardImageSrc={collectionCardMap["Bracelets"].url}
-                        alt={collectionCardMap["Bracelets"].alt}
+                        cardImageSrc={collectionCardMap['Bracelets'].url}
+                        alt={collectionCardMap['Bracelets'].alt}
                         title='Bracelets'
                     />
                     <CollectionCard
-                        cardImageSrc={collectionCardMap["Anklets"].url}
-                        alt={collectionCardMap["Anklets"].alt}
+                        cardImageSrc={collectionCardMap['Anklets'].url}
+                        alt={collectionCardMap['Anklets'].alt}
                         title='Anklets'
                     />
                 </div>
@@ -107,7 +110,7 @@ export default function Home({ feed, products, categories }: HomeProps) {
                             productName={prod.title}
                             //productPrice={prod.price.amount / prod.price.divisor}
                             productPageLink={`/retail/products/${
-                                prod.title.includes("|") ? formatProductTitleAsURL(prod.title) : prod.listing_id
+                                prod.title.includes('|') ? formatProductTitleAsURL(prod.title) : prod.listing_id
                             }`}
                         />
                     ))}
@@ -120,7 +123,10 @@ export default function Home({ feed, products, categories }: HomeProps) {
                         We can be found at multiple venues each week throughout the spring, summer, and autumn. Take a
                         look at our schedule to see if we’ll be at a show near you!
                     </p>
-                    <Link href='/index' passHref>
+                    <Link
+                        href='/index'
+                        passHref
+                    >
                         <CTALink>FIND US!</CTALink>
                     </Link>
                 </TextContainer>

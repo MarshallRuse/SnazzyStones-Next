@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { NextSeo } from 'next-seo';
 import TextContainer from '../../components/TextContainer';
-import styles from '../../styles/modules/OurShows.module.scss';
+import styles from '../../styles/modules/OurShows.module.css';
 
 export default function OurShows() {
     return (

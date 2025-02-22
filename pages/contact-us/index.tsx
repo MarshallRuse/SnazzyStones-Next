@@ -1,7 +1,7 @@
-import { NextSeo } from "next-seo";
-import EmailRounded from "@mui/icons-material/EmailRounded";
-import ContactUsForm from "../../components/ContactUsForm";
-import styles from "../../styles/modules/ContactUs.module.scss";
+import { NextSeo } from 'next-seo';
+import EmailRounded from '@mui/icons-material/EmailRounded';
+import ContactUsForm from '../../components/ContactUsForm';
+import styles from '../../styles/modules/ContactUs.module.css';
 
 export default function ContactUs() {
     return (
@@ -11,22 +11,22 @@ export default function ContactUs() {
                 description='I would love to hear from you!'
                 canonical='https://snazzystones.ca/contact-us'
                 openGraph={{
-                    url: "https://snazzystones.ca/contact-us",
-                    title: "Contact Us | SnazzyStones",
-                    description: "I would love to hear from you!",
+                    url: 'https://snazzystones.ca/contact-us',
+                    title: 'Contact Us | SnazzyStones',
+                    description: 'I would love to hear from you!',
                     images: [
                         {
-                            url: "https://res.cloudinary.com/marsh/image/upload/q_auto/v1652533589/snazzystones-website/CatBrowsingJewelry.jpg",
+                            url: 'https://res.cloudinary.com/marsh/image/upload/q_auto/v1652533589/snazzystones-website/CatBrowsingJewelry.jpg',
                             width: 3920,
                             height: 1960,
-                            alt: "A cat browsing the website",
-                            type: "image/jpeg",
+                            alt: 'A cat browsing the website',
+                            type: 'image/jpeg',
                         },
                     ],
-                    site_name: "SnazzyStones",
+                    site_name: 'SnazzyStones',
                 }}
                 twitter={{
-                    cardType: "summary_large_image",
+                    cardType: 'summary_large_image',
                 }}
             />
             <header className='heroSectionHeader'>
@@ -39,7 +39,7 @@ export default function ContactUs() {
             <section className='flex justify-center'>
                 <div
                     className='-mt-12 mb-24 flex flex-col items-center gap-10 px-16 py-14 w-screen md:max-w-screen-sm bg-white rounded-sm'
-                    style={{ boxShadow: "0px 0px 50px -10px rgba(0,0,0,0.17)" }}
+                    style={{ boxShadow: '0px 0px 50px -10px rgba(0,0,0,0.17)' }}
                 >
                     <h2>
                         <span className='snazzy text-blueyonder-500'>Snazzy </span>
@@ -50,7 +50,10 @@ export default function ContactUs() {
                             href='mailto:snazzystones@gmail.com?subject=SnazzyStones.ca Inquiry'
                             className='flex flex-col items-center gap-2 navItem group'
                         >
-                            <EmailRounded fontSize='large' className='group-hover:scale-125 transition' />
+                            <EmailRounded
+                                fontSize='large'
+                                className='group-hover:scale-125 transition'
+                            />
                             snazzystones@gmail.com
                         </a>
                     </div>
