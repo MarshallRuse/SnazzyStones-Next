@@ -1,11 +1,11 @@
-import Image from "next/image";
-import Link from "next/link";
-import Instagram from "@mui/icons-material/Instagram";
-import Facebook from "@mui/icons-material/Facebook";
+import Image from 'next/image';
+import Link from 'next/link';
+import Instagram from '@mui/icons-material/Instagram';
+import Facebook from '@mui/icons-material/Facebook';
 
-const listStyle = "text-blueyonder-500 text-sm whitespace-nowrap my-4 hover:text-bluegreen-500 transition duration-300";
+const listStyle = 'text-blueyonder-500 text-sm whitespace-nowrap my-4 hover:text-bluegreen-500 transition duration-300';
 const iconSpanStyle =
-    "flex items-center justify-center bg-blueyonder-500 rounded-full text-white cursor-pointer p-2 transition hover:bg-cerise-500";
+    'flex items-center justify-center bg-blueyonder-500 rounded-full text-white cursor-pointer p-2 transition hover:bg-cerise-500';
 
 export default function Footer() {
     return (
@@ -28,7 +28,12 @@ export default function Footer() {
                             rel='noreferrer'
                             className={iconSpanStyle}
                         >
-                            <Image src='/svg/etsy-icon.svg' width={22.5} height={22.5} alt='Etsy icon' />
+                            <Image
+                                src='/svg/etsy-icon.svg'
+                                width={22.5}
+                                height={22.5}
+                                alt='Etsy icon'
+                            />
                         </a>
                         <a
                             href='https://www.instagram.com/snazzystones'
@@ -54,19 +59,13 @@ export default function Footer() {
                             <h4 className='text-bluegreen-500 text-xl py-5 md:py-0'>Important Links</h4>
                             <ul className='p-0'>
                                 <li className={listStyle}>
-                                    <Link href='/index'>
-                                        <a>SHIPPING & RETURNS</a>
-                                    </Link>
+                                    <Link href='/index'>SHIPPING & RETURNS</Link>
                                 </li>
                                 <li className={listStyle}>
-                                    <Link href='/index'>
-                                        <a>PRIVACY POLICY</a>
-                                    </Link>
+                                    <Link href='/index'>PRIVACY POLICY</Link>
                                 </li>
                                 <li className={listStyle}>
-                                    <Link href='/index'>
-                                        <a>TERMS & CONDITIONS</a>
-                                    </Link>
+                                    <Link href='/index'>TERMS & CONDITIONS</Link>
                                 </li>
                             </ul>
                         </div>
@@ -74,14 +73,10 @@ export default function Footer() {
                             <h4 className='text-bluegreen-500 text-xl py-5 md:py-0 mx-auto'>Quick Links</h4>
                             <ul className='p-0'>
                                 <li className={listStyle}>
-                                    <Link href='/index'>
-                                        <a>KNOW MORE ABOUT US</a>
-                                    </Link>
+                                    <Link href='/index'>KNOW MORE ABOUT US</Link>
                                 </li>
                                 <li className={listStyle}>
-                                    <Link href='/index'>
-                                        <a>VISIT SHOP</a>
-                                    </Link>
+                                    <Link href='/index'>VISIT SHOP</Link>
                                 </li>
                                 <li className={listStyle}>LET&apos;S CONNECT</li>
                             </ul>
@@ -90,7 +85,7 @@ export default function Footer() {
                 </div>
             </div>
             <div className='items-baseline border border-t-slate-200 text-blueyonder-500 text-center p-10'>
-                Copyright © {new Date().getFullYear()} Snazzy Stones | Designed by{" "}
+                Copyright © {new Date().getFullYear()} Snazzy Stones | Designed by{' '}
                 <a
                     href='https://marshallruse.com/'
                     target='_blank'

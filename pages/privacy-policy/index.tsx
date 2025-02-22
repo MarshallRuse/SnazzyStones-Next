@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 export default function PrivacyPolicy() {
     return (
@@ -17,8 +17,11 @@ export default function PrivacyPolicy() {
                 We use your Personal Information for providing and improving the Service. By using the Service, you
                 agree to the collection and use of information in accordance with this policy. Unless otherwise defined
                 in this Privacy Policy, terms used in this Privacy Policy have the same meanings as in our
-                <Link href='/index'>
-                    <a className='text-bluegreen-500'>Terms and Conditions</a>
+                <Link
+                    href='/index'
+                    className='text-bluegreen-500'
+                >
+                    Terms and Conditions
                 </Link>
                 .
             </p>

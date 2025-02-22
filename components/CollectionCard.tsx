@@ -1,6 +1,6 @@
-import Image from "next/image";
-import Link from "next/link";
-import CTALink from "./CTAElements/CTALink";
+import Image from 'next/image';
+import Link from 'next/link';
+import CTALink from './CTAElements/CTALink';
 
 interface CollectionCardProps {
     cardImageSrc?: string;
@@ -8,9 +8,9 @@ interface CollectionCardProps {
     alt?: string;
 }
 
-export default function CollectionCard({ cardImageSrc = "", title = "", alt = "" }: CollectionCardProps) {
+export default function CollectionCard({ cardImageSrc = '', title = '', alt = '' }: CollectionCardProps) {
     return (
-        <div className={`flex relative group ${cardImageSrc ? "" : "w-full aspect-[2/3]"}`}>
+        <div className={`flex relative group ${cardImageSrc ? '' : 'w-full aspect-[2/3]'}`}>
             {cardImageSrc ? (
                 <Image
                     src={cardImageSrc}
@@ -31,12 +31,13 @@ export default function CollectionCard({ cardImageSrc = "", title = "", alt = ""
 
             <div className='absolute top-0 left-0 w-full h-full opacity-50 rounded-2xl bg-gradient-to-b from-transparent to-black transition group-hover:opacity-30' />
             <div className='flex flex-col items-center justify-end gap-4 absolute top-0 left-0 w-full h-full pb-10 px-4'>
-                <Link href={`/retail/categories/${title.replace(" ", "_")}`}>
-                    <a>
-                        <h3 className='text-white font-normal text-3xl text-center text-shadow-cerise'>{title}</h3>
-                    </a>
+                <Link href={`/retail/categories/${title.replace(' ', '_')}`}>
+                    <h3 className='text-white font-normal text-3xl text-center text-shadow-cerise'>{title}</h3>
                 </Link>
-                <Link href={`/retail/categories/${title.replace(" ", "_")}`} passHref>
+                <Link
+                    href={`/retail/categories/${title.replace(' ', '_')}`}
+                    passHref
+                >
                     <CTALink>SEE COLLECTION</CTALink>
                 </Link>
             </div>

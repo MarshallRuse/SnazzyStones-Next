@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 export default function TermsAndConditions() {
     return (
@@ -110,9 +110,12 @@ export default function TermsAndConditions() {
             </p>
             <h2>Contact Us</h2>
             <p>
-                If you have any questions about these Terms,{" "}
-                <Link href='/index'>
-                    <a className='text-bluegreen-500 navItem inline-flex'>please contact us</a>
+                If you have any questions about these Terms,{' '}
+                <Link
+                    href='/index'
+                    className='text-bluegreen-500 navItem inline-flex'
+                >
+                    please contact us
                 </Link>
                 .
             </p>

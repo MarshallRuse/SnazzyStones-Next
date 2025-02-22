@@ -93,14 +93,20 @@ export default function ProductPage({ product = null, category = '' }: ProductPa
                 />
                 <div className='flex flex-col row-span-2 text-sm text-slate-500 max-w-sm md:max-w-lg pt-2'>
                     <nav className='flex flex-nowrap'>
-                        <Link href='/'>
-                            <a className='text-bluegreen-500 navItem max-w-max inline-flex mx-1'>Home</a>
+                        <Link
+                            href='/'
+                            className='text-bluegreen-500 navItem max-w-max inline-flex mx-1'
+                        >
+                            Home
                         </Link>{' '}
                         {category && (
                             <>
                                 /
-                                <Link href={`/retail/categories/${category?.replace(' ', '_')}`}>
-                                    <a className='text-bluegreen-500 navItem max-w-max inline-flex mx-1'>{category}</a>
+                                <Link
+                                    href={`/retail/categories/${category?.replace(' ', '_')}`}
+                                    className='text-bluegreen-500 navItem max-w-max inline-flex mx-1'
+                                >
+                                    {category}
                                 </Link>
                             </>
                         )}
@@ -180,6 +186,7 @@ export default function ProductPage({ product = null, category = '' }: ProductPa
                             href={`https://snazzystonesjewelry.etsy.com/listing/${product.listing_id}`}
                             target='_blank'
                             rel='noreferrer'
+                            type='external'
                         >
                             Purchase on Etsy
                         </CTALink>

@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode } from "react";
+import { forwardRef, ReactNode } from 'react';
 
 interface HoverStyledAnchorProps {
     children: ReactNode;
@@ -9,17 +9,17 @@ interface HoverStyledAnchorProps {
 const HoverStyledAnchor = forwardRef<HTMLAnchorElement, HoverStyledAnchorProps>(
     ({ children, className, ...rest }, ref) => {
         return (
-            <a
+            <span
                 ref={ref}
                 className={`py-6 md:py-0 transition-all duration-300 hover:text-bluegreen-500 cursor-pointer ${className}`}
                 {...rest}
             >
                 {children}
-            </a>
+            </span>
         );
     }
 );
 
-HoverStyledAnchor.displayName = "HoverStyledAnchor";
+HoverStyledAnchor.displayName = 'HoverStyledAnchor';
 
 export default HoverStyledAnchor;

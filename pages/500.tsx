@@ -1,6 +1,6 @@
-import Link from "next/link";
-import KeyboardBackspaceRounded from "@mui/icons-material/KeyboardBackspaceRounded";
-import CTALink from "../components/CTAElements/CTALink";
+import Link from 'next/link';
+import KeyboardBackspaceRounded from '@mui/icons-material/KeyboardBackspaceRounded';
+import CTALink from '../components/CTAElements/CTALink';
 
 export default function Custom500() {
     return (
@@ -12,16 +12,17 @@ export default function Custom500() {
             <h2 className='text-6xl text-blueyonder-500'>500</h2>
             <p className='text-blueyonder-500 mb-0'>Welp, looks like a server error occurred.</p>
             <p>
-                <Link href='/' passHref>
+                <Link
+                    href='/'
+                    passHref
+                >
                     <CTALink>
                         <KeyboardBackspaceRounded /> Get back to the snazziness!
                     </CTALink>
                 </Link>
             </p>
             <p className='text-bluegreen-500 navItem'>
-                <Link href='/index'>
-                    <a>or let us know what happened.</a>
-                </Link>
+                <Link href='/index'>or let us know what happened.</Link>
             </p>
         </div>
     );
