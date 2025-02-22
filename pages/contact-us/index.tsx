@@ -38,7 +38,7 @@ export default function ContactUs() {
             </header>
             <section className='flex justify-center'>
                 <div
-                    className='-mt-12 mb-24 flex flex-col items-center gap-10 px-16 py-14 w-screen md:max-w-screen-sm bg-white rounded-sm'
+                    className='-mt-12 mb-24 flex flex-col items-center gap-10 px-16 py-14 w-screen md:max-w-(--breakpoint-sm) bg-white rounded-xs'
                     style={{ boxShadow: '0px 0px 50px -10px rgba(0,0,0,0.17)' }}
                 >
                     <h2>

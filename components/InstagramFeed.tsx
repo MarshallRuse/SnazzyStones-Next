@@ -21,7 +21,7 @@ export default function InstagramFeed({ feed }) {
 
     return (
         <>
-            <div className='grid md:grid-cols-4 gap-10 mt-10 max-w-screen-2xl mx-auto'>
+            <div className='grid md:grid-cols-4 gap-10 mt-10 max-w-(--breakpoint-2xl) mx-auto'>
                 {instagramImages &&
                     instagramImages.map((instImg) => (
                         <a

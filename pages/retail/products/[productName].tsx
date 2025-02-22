@@ -32,7 +32,7 @@ import { Product } from '../../../types/Types';
 import CTALink from '../../../components/CTAElements/CTALink';
 import { APIReviewsResponse } from '../../api/retail/products/reviews/[listing_id]';
 
-const shareButtonStyle = 'rounded-full focus:outline-none focus:ring focus:ring-bluegreen-500 focus:ring-offset-2';
+const shareButtonStyle = 'rounded-full focus:outline-hidden focus:ring-3 focus:ring-bluegreen-500 focus:ring-offset-2';
 const shareButtonIconSize = 40;
 
 export interface ProductPageProps {
@@ -86,7 +86,7 @@ export default function ProductPage({ product = null, category = '' }: ProductPa
                     cardType: 'summary',
                 }}
             />
-            <section className='grid md:grid-cols-2 md:grid-flow-row auto-rows-max gap-10 py-16 md:max-w-screen-lg justify-center mx-auto px-4'>
+            <section className='grid md:grid-cols-2 md:grid-flow-row auto-rows-max gap-10 py-16 md:max-w-(--breakpoint-lg) justify-center mx-auto px-4'>
                 <ImageGallery
                     images={product.images}
                     productTitle={product.title}
@@ -261,7 +261,7 @@ export default function ProductPage({ product = null, category = '' }: ProductPa
                 </div>
             </section>
 
-            <section className='px-4 py-16 md:max-w-screen-lg mx-auto  border-t border-slate-100'>
+            <section className='px-4 py-16 md:max-w-(--breakpoint-lg) mx-auto  border-t border-slate-100'>
                 <h2 className='text-blueyonder-500'>
                     Reviews{' '}
                     {reviews.length > 0 ? (

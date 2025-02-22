@@ -11,7 +11,7 @@ interface MenuToggleProps {
 export const MenuToggle = ({ toggle }: MenuToggleProps) => (
     <button
         onClick={toggle}
-        className='outline-none border-none cursor-pointer absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-12 h-12 rounded-full bg-transparent'
+        className='outline-hidden border-none cursor-pointer absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-12 h-12 rounded-full bg-transparent'
     >
         <svg width='23' height='23' viewBox='0 0 23 23'>
             <Path

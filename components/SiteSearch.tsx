@@ -116,7 +116,7 @@ export default function SiteSearch({ className = '', ...rest }: SiteSearchProps)
                                     }`}
                                     className='flex items-center gap-4'
                                 >
-                                    <div className='flex-grow flex-shrink-0 w-20 h-20 mr-4'>
+                                    <div className='grow shrink-0 w-20 h-20 mr-4'>
                                         {product && product.images?.length > 0 && (
                                             <Image
                                                 width={75}
@@ -127,7 +127,7 @@ export default function SiteSearch({ className = '', ...rest }: SiteSearchProps)
                                             />
                                         )}
                                     </div>
-                                    <div className='flex-grow-0 line-clamp-2'>
+                                    <div className='grow-0 line-clamp-2'>
                                         {product?.title.split('|')[0].trim()}
                                     </div>
                                 </Link>

@@ -4,7 +4,7 @@ import CTAButton from "./CTAElements/CTAButton";
 
 const formGroupStyling = "w-full flex flex-col items-center gap-2 text-blueyonder-500";
 const inputStyling =
-    "w-full p-5 bg-zinc-50 border border-zinc-200 rounded-md transition text-blueyonder-300 focus:text-blueyonder-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-bluegreen-400";
+    "w-full p-5 bg-zinc-50 border border-zinc-200 rounded-md transition text-blueyonder-300 focus:text-blueyonder-500 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-bluegreen-400";
 
 export default function ContactUsForm() {
     const [name, setName] = useState("");

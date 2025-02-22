@@ -1,7 +1,7 @@
 export default function ShippingReturns() {
     return (
         <>
-            <section className='text-blueyonder-500 px-10 pt-10 max-w-screen-lg mx-auto'>
+            <section className='text-blueyonder-500 px-10 pt-10 max-w-(--breakpoint-lg) mx-auto'>
                 <h1>Shipping</h1>
                 <p>
                     We offer regular, untracked shipping at a flat rate of $2.00 Canada wide. To keep shipping costs
@@ -13,7 +13,7 @@ export default function ShippingReturns() {
                     please send us a message for a quote.
                 </p>
             </section>
-            <section className='text-blueyonder-500 p-10 max-w-screen-lg mx-auto'>
+            <section className='text-blueyonder-500 p-10 max-w-(--breakpoint-lg) mx-auto'>
                 <h1>Returns</h1>
                 <p>
                     We hope you enjoy the jewellery you purchase from Snazzy Stones, so if for whatever reason you would
@@ -35,7 +35,7 @@ export default function ShippingReturns() {
                     <li>Reason for Return/Exchange</li>
                 </ul>
             </section>
-            <section className='text-blueyonder-500 p-10 max-w-screen-lg mx-auto'>
+            <section className='text-blueyonder-500 p-10 max-w-(--breakpoint-lg) mx-auto'>
                 <h1>Warranty</h1>
                 <p>
                     We only replace or refund items if the piece is deemed to have a manufacturing defect and the

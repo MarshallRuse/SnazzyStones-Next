@@ -91,7 +91,7 @@ export default function ProductListingCard({
                         height={600}
                         objectFit='cover'
                         className='rounded-md'
-                        placeholder={imagePlaceholder ? 'blur' : 'empty'}
+                        placeholder={imagePlaceholder ? 'blur-sm' : 'empty'}
                         blurDataURL={imagePlaceholder}
                         alt={`Main listing image for ${productName}`}
                     />
@@ -103,7 +103,7 @@ export default function ProductListingCard({
                                 height={600}
                                 objectFit='cover'
                                 className='rounded-md'
-                                placeholder={imageSecondaryPlaceholder ? 'blur' : 'empty'}
+                                placeholder={imageSecondaryPlaceholder ? 'blur-sm' : 'empty'}
                                 blurDataURL={imageSecondaryPlaceholder}
                                 alt={`Secondary listing image for ${productName}`}
                             />

@@ -103,14 +103,14 @@ export default function ImageGallery({ images = [], productTitle = "" }: ImageGa
 
     return (
         <div>
-            <div className='flex flex-col md:flex-row gap-4 max-w-sm md:max-w-screen-lg'>
+            <div className='flex flex-col md:flex-row gap-4 max-w-sm md:max-w-(--breakpoint-lg)'>
                 <div className='order-2 md:order-1 max-w-screen md:w-auto overflow-auto md:overflow-auto noScrollbar'>
                     <div className='relative flex md:flex-col gap-2 md:min-h-full md:h-0 p-2'>
                         {images?.map((img, ind) => (
                             <div
                                 key={`thumbnail-${ind}`}
                                 ref={(el) => (thumbnailRefs.current[ind] = el)}
-                                className={`flex w-20 h-20 md:w-auto md:h-auto flex-shrink-0 rounded-lg cursor-pointer ${
+                                className={`flex w-20 h-20 md:w-auto md:h-auto shrink-0 rounded-lg cursor-pointer ${
                                     ind !== page ? "hover:scale-105" : ""
                                 } transition ${ind === page ? "scale-105 border-2 border-bluegreen-500" : ""}`}
                                 onClick={() => handleThumbnailClick(ind)}
@@ -132,7 +132,7 @@ export default function ImageGallery({ images = [], productTitle = "" }: ImageGa
                     <AnimatePresence initial={false} custom={direction} mode='wait'>
                         <motion.div
                             key={`gallery-image-${page}`}
-                            className='flex self-start justify-center items-center  rounded-sm aspect-square shadow-light'
+                            className='flex self-start justify-center items-center  rounded-xs aspect-square shadow-light'
                             custom={direction}
                             variants={variants}
                             initial='enter'

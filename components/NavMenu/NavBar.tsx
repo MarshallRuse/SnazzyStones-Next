@@ -25,7 +25,7 @@ export default function NavBar() {
         <nav className='fixed top-0 left-0 w-full z-10 py-4 px-8 md:px-16 flex gap-6 items-center justify-center bg-white border-b border-b-bluegreen-500'>
             <Link
                 href='/'
-                className='flex flex-grow justify-self-start'
+                className='flex grow justify-self-start'
             >
                 <h3 className='text-center text-3xl whitespace-nowrap'>
                     <span className='snazzy text-blueyonder-500'>Snazzy </span>
@@ -34,7 +34,7 @@ export default function NavBar() {
             </Link>
             <SiteSearch />
             <ul
-                className={`flex flex-grow-0 z-10 bg-white items-center justify-end flex-auto gap-6 text-base text-blueyonder-500`}
+                className={`flex grow-0 z-10 bg-white items-center justify-end flex-auto gap-6 text-base text-blueyonder-500`}
             >
                 {menuContents.map((menuItem) => (
                     <MenuListItem

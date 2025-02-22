@@ -1,6 +1,69 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@theme {
+  --transition-duration-*: initial;
+  --transition-duration: 300ms;
+
+  --ease-*: initial;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --color-blueyonder-50: #e1e6ef;
+  --color-blueyonder-100: #c3ccde;
+  --color-blueyonder-200: #a5b3ce;
+  --color-blueyonder-300: #879abd;
+  --color-blueyonder-400: #6980ad;
+  --color-blueyonder-500: #526996;
+  --color-blueyonder-600: #425478;
+  --color-blueyonder-700: #313f5a;
+  --color-blueyonder-800: #212a3c;
+  --color-blueyonder-900: #10151e;
+
+  --color-bluegreen-50: #d1fafa;
+  --color-bluegreen-100: #a3f4f5;
+  --color-bluegreen-200: #75eff0;
+  --color-bluegreen-300: #47e9eb;
+  --color-bluegreen-400: #19e4e6;
+  --color-bluegreen-500: #14b6b8;
+  --color-bluegreen-600: #109293;
+  --color-bluegreen-700: #0c6d6e;
+  --color-bluegreen-800: #08494a;
+  --color-bluegreen-900: #042425;
+
+  --color-cerise-50: #fbdbe5;
+  --color-cerise-100: #f7b6cc;
+  --color-cerise-200: #f392b2;
+  --color-cerise-300: #ef6e98;
+  --color-cerise-400: #eb497f;
+  --color-cerise-500: #e72565;
+  --color-cerise-600: #c1154e;
+  --color-cerise-700: #91103a;
+  --color-cerise-800: #610b27;
+  --color-cerise-900: #300513;
+
+  --shadow-light: 8px 10px 10px 0px rgba(0, 0, 0, 0.1);
+
+  --box-shadow-color-bluegreen-light: #14b6b84d;
+
+  --drop-shadow-light: 2px 4px 4px rgba(0, 0, 0, 0.2);
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
 
 @layer base {
     @font-face {
@@ -65,7 +128,7 @@ a {
 }
 
 .text-shadow-cerise {
-    text-shadow: 1px 1px theme('colors.cerise.500');
+    text-shadow: 1px 1px var(--color-cerise-500);
 }
 
 .overlayText {
@@ -143,7 +206,7 @@ a {
 
 .menuParent .menuChildren li {
     background-color: #fff;
-    border-left: 1px solid theme('colors.slate.100');
+    border-left: 1px solid var(--color-slate-100);
     display: block;
     padding: 1em;
     word-wrap: break-word;
@@ -155,7 +218,7 @@ a {
     }
 
     .menuParent .menuChildren {
-        border-top: 2px solid theme('colors.bluegreen.500');
+        border-top: 2px solid var(--color-bluegreen-500);
         box-shadow: 0 4px 10px -2px rgb(0 0 0 / 10%);
         position: absolute;
         top: 80%;
@@ -170,7 +233,7 @@ a {
 
     .menuParent .menuChildren li {
         border-left: none;
-        border-bottom: 1px solid theme('colors.slate.100');
+        border-bottom: 1px solid var(--color-slate-100);
     }
 
     .menuParent:hover .menuChildren {
@@ -239,13 +302,13 @@ a {
 
     /* Track */
     &::-webkit-scrollbar-track {
-        box-shadow: inset 0 0 5px theme('colors.slate.100');
+        box-shadow: inset 0 0 5px var(--color-slate-100);
         border-radius: 10px;
     }
 
     /* Handle */
     &::-webkit-scrollbar-thumb {
-        background: theme('colors.blueyonder.200');
+        background: var(--color-blueyonder-200);
         border-radius: 10px;
     }
 }
