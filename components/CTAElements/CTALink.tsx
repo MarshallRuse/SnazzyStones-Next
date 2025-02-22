@@ -26,7 +26,8 @@ const CTALink = forwardRef<HTMLAnchorElement | HTMLSpanElement, CTALinkProps>(
             return (
                 <a
                     ref={ref as React.RefObject<HTMLAnchorElement>}
-                    className={CTAStyling(disabled, className)}
+                    className={`${CTAStyling(disabled, className)}`}
+                    style={{ color: 'white' }}
                     {...rest}
                 >
                     {children}
