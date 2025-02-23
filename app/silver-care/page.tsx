@@ -1,12 +1,11 @@
 import Image from 'next/image';
-import { NextSeo } from 'next-seo';
 import FadeInDiv from '../../components/FadeInDiv';
-import styles from '../../styles/modules/SilverCare.module.css';
+import styles from './silver-care.module.css';
 
 export default function SilverCare() {
     return (
         <>
-            <NextSeo
+            {/* <NextSeo
                 title='Caring For Your Silver | SnazzyStones'
                 description='Learn some best practices for keeping your silver jewelry immaculate!'
                 canonical='https://snazzystones.ca/silver-care'
@@ -28,7 +27,7 @@ export default function SilverCare() {
                 twitter={{
                     cardType: 'summary_large_image',
                 }}
-            />
+            /> */}
             <header className='heroSectionHeader'>
                 <div className={`heroSection ${styles.heroBackground}`}></div>
                 <div>

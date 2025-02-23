@@ -41,7 +41,7 @@ export default function Footer() {
                             rel='noreferrer'
                             className={iconSpanStyle}
                         >
-                            <Instagram />
+                            <Instagram sx={{ color: 'white' }} />
                         </a>
                         <a
                             href='https://www.facebook.com/snazzystonesjewellery/'
@@ -49,7 +49,7 @@ export default function Footer() {
                             rel='noreferrer'
                             className={iconSpanStyle}
                         >
-                            <Facebook />
+                            <Facebook sx={{ color: 'white' }} />
                         </a>
                     </div>
                 </div>
@@ -59,13 +59,13 @@ export default function Footer() {
                             <h4 className='text-bluegreen-500 text-xl py-5 md:py-0'>Important Links</h4>
                             <ul className='p-0'>
                                 <li className={listStyle}>
-                                    <Link href='/index'>SHIPPING & RETURNS</Link>
+                                    <Link href='/shipping-returns'>SHIPPING & RETURNS</Link>
                                 </li>
                                 <li className={listStyle}>
-                                    <Link href='/index'>PRIVACY POLICY</Link>
+                                    <Link href='/privacy-policy'>PRIVACY POLICY</Link>
                                 </li>
                                 <li className={listStyle}>
-                                    <Link href='/index'>TERMS & CONDITIONS</Link>
+                                    <Link href='/terms-and-conditions'>TERMS & CONDITIONS</Link>
                                 </li>
                             </ul>
                         </div>
@@ -73,12 +73,14 @@ export default function Footer() {
                             <h4 className='text-bluegreen-500 text-xl py-5 md:py-0 mx-auto'>Quick Links</h4>
                             <ul className='p-0'>
                                 <li className={listStyle}>
-                                    <Link href='/index'>KNOW MORE ABOUT US</Link>
+                                    <Link href='/our-story'>KNOW MORE ABOUT US</Link>
                                 </li>
                                 <li className={listStyle}>
-                                    <Link href='/index'>VISIT SHOP</Link>
+                                    <Link href='/retail'>VISIT SHOP</Link>
                                 </li>
-                                <li className={listStyle}>LET&apos;S CONNECT</li>
+                                <li className={listStyle}>
+                                    <Link href='/contact-us'>LET&apos;S CONNECT</Link>
+                                </li>
                             </ul>
                         </div>
                     </div>

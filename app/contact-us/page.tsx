@@ -1,12 +1,11 @@
-import { NextSeo } from 'next-seo';
 import EmailRounded from '@mui/icons-material/EmailRounded';
 import ContactUsForm from '../../components/ContactUsForm';
-import styles from '../../styles/modules/ContactUs.module.css';
+import styles from './contact-us.module.css';
 
 export default function ContactUs() {
     return (
         <>
-            <NextSeo
+            {/* <NextSeo
                 title='Contact Us | SnazzyStones'
                 description='I would love to hear from you!'
                 canonical='https://snazzystones.ca/contact-us'
@@ -28,7 +27,7 @@ export default function ContactUs() {
                 twitter={{
                     cardType: 'summary_large_image',
                 }}
-            />
+            /> */}
             <header className='heroSectionHeader'>
                 <div className={`${styles.heroBackground} heroSection `}></div>
                 <div>

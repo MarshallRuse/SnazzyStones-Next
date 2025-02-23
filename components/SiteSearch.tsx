@@ -1,7 +1,9 @@
+'use client';
+
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import { Autocomplete, TextField } from '@mui/material';
 import Search from '@mui/icons-material/Search';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -28,7 +30,7 @@ export interface SiteSearchProps {
 }
 
 export default function SiteSearch({ className = '', ...rest }: SiteSearchProps) {
-    const router = useRouter();
+    const pathname = usePathname();
     const [products, setProducts] = useState<Partial<ProductMinAPIData>[]>([]);
     const [autocompleteVisible, setAutocompleteVisible] = useState(false);
     const [value, setValue] = useState<Partial<ProductMinAPIData> | null>(null);
@@ -56,13 +58,7 @@ export default function SiteSearch({ className = '', ...rest }: SiteSearchProps)
         } catch (error) {
             console.log(`Error fetching products: ${error}`);
         }
-
-        router.events.on('routeChangeComplete', handleClearAndCloseInput);
-
-        return () => {
-            router.events.off('routeChangeComplete', handleClearAndCloseInput);
-        };
-    }, [router.events]);
+    }, []);
 
     useEffect(() => {
         if (autocompleteVisible) {
@@ -71,6 +67,10 @@ export default function SiteSearch({ className = '', ...rest }: SiteSearchProps)
             inputRef.current?.blur();
         }
     }, [autocompleteVisible]);
+
+    useEffect(() => {
+        handleClearAndCloseInput();
+    }, [pathname]);
 
     return (
         <div
@@ -110,26 +110,24 @@ export default function SiteSearch({ className = '', ...rest }: SiteSearchProps)
                             <li {...props}>
                                 <Link
                                     href={`/retail/products/${
-                                        product.title.includes('|')
+                                        product.title?.includes('|')
                                             ? formatProductTitleAsURL(product.title)
                                             : product.listing_id
                                     }`}
                                     className='flex items-center gap-4'
                                 >
                                     <div className='grow shrink-0 w-20 h-20 mr-4'>
-                                        {product && product.images?.length > 0 && (
+                                        {product && (product.images?.length ?? 0) > 0 && (
                                             <Image
                                                 width={75}
                                                 height={75}
-                                                src={product?.images?.[0].url_75x75}
+                                                src={product?.images?.[0].url_75x75 ?? ''}
                                                 className='w-full'
                                                 alt={`Thumbnail sized main listing image for ${product.title}`}
                                             />
                                         )}
                                     </div>
-                                    <div className='grow-0 line-clamp-2'>
-                                        {product?.title.split('|')[0].trim()}
-                                    </div>
+                                    <div className='grow-0 line-clamp-2'>{product?.title?.split('|')[0].trim()}</div>
                                 </Link>
                             </li>
                         )}

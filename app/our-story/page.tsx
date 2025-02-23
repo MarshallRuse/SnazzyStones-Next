@@ -1,13 +1,12 @@
 import Image from 'next/image';
-import { NextSeo } from 'next-seo';
 import TextContainer from '../../components/TextContainer';
 import FadeInDiv from '../../components/FadeInDiv';
-import styles from '../../styles/modules/OurStory.module.css';
+import styles from './our-story.module.css';
 
-export default function OurShows() {
+export default function OurStory() {
     return (
         <>
-            <NextSeo
+            {/* <NextSeo
                 title='Our Story | SnazzyStones'
                 description="Learn a bit more about us and what we're doing"
                 canonical='https://snazzystones.ca/our-story'
@@ -29,7 +28,7 @@ export default function OurShows() {
                 twitter={{
                     cardType: 'summary',
                 }}
-            />
+            /> */}
             <header className={`heroSectionHeader`}>
                 <div className={`heroSection ${styles.heroBackground}`}></div>
                 <div>
@@ -51,7 +50,7 @@ export default function OurShows() {
                     className='text-white'
                 >
                     <p className='leading-loose'>
-                        A passion for rocks and minerals led me to study geology at Queen’s University, and later
+                        A passion for rocks and minerals led me to study geology at Queen's University, and later
                         gemmology at the Gemmological Association of Great Britain (Gem-A) . That, combined with a love
                         of travel brought me to Snazzy Stones.
                     </p>
@@ -69,7 +68,7 @@ export default function OurShows() {
                         src='/images/briPresentingBooth_2019-07-25.jpg'
                         width={768}
                         height={768}
-                        objectFit='cover'
+                        style={{ objectFit: 'cover' }}
                         className='rounded-md'
                         alt='Snazzy Stones owner Brianna presenting her market booth'
                     />
@@ -84,7 +83,7 @@ export default function OurShows() {
                         src='/images/beadsDisplay.jpg'
                         width={768}
                         height={768}
-                        objectFit='cover'
+                        style={{ objectFit: 'cover' }}
                         className='rounded-md'
                         alt='A display of beaded bracelets and other jewelry'
                     />

@@ -1,12 +1,11 @@
 import Image from 'next/image';
-import { NextSeo } from 'next-seo';
 import TextContainer from '../../components/TextContainer';
-import styles from '../../styles/modules/OurShows.module.css';
+import styles from './our-shows.module.css';
 
 export default function OurShows() {
     return (
         <>
-            <NextSeo
+            {/* <NextSeo
                 title='Our Shows | SnazzyStones'
                 description='Find us in person!'
                 canonical='https://snazzystones.ca/our-shows'
@@ -28,7 +27,7 @@ export default function OurShows() {
                 twitter={{
                     cardType: 'summary_large_image',
                 }}
-            />
+            /> */}
 
             <header
                 className={'heroSectionHeader'}
@@ -56,7 +55,7 @@ export default function OurShows() {
                         src='/images/kincardineLogo.jpg'
                         width={1024}
                         height={1024}
-                        objectFit='cover'
+                        style={{ objectFit: 'cover' }}
                         className='rounded-md aspect-square'
                         alt='Kincardine town logo'
                     />
@@ -146,7 +145,7 @@ export default function OurShows() {
                         src='/images/keadyMarketLogo-noBG.png'
                         width={1024}
                         height={1024}
-                        objectFit='cover'
+                        style={{ objectFit: 'cover' }}
                         className='rounded-md aspect-square drop-shadow-light'
                         alt='Keady Market sign'
                     />
@@ -187,7 +186,7 @@ export default function OurShows() {
                         src='/images/owensoundlogo.png'
                         width={318}
                         height={318}
-                        objectFit='contain'
+                        style={{ objectFit: 'contain' }}
                         className='rounded-md aspect-square drop-shadow-light'
                         alt='Wiarton, Ontario logo'
                     />
@@ -228,7 +227,7 @@ export default function OurShows() {
                         src='/images/wiartonLogo.png'
                         width={318}
                         height={318}
-                        objectFit='cover'
+                        style={{ objectFit: 'cover' }}
                         className='rounded-md aspect-square drop-shadow-light'
                         alt='Wiarton, Ontario logo'
                     />
@@ -269,7 +268,7 @@ export default function OurShows() {
                         src='/images/SaubleBeachLogo.png'
                         width={318}
                         height={318}
-                        objectFit='contain'
+                        style={{ objectFit: 'contain' }}
                         className='rounded-md aspect-square drop-shadow-light'
                         alt='Sauble Beach, Ontario logo'
                     />

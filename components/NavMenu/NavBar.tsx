@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
@@ -45,7 +47,7 @@ export default function NavBar() {
                         <>
                             {menuItem.isLink ? (
                                 <Link
-                                    href={menuItem.link}
+                                    href={menuItem.link ?? ''}
                                     passHref
                                 >
                                     <HoverStyledAnchor className='navItem'>
@@ -69,7 +71,7 @@ export default function NavBar() {
                                                     widescreen={true}
                                                 >
                                                     <Link
-                                                        href={cat.link}
+                                                        href={cat.link ?? ''}
                                                         passHref
                                                     >
                                                         <HoverStyledAnchor>{cat.displayText}</HoverStyledAnchor>
@@ -88,7 +90,7 @@ export default function NavBar() {
                                                 widescreen={true}
                                             >
                                                 <Link
-                                                    href={sub.link}
+                                                    href={sub.link ?? ''}
                                                     passHref
                                                 >
                                                     <HoverStyledAnchor>{sub.displayText}</HoverStyledAnchor>

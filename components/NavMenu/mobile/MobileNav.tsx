@@ -1,24 +1,26 @@
-import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/router";
-import { motion } from "framer-motion";
-import { useDimensions } from "./use-dimensions";
-import { MenuToggle } from "./MenuToggle";
-import { MobileNavList } from "./MobileNavList";
+'use client';
+
+import { useState, useRef, useEffect, MutableRefObject } from 'react';
+import { usePathname } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { useDimensions } from './use-dimensions';
+import { MenuToggle } from './MenuToggle';
+import { MobileNavList } from './MobileNavList';
 
 const sidebar = {
     open: (height = 1000) => ({
         clipPath: `circle(${height * 2 + 200}px at calc(100% - 3.5rem) 3rem)`,
         transition: {
-            type: "spring",
+            type: 'spring',
             stiffness: 20,
             restDelta: 2,
         },
     }),
     closed: {
-        clipPath: "circle(30px at calc(100% - 3.5rem) 3rem)",
+        clipPath: 'circle(30px at calc(100% - 3.5rem) 3rem)',
         transition: {
             delay: 0.5,
-            type: "spring",
+            type: 'spring',
             stiffness: 400,
             damping: 40,
         },
@@ -26,28 +28,20 @@ const sidebar = {
 };
 
 export default function MobileNav() {
-    const router = useRouter();
+    const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLElement>(null);
-    const { height } = useDimensions(containerRef);
+    const { height } = useDimensions(containerRef as MutableRefObject<HTMLElement>);
 
     useEffect(() => {
-        const handleRouteChange = () => {
-            setIsOpen(false);
-        };
-
-        router.events.on("routeChangeStart", handleRouteChange);
-
-        return () => {
-            router.events.off("routeChangeStart", handleRouteChange);
-        };
-    }, [router.events]);
+        setIsOpen(false);
+    }, [pathname]);
 
     useEffect(() => {
         if (isOpen) {
-            document.body.style.overflow = "hidden";
+            document.body.style.overflow = 'hidden';
         } else {
-            document.body.style.overflow = "unset";
+            document.body.style.overflow = 'unset';
         }
     }, [isOpen]);
 
@@ -55,7 +49,7 @@ export default function MobileNav() {
         <motion.nav
             className='absolute top-0 left-0 bottom-0 right-0 w-12 h-12'
             initial={false}
-            animate={isOpen ? "open" : "closed"}
+            animate={isOpen ? 'open' : 'closed'}
             custom={height}
             ref={containerRef}
         >
