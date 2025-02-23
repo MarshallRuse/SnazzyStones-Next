@@ -1,10 +1,10 @@
-import he from "he";
-import Bottleneck from "bottleneck";
+import he from 'he';
+import Bottleneck from 'bottleneck';
 //Name both cache SDK imports redis so they can be swapped out if one were to blow through the cache limit
 //import { kv as redis } from "@vercel/kv";
-import { Redis } from "@upstash/redis";
-import { ShopListingResponse, ShopListingsResponse } from "../../../types/EtsyAPITypes";
-import { ProductMinAPIData } from "../../../types/Types";
+import { Redis } from '@upstash/redis';
+import { ShopListingResponse, ShopListingsResponse } from '../../../types/EtsyAPITypes';
+import { ProductMinAPIData } from '../../../types/Types';
 
 // Comment out if using kv
 const redis = new Redis({
@@ -24,8 +24,14 @@ export async function fetchProductsFromEtsy({
     categoryId = null,
     fetchImages = true,
     limit = 100,
-}: FetchProductsParams = {}): Promise<ShopListingResponse[]> {
+}: FetchProductsParams = {}): Promise<ShopListingResponse[] | null> {
     try {
+        const apiKey = process.env.ETSY_API_KEYSTRING;
+
+        if (!apiKey) {
+            throw new Error('ETSY_API_KEYSTRING is not set');
+        }
+
         // using bottleneck for rate limiting
         const limiter = new Bottleneck({
             minTime: 1000,
@@ -39,9 +45,9 @@ export async function fetchProductsFromEtsy({
         // get all active shop listings
         const activeShopListingsResponse = await limiter.schedule(() =>
             fetch(url, {
-                method: "GET",
+                method: 'GET',
                 headers: {
-                    "x-api-key": process.env.ETSY_API_KEYSTRING,
+                    'x-api-key': apiKey,
                 },
             })
         );
@@ -50,14 +56,14 @@ export async function fetchProductsFromEtsy({
 
         if (activeShopListings && activeShopListings.length > 0) {
             if (fetchImages) {
-                const listingIds = activeShopListings.map((listing) => listing.listing_id).join(",");
+                const listingIds = activeShopListings.map((listing) => listing.listing_id).join(',');
                 const listingImagesResponse = await limiter.schedule(() =>
                     fetch(
                         `https://openapi.etsy.com/v3/application/listings/batch?listing_ids=${listingIds}&includes=Images`,
                         {
-                            method: "GET",
+                            method: 'GET',
                             headers: {
-                                "x-api-key": process.env.ETSY_API_KEYSTRING,
+                                'x-api-key': apiKey,
                             },
                         }
                     )
@@ -77,16 +83,21 @@ export async function fetchProductsFromEtsy({
 
 async function setProductsCache({ categoryId = null, fetchImages = true, limit = 100 }: FetchProductsParams = {}) {
     const products = await fetchProductsFromEtsy({ categoryId, fetchImages, limit });
+    if (!products) {
+        return [];
+    }
+
     const minimalProductsData: ProductMinAPIData[] = products.map((product) => {
         return {
             listing_id: product.listing_id,
             title: product.title,
             description: product.description,
-            images: product.images.map((image) => ({
-                url_75x75: image.url_75x75,
-                url_170x135: image.url_170x135,
-                url_fullxfull: image.url_fullxfull,
-            })),
+            images:
+                product.images?.map((image) => ({
+                    url_75x75: image.url_75x75,
+                    url_170x135: image.url_170x135,
+                    url_fullxfull: image.url_fullxfull,
+                })) ?? [],
             //price: product.price,
             shop_section_id: product.shop_section_id,
             original_creation_timestamp: product.original_creation_timestamp,
@@ -97,8 +108,8 @@ async function setProductsCache({ categoryId = null, fetchImages = true, limit =
             tags: product.tags,
         };
     });
-    await redis.set("products", JSON.stringify(minimalProductsData));
-    await redis.set("timeSinceLastEtsyFetch", Date.now());
+    await redis.set('products', JSON.stringify(minimalProductsData));
+    await redis.set('timeSinceLastEtsyFetch', Date.now());
     return minimalProductsData;
 }
 
@@ -107,16 +118,16 @@ export async function fetchProductsFromCache({
     fetchImages = true,
     limit = 100,
 }: FetchProductsParams = {}): Promise<ProductMinAPIData[]> {
-    const timeSinceLastEtsyFetch = await redis.get("timeSinceLastEtsyFetch");
+    const timeSinceLastEtsyFetch = await redis.get('timeSinceLastEtsyFetch');
 
     // if more than 48 hours since last fetch, fetch again
     if (timeSinceLastEtsyFetch === undefined || Date.now() - Number(timeSinceLastEtsyFetch) > 1000 * 60 * 60 * 48) {
-        console.log("fetching products from etsy");
+        console.log('fetching products from etsy');
         const products = await setProductsCache({ categoryId: null, fetchImages: true }); // fetch all products
         return products;
     }
 
-    const cachedProducts: ProductMinAPIData[] = await redis.get("products");
+    const cachedProducts: ProductMinAPIData[] | null = await redis.get('products');
 
     if (cachedProducts && cachedProducts.length > 0) {
         let selectedProducts = cachedProducts;

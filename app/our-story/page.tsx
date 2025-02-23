@@ -7,6 +7,7 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
     title: 'Our Story | SnazzyStones',
     description: "Learn a bit more about us and what we're doing",
+    metadataBase: new URL('https://snazzystones.ca'),
     openGraph: {
         title: 'Our Story | SnazzyStones',
         description: "Learn a bit more about us and what we're doing",

@@ -1,8 +1,8 @@
-import Link from "next/link";
-import KeyboardBackspaceRounded from "@mui/icons-material/KeyboardBackspaceRounded";
-import CTALink from "../components/CTAElements/CTALink";
+import Link from 'next/link';
+import KeyboardBackspaceRounded from '@mui/icons-material/KeyboardBackspaceRounded';
+import CTALink from '@/components/CTAElements/CTALink';
 
-export default function Custom404() {
+export default function NotFound() {
     return (
         <div className='flex flex-col items-center py-10'>
             <h1 className='heroTitle text-center'>
@@ -12,7 +12,7 @@ export default function Custom404() {
             <h2 className='text-6xl text-blueyonder-500'>404</h2>
             <p className='text-blueyonder-500 mb-0'>Oh no, it looks like you&apos;re lost!</p>
             <p>
-                <Link href='/' passHref>
+                <Link href='/'>
                     <CTALink>
                         <KeyboardBackspaceRounded /> Get back to the snazziness!
                     </CTALink>

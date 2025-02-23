@@ -70,10 +70,7 @@ export default function NavBar() {
                                                     key={`sub-menu-${cat.displayText.replace(' ', '-')}`}
                                                     widescreen={true}
                                                 >
-                                                    <Link
-                                                        href={cat.link ?? ''}
-                                                        passHref
-                                                    >
+                                                    <Link href={cat.link ?? ''}>
                                                         <HoverStyledAnchor>{cat.displayText}</HoverStyledAnchor>
                                                     </Link>
                                                 </MenuListItem>
@@ -89,10 +86,7 @@ export default function NavBar() {
                                                 key={`sub-menu-${sub.displayText.replace(' ', '-')}`}
                                                 widescreen={true}
                                             >
-                                                <Link
-                                                    href={sub.link ?? ''}
-                                                    passHref
-                                                >
+                                                <Link href={sub.link ?? ''}>
                                                     <HoverStyledAnchor>{sub.displayText}</HoverStyledAnchor>
                                                 </Link>
                                             </MenuListItem>

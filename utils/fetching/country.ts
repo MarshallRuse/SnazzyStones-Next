@@ -1,5 +1,5 @@
-import useSWR, { Fetcher } from "swr";
-import { APIIPResponse } from "../../pages/api/ip";
+import useSWR, { Fetcher } from 'swr';
+import { APIIPResponse } from '@/app/api/ip/route';
 
 const fetcher: Fetcher<APIIPResponse, string> = (...args) => fetch(...args).then((res) => res.json());
 

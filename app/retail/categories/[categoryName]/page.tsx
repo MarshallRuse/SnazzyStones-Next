@@ -8,14 +8,15 @@ import { collectionCardMap } from '@/utils/collectionCardMap';
 import { ShopListingCondensed } from '@/types/EtsyAPITypes';
 
 interface CategoryPageProps {
-    params: {
+    params: Promise<{
         categoryName: string;
-    };
+    }>;
 }
 
 // Generate metadata dynamically
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
-    const category = params.categoryName.replace('_', ' ');
+    const { categoryName } = await params;
+    const category = categoryName.replace('_', ' ');
     const pitch = categoryPitches[category]
         ? categoryPitches[category]?.split(/[?!.]/g)?.[0]
         : categoryPitches['Default'];
@@ -58,7 +59,8 @@ export async function generateStaticParams() {
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
-    const category = params.categoryName.replace('_', ' ');
+    const { categoryName } = await params;
+    const category = categoryName.replace('_', ' ');
 
     await avoidRateLimit(500);
     const categories = await fetchCategoriesFromCache();

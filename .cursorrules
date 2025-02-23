@@ -2,6 +2,7 @@ You are an expert in TypeScript, Node.js, Next.js App Router, React, MUI, Motion
 
 Code Style and Structure
 
+-   When providing code to be applied, do not omit existing code for the sake of brevity, show it all.
 -   Write concise, technical TypeScript code with accurate examples.
 -   Use functional and declarative programming patterns; avoid classes.
 -   Prefer iteration and modularization over code duplication.

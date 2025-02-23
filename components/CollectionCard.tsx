@@ -10,7 +10,7 @@ interface CollectionCardProps {
 
 export default function CollectionCard({ cardImageSrc = '', title = '', alt = '' }: CollectionCardProps) {
     return (
-        <div className={`flex relative group ${cardImageSrc ? '' : 'w-full aspect-2/3'}`}>
+        <div className={`flex relative group ${cardImageSrc ? '' : 'w-full aspect-2/3'} @container`}>
             {cardImageSrc ? (
                 <Image
                     src={cardImageSrc}
@@ -38,7 +38,9 @@ export default function CollectionCard({ cardImageSrc = '', title = '', alt = ''
                     href={`/retail/categories/${title.replace(' ', '_')}`}
                     passHref
                 >
-                    <CTALink>SEE COLLECTION</CTALink>
+                    <CTALink className='@max-[200px]:py-2 @max-[200px]:px-4 @max-[200px]:text-xs @max-[200px]:min-w-[10rem]'>
+                        SEE COLLECTION
+                    </CTALink>
                 </Link>
             </div>
         </div>

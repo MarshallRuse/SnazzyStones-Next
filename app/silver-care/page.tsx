@@ -6,6 +6,7 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
     title: 'Caring For Your Silver | SnazzyStones',
     description: 'Learn some best practices for keeping your silver jewelry immaculate!',
+    metadataBase: new URL('https://snazzystones.ca'),
     openGraph: {
         title: 'Caring For Your Silver | SnazzyStones',
         description: 'Learn some best practices for keeping your silver jewelry immaculate!',

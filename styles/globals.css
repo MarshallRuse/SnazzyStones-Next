@@ -45,6 +45,19 @@
     --box-shadow-color-bluegreen-light: #14b6b84d;
 
     --drop-shadow-light: 2px 4px 4px rgba(0, 0, 0, 0.2);
+
+    --animate-scale-spring: scaleSpring 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    @keyframes scaleSpring {
+        from {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.15);
+        }
+        to {
+            transform: scale(1.1);
+        }
+    }
 }
 
 /*
@@ -389,4 +402,8 @@ a {
 
 .Mui-focused .MuiOutlinedInput-notchedOutline {
     border-color: #14b6b8;
+}
+
+.navLink {
+    display: flex;
 }

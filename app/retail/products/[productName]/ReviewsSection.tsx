@@ -40,7 +40,7 @@ export default function ReviewsSection({ listingId }: { listingId: string }) {
                 .map((review, ind) => (
                     <div
                         key={`review-${ind}`}
-                        className='py-4'
+                        className='py-4 border-b border-slate-100'
                     >
                         <div className='flex items-end gap-4'>
                             <div className='text-bluegreen-500'>

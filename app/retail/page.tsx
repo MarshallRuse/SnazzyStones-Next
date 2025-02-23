@@ -5,7 +5,7 @@ import styles from '@/styles/modules/Retail.module.css';
 import ProductList from '@/components/ProductList';
 import { collectionCardMap } from '@/utils/collectionCardMap';
 import { avoidRateLimit } from '@/utils/avoidRateLimit';
-import { ShopListingCondensed, ShopSectionResponse } from '@/types/EtsyAPITypes';
+import { ShopListingCondensed } from '@/types/EtsyAPITypes';
 import FadingHeader from '@/components/FadingHeader';
 import { Metadata } from 'next';
 
@@ -35,8 +35,6 @@ export const metadata: Metadata = {
 };
 
 async function getPageData() {
-    console.log('fetching categories, products, product images...');
-
     await avoidRateLimit(500);
     const categories = await fetchCategoriesFromCache();
 
