@@ -1,34 +1,34 @@
 import Image from 'next/image';
 import TextContainer from '../../components/TextContainer';
 import styles from './our-shows.module.css';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Our Shows | SnazzyStones',
+    description: 'Find us in person!',
+    openGraph: {
+        title: 'Our Shows | SnazzyStones',
+        description: 'Find us in person!',
+        images: [
+            {
+                url: 'https://res.cloudinary.com/marsh/image/upload/q_auto/v1651757847/snazzystones-website/briMarket_2021-08-01.jpg',
+            },
+        ],
+        siteName: 'SnazzyStones',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Our Shows | SnazzyStones',
+        description: 'Find us in person!',
+        images: [
+            'https://res.cloudinary.com/marsh/image/upload/q_auto/v1651757847/snazzystones-website/briMarket_2021-08-01.jpg',
+        ],
+    },
+};
 
 export default function OurShows() {
     return (
         <>
-            {/* <NextSeo
-                title='Our Shows | SnazzyStones'
-                description='Find us in person!'
-                canonical='https://snazzystones.ca/our-shows'
-                openGraph={{
-                    url: 'https://snazzystones.ca/our-shows',
-                    title: 'Our Shows | SnazzyStones',
-                    description: 'Find us in person!',
-                    images: [
-                        {
-                            url: 'https://res.cloudinary.com/marsh/image/upload/q_auto/v1651757847/snazzystones-website/briMarket_2021-08-01.jpg',
-                            width: 3920,
-                            height: 1960,
-                            alt: 'Brianna presenting jewellery at a market',
-                            type: 'image/jpeg',
-                        },
-                    ],
-                    site_name: 'SnazzyStones',
-                }}
-                twitter={{
-                    cardType: 'summary_large_image',
-                }}
-            /> */}
-
             <header
                 className={'heroSectionHeader'}
                 style={{ backgroundPositionX: '30%' }}

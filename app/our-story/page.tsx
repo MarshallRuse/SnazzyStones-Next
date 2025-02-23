@@ -2,33 +2,36 @@ import Image from 'next/image';
 import TextContainer from '../../components/TextContainer';
 import FadeInDiv from '../../components/FadeInDiv';
 import styles from './our-story.module.css';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Our Story | SnazzyStones',
+    description: "Learn a bit more about us and what we're doing",
+    openGraph: {
+        title: 'Our Story | SnazzyStones',
+        description: "Learn a bit more about us and what we're doing",
+        images: [
+            {
+                url: '/images/briPresentingBooth_2019-07-25.jpg',
+                width: 768,
+                height: 768,
+                alt: 'Brianna presenting some trays of jewellery',
+                type: 'image/jpeg',
+            },
+        ],
+        siteName: 'SnazzyStones',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Our Story | SnazzyStones',
+        description: "Learn a bit more about us and what we're doing",
+        images: ['/images/briPresentingBooth_2019-07-25.jpg'],
+    },
+};
 
 export default function OurStory() {
     return (
         <>
-            {/* <NextSeo
-                title='Our Story | SnazzyStones'
-                description="Learn a bit more about us and what we're doing"
-                canonical='https://snazzystones.ca/our-story'
-                openGraph={{
-                    url: 'https://snazzystones.ca/our-story',
-                    title: 'Our Story | SnazzyStones',
-                    description: "Learn a bit more about us and what we're doing",
-                    images: [
-                        {
-                            url: '/images/briPresentingBooth_2019-07-25.jpg',
-                            width: 768,
-                            height: 768,
-                            alt: 'Brianna presenting some trays of jewellery',
-                            type: 'image/jpeg',
-                        },
-                    ],
-                    site_name: 'SnazzyStones',
-                }}
-                twitter={{
-                    cardType: 'summary',
-                }}
-            /> */}
             <header className={`heroSectionHeader`}>
                 <div className={`heroSection ${styles.heroBackground}`}></div>
                 <div>

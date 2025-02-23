@@ -1,33 +1,34 @@
 import EmailRounded from '@mui/icons-material/EmailRounded';
 import ContactUsForm from '../../components/ContactUsForm';
 import styles from './contact-us.module.css';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Contact Us | SnazzyStones',
+    description: 'I would love to hear from you!',
+    openGraph: {
+        title: 'Contact Us | SnazzyStones',
+        description: 'I would love to hear from you!',
+        images: [
+            {
+                url: 'https://res.cloudinary.com/marsh/image/upload/q_auto/v1652533589/snazzystones-website/CatBrowsingJewelry.jpg',
+            },
+        ],
+        siteName: 'SnazzyStones',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Contact Us | SnazzyStones',
+        description: 'I would love to hear from you!',
+        images: [
+            'https://res.cloudinary.com/marsh/image/upload/q_auto/v1652533589/snazzystones-website/CatBrowsingJewelry.jpg',
+        ],
+    },
+};
 
 export default function ContactUs() {
     return (
         <>
-            {/* <NextSeo
-                title='Contact Us | SnazzyStones'
-                description='I would love to hear from you!'
-                canonical='https://snazzystones.ca/contact-us'
-                openGraph={{
-                    url: 'https://snazzystones.ca/contact-us',
-                    title: 'Contact Us | SnazzyStones',
-                    description: 'I would love to hear from you!',
-                    images: [
-                        {
-                            url: 'https://res.cloudinary.com/marsh/image/upload/q_auto/v1652533589/snazzystones-website/CatBrowsingJewelry.jpg',
-                            width: 3920,
-                            height: 1960,
-                            alt: 'A cat browsing the website',
-                            type: 'image/jpeg',
-                        },
-                    ],
-                    site_name: 'SnazzyStones',
-                }}
-                twitter={{
-                    cardType: 'summary_large_image',
-                }}
-            /> */}
             <header className='heroSectionHeader'>
                 <div className={`${styles.heroBackground} heroSection `}></div>
                 <div>
