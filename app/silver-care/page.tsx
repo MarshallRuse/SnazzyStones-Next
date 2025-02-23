@@ -71,7 +71,7 @@ export default function SilverCare() {
                                 src='/images/oxidizedSilverExample_2020-06-27.jpg'
                                 width={1024}
                                 height={1024}
-                                objectFit='cover'
+                                style={{ objectFit: 'cover' }}
                                 className='rounded-md shadow-light'
                                 alt='An example image showing oxidized silver decoration'
                             />
@@ -148,7 +148,7 @@ export default function SilverCare() {
                                 src='/images/wearYourJewellery_2020-10-11.jpg'
                                 width={3024}
                                 height={4032}
-                                objectFit='cover'
+                                style={{ objectFit: 'cover' }}
                                 className='rounded-md'
                                 alt='A bracelet being worn, with a fat cat in the background'
                             />

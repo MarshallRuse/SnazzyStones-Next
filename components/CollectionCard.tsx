@@ -16,7 +16,7 @@ export default function CollectionCard({ cardImageSrc = '', title = '', alt = ''
                     src={cardImageSrc}
                     width={1400}
                     height={1960}
-                    objectFit='cover'
+                    style={{ objectFit: 'cover' }}
                     className='rounded-2xl'
                     alt={alt}
                 />

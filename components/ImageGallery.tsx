@@ -1,10 +1,13 @@
-import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
-import { wrap } from "popmotion";
-import ArrowForwardIosRounded from "@mui/icons-material/ArrowForwardIosRounded";
-import ArrowBackIosRounded from "@mui/icons-material/ArrowBackIosRounded";
-import { ListingImage } from "../types/EtsyAPITypes";
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
+import { motion, AnimatePresence } from 'motion/react';
+import { wrap } from 'popmotion';
+import ArrowForwardIosRounded from '@mui/icons-material/ArrowForwardIosRounded';
+import ArrowBackIosRounded from '@mui/icons-material/ArrowBackIosRounded';
+import { ListingImage } from '../types/EtsyAPITypes';
+import { ListingImageMin } from '../types/Types';
 
 const enterExitDistance = 250;
 const variants = {
@@ -40,17 +43,17 @@ const swipePower = (offset, velocity) => {
 };
 
 export interface ImageGalleryProps {
-    images: ListingImage[];
+    images: ListingImage[] | ListingImageMin[];
     productTitle?: string;
 }
 
-export default function ImageGallery({ images = [], productTitle = "" }: ImageGalleryProps) {
+export default function ImageGallery({ images = [], productTitle = '' }: ImageGalleryProps) {
     const [[page, direction], setPage] = useState([0, 0]);
     const [isAnimating, setIsAnimating] = useState(false);
     const [initialAnimationComplete, setInitialAnimationComplete] = useState(false);
 
     // array of thumbnail refs for scrolling to active thumbnail
-    const thumbnailRefs = useRef([]);
+    const thumbnailRefs = useRef<(HTMLDivElement | null)[]>([]);
 
     // We only have 3 images, but we paginate them absolutely (ie 1, 2, 3, 4, 5...) and
     // then wrap that within 0-2 to find our image ID in the array below. By passing an
@@ -81,7 +84,7 @@ export default function ImageGallery({ images = [], productTitle = "" }: ImageGa
     };
 
     useEffect(() => {
-        thumbnailRefs.current?.[page]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+        thumbnailRefs.current?.[page]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
     }, [page]);
 
     useEffect(() => {
@@ -109,17 +112,19 @@ export default function ImageGallery({ images = [], productTitle = "" }: ImageGa
                         {images?.map((img, ind) => (
                             <div
                                 key={`thumbnail-${ind}`}
-                                ref={(el) => (thumbnailRefs.current[ind] = el)}
+                                ref={(el) => {
+                                    thumbnailRefs.current[ind] = el;
+                                }}
                                 className={`flex w-20 h-20 md:w-auto md:h-auto shrink-0 rounded-lg cursor-pointer ${
-                                    ind !== page ? "hover:scale-105" : ""
-                                } transition ${ind === page ? "scale-105 border-2 border-bluegreen-500" : ""}`}
+                                    ind !== page ? 'hover:scale-105' : ''
+                                } transition ${ind === page ? 'scale-105 border-2 border-bluegreen-500' : ''}`}
                                 onClick={() => handleThumbnailClick(ind)}
                             >
                                 <Image
                                     src={img.url_170x135}
                                     width={100}
                                     height={100}
-                                    objectFit='cover'
+                                    style={{ objectFit: 'cover' }}
                                     className={`rounded-md aspect-square`}
                                     alt={`Product image thumbnail ${ind + 1} for ${productTitle}`}
                                     priority
@@ -129,7 +134,11 @@ export default function ImageGallery({ images = [], productTitle = "" }: ImageGa
                     </div>
                 </div>
                 <div className='relative order-1 md:order-2 group p-2'>
-                    <AnimatePresence initial={false} custom={direction} mode='wait'>
+                    <AnimatePresence
+                        initial={false}
+                        custom={direction}
+                        mode='wait'
+                    >
                         <motion.div
                             key={`gallery-image-${page}`}
                             className='flex self-start justify-center items-center  rounded-xs aspect-square shadow-light'
@@ -139,7 +148,7 @@ export default function ImageGallery({ images = [], productTitle = "" }: ImageGa
                             animate='center'
                             exit='exit'
                             transition={{
-                                x: { type: "spring", stiffness: 300, damping: 30 },
+                                x: { type: 'spring', stiffness: 300, damping: 30 },
                                 opacity: { duration: 0.2 },
                             }}
                             drag='x'
@@ -161,7 +170,7 @@ export default function ImageGallery({ images = [], productTitle = "" }: ImageGa
                                 src={images[imageIndex].url_fullxfull}
                                 width={442}
                                 height={442}
-                                objectFit='cover'
+                                style={{ objectFit: 'cover' }}
                                 className='rounded-md w-full h-auto aspect-square shadow-light'
                                 placeholder='blur'
                                 blurDataURL={images[imageIndex].url_75x75}

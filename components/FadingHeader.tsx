@@ -1,7 +1,9 @@
-import { motion, useScroll, useTransform, useSpring, HTMLMotionProps } from "framer-motion";
-import { useRef } from "react";
+'use client';
 
-interface FadingHeaderProps extends HTMLMotionProps<"header"> {
+import { motion, useScroll, useTransform, useSpring, HTMLMotionProps } from 'motion/react';
+import { useRef } from 'react';
+
+interface FadingHeaderProps extends HTMLMotionProps<'header'> {
     children: React.ReactNode;
     className?: string;
 }
@@ -21,7 +23,12 @@ const FadingHeader = ({ children, className, ...rest }: FadingHeaderProps) => {
     const opacity = useSpring(yRange, { stiffness: 400, damping: 40 });
 
     return (
-        <motion.header ref={headerRef} style={{ opacity }} className={`heroSectionHeader ${className || ""}`} {...rest}>
+        <motion.header
+            ref={headerRef}
+            style={{ opacity }}
+            className={`heroSectionHeader ${className || ''}`}
+            {...rest}
+        >
             {children}
         </motion.header>
     );

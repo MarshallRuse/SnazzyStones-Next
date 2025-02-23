@@ -1,5 +1,5 @@
-import {ReactNode, useCallback, useEffect, useState} from "react";
-import { motion } from "framer-motion";
+import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { motion } from 'motion/react';
 
 export interface WiggleWrapperProps {
     rotate?: number;
@@ -38,12 +38,12 @@ export default function WiggleWrapper({ rotate = 15, timing = 150, children }: W
                     rotate: 0,
                 },
             }}
-            animate={isBooped ? "booped" : "unBooped"}
+            animate={isBooped ? 'booped' : 'unBooped'}
             onHoverStart={initiateWiggle}
             whileHover={{ scale: 1.1 }}
             whileFocus={{ scale: 1.1 }}
             transition={{
-                type: "spring",
+                type: 'spring',
                 stiffness: 300,
                 mass: 1,
                 damping: 4,

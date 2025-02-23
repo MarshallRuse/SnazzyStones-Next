@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, MutableRefObject } from 'react';
 import { usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { useDimensions } from './use-dimensions';
 import { MenuToggle } from './MenuToggle';
 import { MobileNavList } from './MobileNavList';

@@ -1,19 +1,20 @@
-import { ProductMinAPIData } from "../../../../types/Types";
-import { fetchProductsFromCache } from "../../../../utils/fetching/products/etsyProducts";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from 'next/server';
+import { ProductMinAPIData } from '@/types/Types';
+import { fetchProductsFromCache } from '@/utils/fetching/products/etsyProducts';
 
 export interface APIProductsResponse {
     products: Partial<ProductMinAPIData>[] | ProductMinAPIData[];
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<APIProductsResponse>) {
+export async function GET(request: Request) {
     const shopListings = await fetchProductsFromCache();
-    const query = req.query;
-    const { fields } = query;
+    const { searchParams } = new URL(request.url);
+    const fields = searchParams.get('fields');
+
     let activeShopListingsFormatted: Partial<ProductMinAPIData>[] | undefined = undefined;
 
     if (fields) {
-        const fieldList = typeof fields === "string" ? fields.split(",") : fields; // string list of fields should be comma delimited
+        const fieldList = fields.split(',');
         activeShopListingsFormatted = shopListings?.map((prod) => {
             const obj: Partial<ProductMinAPIData> = {};
             for (const field of fieldList) {
@@ -23,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         });
     }
 
-    res.status(200).json({
+    return NextResponse.json<APIProductsResponse>({
         products: activeShopListingsFormatted !== undefined ? activeShopListingsFormatted : shopListings,
     });
 }

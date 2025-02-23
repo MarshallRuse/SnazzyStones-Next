@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { useInView } from 'react-intersection-observer';
 import { styled } from '@mui/material/styles';
 import { Tooltip, tooltipClasses, TooltipProps } from '@mui/material';
@@ -89,7 +89,7 @@ export default function ProductListingCard({
                         src={imagePrimary}
                         width={600}
                         height={600}
-                        objectFit='cover'
+                        style={{ objectFit: 'cover' }}
                         className='rounded-md'
                         placeholder={imagePlaceholder ? 'blur' : 'empty'}
                         blurDataURL={imagePlaceholder}
@@ -101,7 +101,7 @@ export default function ProductListingCard({
                                 src={imageSecondary}
                                 width={600}
                                 height={600}
-                                objectFit='cover'
+                                style={{ objectFit: 'cover' }}
                                 className='rounded-md'
                                 placeholder={imageSecondaryPlaceholder ? 'blur' : 'empty'}
                                 blurDataURL={imageSecondaryPlaceholder}

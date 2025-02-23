@@ -1,8 +1,10 @@
-import { useState } from "react";
-import { Box, InputLabel, MenuItem, FormControl, Select } from "@mui/material";
-import ProductListingCard from "./ProductListingCard";
-import formatProductTitleAsURL from "../utils/formatProductTitleAsURL";
-import { ShopListingCondensed, ShopSectionResponse } from "../types/EtsyAPITypes";
+'use client';
+
+import { useState } from 'react';
+import { Box, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
+import ProductListingCard from './ProductListingCard';
+import formatProductTitleAsURL from '../utils/formatProductTitleAsURL';
+import { ShopListingCondensed, ShopSectionResponse } from '../types/EtsyAPITypes';
 
 export interface ProductListProps {
     products: ShopListingCondensed[];
@@ -10,27 +12,27 @@ export interface ProductListProps {
 }
 
 export default function ProductList({ products = [], categories = [] }: ProductListProps) {
-    const [sortOption, setSortOption] = useState("date-added-newest");
+    const [sortOption, setSortOption] = useState('date-added-newest');
 
     const sortedProducts = () => {
         switch (sortOption) {
-            case "date-added-newest":
+            case 'date-added-newest':
                 return products?.sort(
                     (prodA, prodB) => prodB.original_creation_timestamp - prodA.original_creation_timestamp
                 );
-            case "date-added-oldest":
+            case 'date-added-oldest':
                 return products?.sort(
                     (prodA, prodB) => prodA.original_creation_timestamp - prodB.original_creation_timestamp
                 );
-            case "most-popular":
+            case 'most-popular':
                 return products?.sort((prodA, prodB) => prodB.num_favorers - prodA.num_favorers);
-            case "price-lowest":
+            case 'price-lowest':
                 return products?.sort((prodA, prodB) =>
                     prodA.price && prodB.price
                         ? prodA.price.amount / prodA.price.divisor - prodB.price.amount / prodB.price.divisor
                         : 0
                 );
-            case "price-highest":
+            case 'price-highest':
                 return products?.sort((prodA, prodB) =>
                     prodB.price && prodA.price
                         ? prodB.price.amount / prodB.price.divisor - prodA.price.amount / prodA.price.divisor
@@ -56,9 +58,9 @@ export default function ProductList({ products = [], categories = [] }: ProductL
                             label='Sort by...'
                             onChange={(e) => setSortOption(e.target.value)}
                         >
-                            <MenuItem value={"date-added-newest"}>Date Added (Newest)</MenuItem>
-                            <MenuItem value={"date-added-oldest"}>Date Added (Oldest)</MenuItem>
-                            <MenuItem value={"most-popular"}>Most Popular</MenuItem>
+                            <MenuItem value={'date-added-newest'}>Date Added (Newest)</MenuItem>
+                            <MenuItem value={'date-added-oldest'}>Date Added (Oldest)</MenuItem>
+                            <MenuItem value={'most-popular'}>Most Popular</MenuItem>
                             {/* <MenuItem value={"price-lowest"}>Price (Lowest)</MenuItem>
                             <MenuItem value={"price-highest"}>Price (Highest)</MenuItem> */}
                         </Select>
@@ -67,13 +69,13 @@ export default function ProductList({ products = [], categories = [] }: ProductL
             </div>
             <div className='col-span-3 lg:col-span-4 grid sm:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-14 py-6 relative'>
                 {sortedProducts()?.map((prod) => {
-                    const tag = "[mod:";
-                    let secondaryImageUrl = "";
-                    let secondaryImagePlaceholderUrl = "";
+                    const tag = '[mod:';
+                    let secondaryImageUrl = '';
+                    let secondaryImagePlaceholderUrl = '';
                     let stringModIndex = prod.description.indexOf(tag);
 
                     if (stringModIndex !== -1) {
-                        const closingBracketIndex = prod.description.slice(stringModIndex).indexOf("]");
+                        const closingBracketIndex = prod.description.slice(stringModIndex).indexOf(']');
                         let secImageInd = parseInt(
                             prod.description
                                 .slice(stringModIndex + tag.length, stringModIndex + closingBracketIndex)
@@ -93,14 +95,15 @@ export default function ProductList({ products = [], categories = [] }: ProductL
                             imageSecondary={secondaryImageUrl}
                             imageSecondaryPlaceholder={secondaryImagePlaceholderUrl}
                             productCategory={
-                                typeof categories === "string"
+                                typeof categories === 'string'
                                     ? categories
-                                    : categories.find((cat) => cat.shop_section_id === prod.shop_section_id).title
+                                    : categories?.find((cat) => cat.shop_section_id === prod.shop_section_id)?.title ??
+                                      ''
                             }
                             productName={prod.title}
                             //productPrice={prod.price.amount / prod.price.divisor}
                             productPageLink={`/retail/products/${
-                                prod.title.includes("|") ? formatProductTitleAsURL(prod.title) : prod.listing_id
+                                prod.title.includes('|') ? formatProductTitleAsURL(prod.title) : prod.listing_id
                             }`}
                             productFavourites={prod.num_favorers}
                         />
