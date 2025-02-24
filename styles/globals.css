@@ -79,22 +79,6 @@
 }
 
 @layer base {
-    @font-face {
-        font-family: 'TitlePrimary';
-        src: url('/fonts/title-primary.ttf');
-        font-style: bold;
-        font-weight: 700;
-        font-display: swap;
-    }
-
-    @font-face {
-        font-family: 'TitleSecondary';
-        src: url('/fonts/title-secondary.ttf');
-        font-style: medium;
-        font-weight: 500;
-        font-display: swap;
-    }
-
     h1 {
         @apply text-6xl my-8;
     }
@@ -297,12 +281,12 @@ a {
 }
 
 .snazzy {
-    font-family: 'TitlePrimary', serif;
+    font-family: var(--font-title-primary), serif;
     font-size: 1.4em;
 }
 
 .stones {
-    font-family: 'TitleSecondary', serif;
+    font-family: var(--font-title-secondary), serif;
     font-weight: 400;
 }
 
