@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import MenuListItem from '../MenuListItem';
 import HoverStyledAnchor from '../HoverStyledAnchor';
-import { MenuItemType } from '../../../types/Types';
+import { MenuItemType } from '@/types/Types';
 
 const variants = {
     open: {
@@ -43,7 +43,7 @@ export const MenuItem = ({ menuItem, ...rest }: MenuItemProps) => {
                 <div className='flex items-center justify-between w-full'>
                     {menuItem.isLink ? (
                         <Link
-                            href={menuItem.link}
+                            href={menuItem.link ?? ''}
                             passHref
                         >
                             <HoverStyledAnchor
@@ -87,7 +87,7 @@ export const MenuItem = ({ menuItem, ...rest }: MenuItemProps) => {
                         {menuItem.submenu.map((sub) => (
                             <MenuListItem key={`sub-menu-${sub.displayText.replace(' ', '-')}`}>
                                 <Link
-                                    href={sub.link}
+                                    href={sub.link ?? ''}
                                     passHref
                                 >
                                     <HoverStyledAnchor>{sub.displayText}</HoverStyledAnchor>

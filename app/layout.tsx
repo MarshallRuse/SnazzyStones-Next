@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import Layout from '../components/Layout';
-import '../styles/globals.css';
+import Layout from '@/components/Layout';
+import '@/styles/globals.css';
 import { Libre_Baskerville, Mandali } from 'next/font/google';
 import localFont from 'next/font/local';
 

@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import TextContainer from '../../components/TextContainer';
+import TextContainer from '@/components/TextContainer';
 import styles from './our-shows.module.css';
 import { Metadata } from 'next';
 

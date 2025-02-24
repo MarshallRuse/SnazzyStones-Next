@@ -3,12 +3,13 @@
 import { useState } from 'react';
 import { Box, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
 import ProductListingCard from './ProductListingCard';
-import formatProductTitleAsURL from '../utils/formatProductTitleAsURL';
-import { ShopListingCondensed, ShopSectionResponse } from '../types/EtsyAPITypes';
+import formatProductTitleAsURL from '@/utils/formatProductTitleAsURL';
+import { ShopListingCondensed } from '@/types/EtsyAPITypes';
+import { CategoriesMinAPIData } from '@/types/Types';
 
 export interface ProductListProps {
     products: ShopListingCondensed[];
-    categories: string | ShopSectionResponse[] | null;
+    categories: string | CategoriesMinAPIData[] | null;
 }
 
 export default function ProductList({ products = [], categories = [] }: ProductListProps) {

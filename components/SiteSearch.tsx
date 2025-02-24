@@ -7,9 +7,9 @@ import { usePathname } from 'next/navigation';
 import { Autocomplete, TextField } from '@mui/material';
 import Search from '@mui/icons-material/Search';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import formatProductTitleAsURL from '../utils/formatProductTitleAsURL';
-import { APIProductsResponse } from '../pages/api/retail/products';
-import { ProductMinAPIData } from '../types/Types';
+import formatProductTitleAsURL from '@/utils/formatProductTitleAsURL';
+import { APIProductsResponse } from '@/app/api/retail/products/route';
+import { ProductMinAPIData } from '@/types/Types';
 
 const theme = createTheme({
     palette: {
@@ -100,37 +100,45 @@ export default function SiteSearch({ className = '', ...rest }: SiteSearchProps)
                         loading={autocompleteVisible && products.length === 0}
                         loadingText='Loading Snazziness...'
                         value={value}
-                        onChange={(event, newValue) => typeof newValue !== 'string' && setValue(newValue)}
+                        onChange={(_, newValue) => typeof newValue !== 'string' && setValue(newValue)}
                         openOnFocus
                         clearOnEscape
                         onBlur={handleClearAndCloseInput}
                         onClose={handleClearAndCloseInput}
-                        getOptionLabel={(product) => (typeof product !== 'string' ? product?.title : '')}
-                        renderOption={(props, product) => (
-                            <li {...props}>
-                                <Link
-                                    href={`/retail/products/${
-                                        product.title?.includes('|')
-                                            ? formatProductTitleAsURL(product.title)
-                                            : product.listing_id
-                                    }`}
-                                    className='flex items-center gap-4'
+                        getOptionLabel={(product) => product?.title ?? ''}
+                        renderOption={(props, product) => {
+                            const { key, ...rest } = props;
+                            return (
+                                <li
+                                    key={key}
+                                    {...rest}
                                 >
-                                    <div className='grow shrink-0 w-20 h-20 mr-4'>
-                                        {product && (product.images?.length ?? 0) > 0 && (
-                                            <Image
-                                                width={75}
-                                                height={75}
-                                                src={product?.images?.[0].url_75x75 ?? ''}
-                                                className='w-full'
-                                                alt={`Thumbnail sized main listing image for ${product.title}`}
-                                            />
-                                        )}
-                                    </div>
-                                    <div className='grow-0 line-clamp-2'>{product?.title?.split('|')[0].trim()}</div>
-                                </Link>
-                            </li>
-                        )}
+                                    <Link
+                                        href={`/retail/products/${
+                                            product.title?.includes('|')
+                                                ? formatProductTitleAsURL(product.title)
+                                                : product.listing_id
+                                        }`}
+                                        className='flex items-center gap-4'
+                                    >
+                                        <div className='grow shrink-0 w-20 h-20 mr-4'>
+                                            {product && (product.images?.length ?? 0) > 0 && (
+                                                <Image
+                                                    width={75}
+                                                    height={75}
+                                                    src={product?.images?.[0].url_75x75 ?? ''}
+                                                    className='w-full'
+                                                    alt={`Thumbnail sized main listing image for ${product.title}`}
+                                                />
+                                            )}
+                                        </div>
+                                        <div className='grow-0 line-clamp-2'>
+                                            {product?.title?.split('|')[0].trim()}
+                                        </div>
+                                    </Link>
+                                </li>
+                            );
+                        }}
                         renderInput={(params) => (
                             <TextField
                                 {...params}

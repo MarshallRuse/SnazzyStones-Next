@@ -1,5 +1,5 @@
 import EmailRounded from '@mui/icons-material/EmailRounded';
-import ContactUsForm from '../../components/ContactUsForm';
+import ContactUsForm from '@/components/ContactUsForm';
 import styles from './contact-us.module.css';
 import { Metadata } from 'next';
 

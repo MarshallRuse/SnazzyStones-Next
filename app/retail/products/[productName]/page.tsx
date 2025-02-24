@@ -5,12 +5,12 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import he from 'he';
 import Favorite from '@mui/icons-material/Favorite';
-import { fetchCategoriesFromCache } from '../../../../utils/fetching/categories/etsyCategories';
-import { fetchProductsFromCache } from '../../../../utils/fetching/products/etsyProducts';
-import formatProductTitleAsURL from '../../../../utils/formatProductTitleAsURL';
-import ImageGallery from '../../../../components/ImageGallery';
-import ProductPageFallbackSkeleton from '../../../../components/ProductPageFallbackSkeleton';
-import CTALink from '../../../../components/CTAElements/CTALink';
+import { fetchCategoriesFromCache } from '@/utils/fetching/categories/etsyCategories';
+import { fetchProductsFromCache } from '@/utils/fetching/products/etsyProducts';
+import formatProductTitleAsURL from '@/utils/formatProductTitleAsURL';
+import ImageGallery from '@/components/ImageGallery';
+import ProductPageFallbackSkeleton from '@/components/ProductPageFallbackSkeleton';
+import CTALink from '@/components/CTAElements/CTALink';
 import ShareButtons from './ShareButtons';
 import ReviewsSection from './ReviewsSection';
 

@@ -3,8 +3,8 @@ import Bottleneck from 'bottleneck';
 //Name both cache SDK imports redis so they can be swapped out if one were to blow through the cache limit
 //import { kv as redis } from "@vercel/kv";
 import { Redis } from '@upstash/redis';
-import { ShopListingResponse, ShopListingsResponse } from '../../../types/EtsyAPITypes';
-import { ProductMinAPIData } from '../../../types/Types';
+import { ShopListingResponse, ShopListingsResponse } from '@/types/EtsyAPITypes';
+import { ProductMinAPIData } from '@/types/Types';
 
 // Comment out if using kv
 const redis = new Redis({

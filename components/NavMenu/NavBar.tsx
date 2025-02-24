@@ -9,7 +9,7 @@ import MenuListItem from './MenuListItem';
 import HoverStyledAnchor from './HoverStyledAnchor';
 import MobileNav from './mobile/MobileNav';
 import { LinearProgress } from '@mui/material';
-import { MenuItemType } from '../../types/Types';
+import { MenuItemType } from '@/types/Types';
 
 export default function NavBar() {
     const [shopMenuItems, setShopMenuItems] = useState<MenuItemType[]>([]);

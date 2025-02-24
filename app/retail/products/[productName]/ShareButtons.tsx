@@ -12,7 +12,7 @@ import {
     WhatsappIcon,
     WhatsappShareButton,
 } from 'react-share';
-import WiggleWrapper from '../../../../components/WiggleWrapper';
+import WiggleWrapper from '@/components/WiggleWrapper';
 
 const shareButtonStyle = 'rounded-full focus:outline-hidden focus:ring-3 focus:ring-bluegreen-500 focus:ring-offset-2';
 const shareButtonIconSize = 40;

@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import FadeInDiv from '../../components/FadeInDiv';
+import FadeInDiv from '@/components/FadeInDiv';
 import styles from './silver-care.module.css';
 import { Metadata } from 'next';
 

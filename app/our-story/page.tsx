@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import TextContainer from '../../components/TextContainer';
-import FadeInDiv from '../../components/FadeInDiv';
+import TextContainer from '@/components/TextContainer';
+import FadeInDiv from '@/components/FadeInDiv';
 import styles from './our-story.module.css';
 import { Metadata } from 'next';
 

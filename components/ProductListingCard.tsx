@@ -7,7 +7,7 @@ import { useInView } from 'react-intersection-observer';
 import { styled } from '@mui/material/styles';
 import { Tooltip, tooltipClasses, TooltipProps } from '@mui/material';
 import Favorite from '@mui/icons-material/Favorite';
-import useCountry from '../utils/fetching/country';
+import useCountry from '@/utils/fetching/country';
 
 type ThemeTooltipProps = TooltipProps & {
     className?: string;

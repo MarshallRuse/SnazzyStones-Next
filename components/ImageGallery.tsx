@@ -6,8 +6,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { wrap } from 'popmotion';
 import ArrowForwardIosRounded from '@mui/icons-material/ArrowForwardIosRounded';
 import ArrowBackIosRounded from '@mui/icons-material/ArrowBackIosRounded';
-import { ListingImage } from '../types/EtsyAPITypes';
-import { ListingImageMin } from '../types/Types';
+import { ListingImage } from '@/types/EtsyAPITypes';
+import { ListingImageMin } from '@/types/Types';
 
 const enterExitDistance = 250;
 const variants = {

@@ -1,4 +1,4 @@
-import { ListingReviewResponse, ListingReview } from '../../../../../../types/EtsyAPITypes';
+import { ListingReviewResponse, ListingReview } from '@/types/EtsyAPITypes';
 import { NextResponse } from 'next/server';
 
 export interface APIReviewsResponse {

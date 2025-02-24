@@ -5,8 +5,8 @@ import Image from 'next/image';
 import he from 'he';
 import dayjs from 'dayjs';
 import StarRateRounded from '@mui/icons-material/StarRateRounded';
-import { ListingReview } from '../../../../types/EtsyAPITypes';
-import { APIReviewsResponse } from '../../../api/retail/products/reviews/[listing_id]/route';
+import { ListingReview } from '@/types/EtsyAPITypes';
+import { APIReviewsResponse } from '@/app/api/retail/products/reviews/[listing_id]/route';
 
 export default function ReviewsSection({ listingId }: { listingId: string }) {
     const [reviews, setReviews] = useState<ListingReview[]>([]);
