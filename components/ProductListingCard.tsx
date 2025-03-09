@@ -3,11 +3,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'motion/react';
-import { useInView } from 'react-intersection-observer';
 import { styled } from '@mui/material/styles';
 import { Tooltip, tooltipClasses, TooltipProps } from '@mui/material';
 import Favorite from '@mui/icons-material/Favorite';
-import useCountry from '@/utils/fetching/country';
+// import useCountry from '@/utils/fetching/country';
 
 type ThemeTooltipProps = TooltipProps & {
     className?: string;
@@ -37,6 +36,8 @@ export interface ProductListingCardProps {
     productPrice?: number;
     productPageLink?: string;
     productFavourites?: number;
+    index?: number;
+    disableAnimation?: boolean;
 }
 
 export default function ProductListingCard({
@@ -49,39 +50,31 @@ export default function ProductListingCard({
     productPrice,
     productPageLink = '',
     productFavourites = 0,
+    index = 0,
+    disableAnimation = false,
 }: ProductListingCardProps) {
-    const { countryData, isLoading, isError } = useCountry();
-    const { ref, inView, entry } = useInView({
-        /* Optional options */
-        threshold: 0.5,
-        triggerOnce: true,
-    });
+    // const { countryData, isLoading, isError } = useCountry();
 
-    return (
-        <motion.div
-            className='flex items-start flex-col'
-            ref={ref}
-            key={`listing-card-${productPageLink}`}
-            variants={{
-                open: {
-                    y: 0,
-                    opacity: 1,
-                    transition: {
-                        y: { stiffness: 1000, velocity: -100 },
-                    },
-                },
-                closed: {
-                    y: 50,
-                    opacity: 0,
-                    transition: {
-                        y: { stiffness: 1000 },
-                    },
-                },
-            }}
-            initial='closed'
-            animate={inView ? 'open' : 'closed'}
-            exit={{ opacity: 0, x: -50 }}
-        >
+    // Item variants for staggered animation
+    // These will be controlled by the parent container
+    const itemVariants = {
+        hidden: {
+            y: 50,
+            opacity: 0,
+        },
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: {
+                y: { type: 'spring', stiffness: 200, velocity: 10, mass: 0.5 },
+                opacity: { duration: 0.3 },
+            },
+        },
+    };
+
+    // Content to render
+    const content = (
+        <>
             <Link
                 href={productPageLink}
                 prefetch={false}
@@ -150,6 +143,21 @@ export default function ProductListingCard({
                         </span> */}
                 </div>
             </Link>
+        </>
+    );
+
+    // Return different wrappers based on animation state
+    return disableAnimation ? (
+        // Regular div for server-side rendering to prevent hydration mismatch
+        <div className='flex items-start flex-col'>{content}</div>
+    ) : (
+        // Motion div for client-side animation
+        <motion.div
+            className='flex items-start flex-col'
+            key={`listing-card-${productPageLink}`}
+            variants={itemVariants}
+        >
+            {content}
         </motion.div>
     );
 }
