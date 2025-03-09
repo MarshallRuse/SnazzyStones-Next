@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+// Nextjs 13 broke blurDataURL (need to convert to base64), so we're using the legacy image component
+// https://github.com/vercel/next.js/issues/42140
+import LegacyImage from 'next/legacy/image';
 import { motion, AnimatePresence } from 'motion/react';
 import { wrap } from 'popmotion';
 import ArrowForwardIosRounded from '@mui/icons-material/ArrowForwardIosRounded';
@@ -103,6 +106,7 @@ export default function ImageGallery({ images = [], productTitle = '' }: ImageGa
             setInitialAnimationComplete(true);
         }
     }, [isAnimating, initialAnimationComplete]);
+    console.log('images', images);
 
     return (
         <div>
@@ -115,7 +119,7 @@ export default function ImageGallery({ images = [], productTitle = '' }: ImageGa
                                 ref={(el) => {
                                     thumbnailRefs.current[ind] = el;
                                 }}
-                                className={`flex w-20 h-20 md:w-auto md:h-auto shrink-0 rounded-lg cursor-pointer ${
+                                className={`flex w-20 h-20 aspect-square md:w-auto md:h-auto shrink-0 rounded-lg cursor-pointer ${
                                     ind !== page ? 'hover:scale-105' : ''
                                 } transition ${ind === page ? 'scale-105 border-2 border-bluegreen-500' : ''}`}
                                 onClick={() => handleThumbnailClick(ind)}
@@ -133,7 +137,7 @@ export default function ImageGallery({ images = [], productTitle = '' }: ImageGa
                         ))}
                     </div>
                 </div>
-                <div className='relative order-1 md:order-2 group p-2'>
+                <div className='relative order-1 md:order-2 group p-2 h-full'>
                     <AnimatePresence
                         initial={false}
                         custom={direction}
@@ -166,15 +170,16 @@ export default function ImageGallery({ images = [], productTitle = '' }: ImageGa
                             onAnimationStart={() => setIsAnimating(true)}
                             onAnimationComplete={() => setIsAnimating(false)}
                         >
-                            <Image
+                            <LegacyImage
                                 src={images[imageIndex].url_fullxfull}
                                 width={442}
                                 height={442}
-                                style={{ objectFit: 'cover' }}
+                                objectFit='cover'
                                 className='rounded-md w-full h-auto aspect-square shadow-light'
                                 placeholder='blur'
                                 blurDataURL={images[imageIndex].url_75x75}
                                 alt={`Product gallery image ${page + 1} for ${productTitle}`}
+                                loading='eager'
                                 priority
                             />
                         </motion.div>
