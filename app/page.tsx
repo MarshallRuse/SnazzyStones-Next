@@ -3,15 +3,14 @@ import Link from 'next/link';
 import Instagram from '@mui/icons-material/Instagram';
 import TextContainer from '@/components/TextContainer';
 import CollectionCard from '@/components/CollectionCard';
-import ProductListingCard from '@/components/ProductListingCard';
 import InstagramFeed from '@/components/InstagramFeed';
 import { collectionCardMap } from '@/utils/collectionCardMap';
 import { avoidRateLimit } from '@/utils/avoidRateLimit';
 import { fetchCategoriesFromCache } from '@/utils/fetching/categories/etsyCategories';
 import { fetchProductsFromCache } from '@/utils/fetching/products/etsyProducts';
-import formatProductTitleAsURL from '@/utils/formatProductTitleAsURL';
 import CTALink from '@/components/CTAElements/CTALink';
 import styles from './Home.module.css';
+import ProductList from '@/components/ProductList';
 
 // Fetch data at build time
 async function getHomeData() {
@@ -139,26 +138,12 @@ export default async function Home() {
                     <h2>Recently Added Products</h2>
                     <p>Check out our most recent snazziness!</p>
                 </TextContainer>
-                <div className='grid sm:grid-cols-4 lg:grid-cols-4 gap-10 py-5 px-8 max-w-(--breakpoint-2xl) mx-auto'>
-                    {products?.slice(0, 4).map((prod) => {
-                        const productImages = prod.images ?? [];
-                        const productCategory =
-                            categories.find((cat) => cat.shop_section_id === prod.shop_section_id)?.title ?? '';
-
-                        return (
-                            <ProductListingCard
-                                key={`recent-product-${prod.listing_id}`}
-                                imagePrimary={productImages[0]?.url_fullxfull ?? ''}
-                                imagePlaceholder={productImages[0]?.url_75x75 ?? ''}
-                                productCategory={productCategory}
-                                productName={prod.title}
-                                productPageLink={`/retail/products/${
-                                    prod.title.includes('|') ? formatProductTitleAsURL(prod.title) : prod.listing_id
-                                }`}
-                            />
-                        );
-                    })}
-                </div>
+                <ProductList
+                    backgroundColor={false}
+                    products={products.slice(0, 4)}
+                    categories={categories}
+                    sortable={false}
+                />
             </section>
 
             <section className={`px-10 py-20 text-white ${styles.findUsSection}`}>

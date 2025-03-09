@@ -5,15 +5,22 @@ import { Box, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
 import ProductListingCard from './ProductListingCard';
 import formatProductTitleAsURL from '@/utils/formatProductTitleAsURL';
 import { ShopListingCondensed } from '@/types/EtsyAPITypes';
-import { CategoriesMinAPIData } from '@/types/Types';
+import { CategoriesMinAPIData, ProductMinAPIData } from '@/types/Types';
 import { motion } from 'motion/react';
 
 export interface ProductListProps {
-    products: ShopListingCondensed[];
+    backgroundColor?: boolean;
     categories: string | CategoriesMinAPIData[] | null;
+    products: (ShopListingCondensed | ProductMinAPIData)[];
+    sortable?: boolean;
 }
 
-export default function ProductList({ products = [], categories = [] }: ProductListProps) {
+export default function ProductList({
+    products = [],
+    categories = [],
+    backgroundColor = true,
+    sortable = true,
+}: ProductListProps) {
     const [sortOption, setSortOption] = useState('date-added-newest');
     // Default to mobile column count for server-side rendering to avoid hydration mismatch
     const [columnCount, setColumnCount] = useState(1);
@@ -90,27 +97,33 @@ export default function ProductList({ products = [], categories = [] }: ProductL
     // NOTE: Nested grid cols is weird and redundant, but stops the framer-motion related bug of the Sort input
     // going transparent and fading up as the header image fades out.  NO idea why this works, was trial and error
     return (
-        <section className='bg-white grid sm:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-14 px-4 md:px-32 py-6 relative'>
-            <div className='opacity-100 pt-4 col-span-3'>
-                <Box sx={{ minWidth: 120 }}>
-                    <FormControl>
-                        <InputLabel id='sort-products-select'>Sort by...</InputLabel>
-                        <Select
-                            labelId='sort-products-select-label'
-                            id='sort-products-select'
-                            value={sortOption}
-                            label='Sort by...'
-                            onChange={(e) => setSortOption(e.target.value)}
-                        >
-                            <MenuItem value={'date-added-newest'}>Date Added (Newest)</MenuItem>
-                            <MenuItem value={'date-added-oldest'}>Date Added (Oldest)</MenuItem>
-                            <MenuItem value={'most-popular'}>Most Popular</MenuItem>
-                            {/* <MenuItem value={"price-lowest"}>Price (Lowest)</MenuItem>
+        <section
+            className={`${
+                backgroundColor ? 'bg-white' : ''
+            } grid sm:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-14 px-4 md:px-32 py-6 relative`}
+        >
+            {sortable && (
+                <div className='opacity-100 pt-4 col-span-3'>
+                    <Box sx={{ minWidth: 120 }}>
+                        <FormControl>
+                            <InputLabel id='sort-products-select'>Sort by...</InputLabel>
+                            <Select
+                                labelId='sort-products-select-label'
+                                id='sort-products-select'
+                                value={sortOption}
+                                label='Sort by...'
+                                onChange={(e) => setSortOption(e.target.value)}
+                            >
+                                <MenuItem value={'date-added-newest'}>Date Added (Newest)</MenuItem>
+                                <MenuItem value={'date-added-oldest'}>Date Added (Oldest)</MenuItem>
+                                <MenuItem value={'most-popular'}>Most Popular</MenuItem>
+                                {/* <MenuItem value={"price-lowest"}>Price (Lowest)</MenuItem>
                             <MenuItem value={"price-highest"}>Price (Highest)</MenuItem> */}
-                        </Select>
-                    </FormControl>
-                </Box>
-            </div>
+                            </Select>
+                        </FormControl>
+                    </Box>
+                </div>
+            )}
             <div className='col-span-3 lg:col-span-4 relative'>
                 {/* Only render row-based layout after component mounts on client-side */}
                 {isMounted ? (
