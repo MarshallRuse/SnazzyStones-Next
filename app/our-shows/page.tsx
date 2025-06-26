@@ -222,7 +222,7 @@ export default function OurShows() {
                     ></iframe>
                 </div>
             </section> */}
-            <section className='px-10 md:px-40 py-20 bg-slate-100 text-blueyonder-500 grid items-start md:grid-cols-4 gap-10'>
+            {/*<section className='px-10 md:px-40 py-20 bg-slate-100 text-blueyonder-500 grid items-start md:grid-cols-4 gap-10'>
                 <div className='flex rounded-md aspect-square  col-span-3 md:col-span-1'>
                     <Image
                         src='/images/wiartonLogo.png'
@@ -262,8 +262,8 @@ export default function OurShows() {
                         allowFullScreen
                     ></iframe>
                 </div>
-            </section>
-            <section className='px-10 md:px-40 py-20 bg-white text-blueyonder-500 grid items-start md:grid-cols-4 gap-10'>
+            </section>*/}
+            {/*<section className='px-10 md:px-40 py-20 bg-white text-blueyonder-500 grid items-start md:grid-cols-4 gap-10'>
                 <div className='flex rounded-md aspect-square  col-span-3 md:col-span-1'>
                     <Image
                         src='/images/SaubleBeachLogo.png'
@@ -304,7 +304,7 @@ export default function OurShows() {
                         allowFullScreen
                     ></iframe>
                 </div>
-            </section>
+            </section>*/}
         </>
     );
 }
