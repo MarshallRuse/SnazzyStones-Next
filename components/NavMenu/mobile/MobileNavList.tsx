@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { MenuItem } from "./MenuItem";
-import { menuContents, fetchCategoryMenuItems } from "../menuContents";
+import { useEffect, useState } from 'react';
+import { motion } from 'motion/react';
+import { MenuItem } from './MenuItem';
+import { menuContents, fetchCategoryMenuItems } from '../menuContents';
 
 const variants = {
     open: {
@@ -19,18 +19,24 @@ export const MobileNavList = () => {
         async function getCategories() {
             const shopCategories = await fetchCategoryMenuItems();
             const menuCopy = [...menu];
-            const shopIndex = menuCopy.findIndex((menuItem) => menuItem.link === "/retail");
+            const shopIndex = menuCopy.findIndex((menuItem) => menuItem.link === '/retail');
             menuCopy[shopIndex].submenu = shopCategories;
             setMenu(menuCopy);
         }
 
         getCategories();
-    }, []);
+    }, [menu]);
 
     return (
-        <motion.ul variants={variants} className='m-0 px-16 py-6 absolute top-24 w-full'>
+        <motion.ul
+            variants={variants}
+            className='m-0 px-16 py-6 absolute top-24 w-full'
+        >
             {menuContents.map((menuItem, index) => (
-                <MenuItem menuItem={menuItem} key={`mobile-menu-item-${index}`} />
+                <MenuItem
+                    menuItem={menuItem}
+                    key={`mobile-menu-item-${index}`}
+                />
             ))}
         </motion.ul>
     );

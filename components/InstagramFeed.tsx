@@ -1,5 +1,7 @@
-import { useState } from "react";
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import Image from 'next/image';
 
 export default function InstagramFeed({ feed }) {
     const [instagramImages, setInstagramImages] = useState(feed?.data);
@@ -21,7 +23,7 @@ export default function InstagramFeed({ feed }) {
 
     return (
         <>
-            <div className='grid md:grid-cols-4 gap-10 mt-10 max-w-screen-2xl mx-auto'>
+            <div className='grid md:grid-cols-4 gap-10 mt-10 max-w-(--breakpoint-2xl) mx-auto'>
                 {instagramImages &&
                     instagramImages.map((instImg) => (
                         <a
@@ -33,13 +35,13 @@ export default function InstagramFeed({ feed }) {
                         >
                             <Image
                                 src={
-                                    instImg.media_type !== "VIDEO"
-                                        ? instImg.media_url.replace(/^[^.]*/, "https://scontent") // replace dynamic CDN subdomains with the one in next.config
-                                        : instImg.thumbnail_url.replace(/^[^.]*/, "https://scontent")
+                                    instImg.media_type !== 'VIDEO'
+                                        ? instImg.media_url.replace(/^[^.]*/, 'https://scontent') // replace dynamic CDN subdomains with the one in next.config
+                                        : instImg.thumbnail_url.replace(/^[^.]*/, 'https://scontent')
                                 }
                                 width={270}
                                 height={270}
-                                objectFit='cover'
+                                style={{ objectFit: 'cover' }}
                                 alt={instImg.caption}
                                 className='aspect-square rounded-md'
                             />

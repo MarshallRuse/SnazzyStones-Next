@@ -1,26 +1,52 @@
-import {forwardRef, ReactNode} from "react";
-import CTAStyling from "./CTAStyling";
+import { forwardRef, ReactNode, JSX } from 'react';
+import CTAStyling from './CTAStyling';
 
-export interface CTALinkProps {
+interface BaseCTALinkProps {
     children: ReactNode;
     className?: string;
     disabled?: boolean;
+    type?: 'external' | 'internal';
 }
 
-const CTALink = forwardRef<HTMLAnchorElement, CTALinkProps & JSX.IntrinsicElements["a"]>(
-    ({ children, className = "", disabled = false, ...rest }, ref) => {
+interface ExternalCTALinkProps extends BaseCTALinkProps {
+    type: 'external';
+}
+
+interface InternalCTALinkProps extends BaseCTALinkProps {
+    type?: 'internal';
+}
+
+type CTALinkProps =
+    | (ExternalCTALinkProps & JSX.IntrinsicElements['a'])
+    | (InternalCTALinkProps & JSX.IntrinsicElements['span']);
+
+const CTALink = forwardRef<HTMLAnchorElement | HTMLSpanElement, CTALinkProps>(
+    ({ children, className = '', disabled = false, type = 'internal', ...rest }, ref) => {
+        if (type === 'external') {
+            return (
+                <a
+                    ref={ref as React.RefObject<HTMLAnchorElement>}
+                    className={`${CTAStyling(disabled, className)}`}
+                    style={{ color: 'white' }}
+                    {...rest}
+                >
+                    {children}
+                </a>
+            );
+        }
+
         return (
-            <a
-                ref={ref}
+            <span
+                ref={ref as React.RefObject<HTMLSpanElement>}
                 className={CTAStyling(disabled, className)}
                 {...rest}
             >
                 {children}
-            </a>
+            </span>
         );
     }
 );
 
-CTALink.displayName = "CTALink";
+CTALink.displayName = 'CTALink';
 
 export default CTALink;

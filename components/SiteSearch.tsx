@@ -1,24 +1,26 @@
-import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { Autocomplete, TextField } from "@mui/material";
-import Search from "@mui/icons-material/Search";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import formatProductTitleAsURL from "../utils/formatProductTitleAsURL";
-import { APIProductsResponse } from "../pages/api/retail/products";
-import { ProductMinAPIData } from "../types/Types";
+'use client';
+
+import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Autocomplete, TextField } from '@mui/material';
+import Search from '@mui/icons-material/Search';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import formatProductTitleAsURL from '@/utils/formatProductTitleAsURL';
+import { APIProductsResponse } from '@/app/api/retail/products/route';
+import { ProductMinAPIData } from '@/types/Types';
 
 const theme = createTheme({
     palette: {
         bluegreen: {
-            main: "#14b6b8",
+            main: '#14b6b8',
         },
         blueyonder: {
-            main: "#526996",
+            main: '#526996',
         },
         cerise: {
-            main: "#E72565",
+            main: '#E72565',
         },
     },
 });
@@ -27,8 +29,8 @@ export interface SiteSearchProps {
     className?: string;
 }
 
-export default function SiteSearch({ className = "", ...rest }: SiteSearchProps) {
-    const router = useRouter();
+export default function SiteSearch({ className = '', ...rest }: SiteSearchProps) {
+    const pathname = usePathname();
     const [products, setProducts] = useState<Partial<ProductMinAPIData>[]>([]);
     const [autocompleteVisible, setAutocompleteVisible] = useState(false);
     const [value, setValue] = useState<Partial<ProductMinAPIData> | null>(null);
@@ -42,7 +44,7 @@ export default function SiteSearch({ className = "", ...rest }: SiteSearchProps)
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const apiResponse = await fetch("/api/retail/products?fields=title,listing_id,images");
+            const apiResponse = await fetch('/api/retail/products?fields=title,listing_id,images');
             if (apiResponse.status === 200) {
                 const responseProducts: APIProductsResponse = await apiResponse.json();
                 setProducts(responseProducts.products);
@@ -56,13 +58,7 @@ export default function SiteSearch({ className = "", ...rest }: SiteSearchProps)
         } catch (error) {
             console.log(`Error fetching products: ${error}`);
         }
-
-        router.events.on("routeChangeComplete", handleClearAndCloseInput);
-
-        return () => {
-            router.events.off("routeChangeComplete", handleClearAndCloseInput);
-        };
-    }, [router.events]);
+    }, []);
 
     useEffect(() => {
         if (autocompleteVisible) {
@@ -72,65 +68,77 @@ export default function SiteSearch({ className = "", ...rest }: SiteSearchProps)
         }
     }, [autocompleteVisible]);
 
+    useEffect(() => {
+        handleClearAndCloseInput();
+    }, [pathname]);
+
     return (
         <div
             className={`flex items-center justify-center relative text-blueyonder-500 hover:text-bluegreen-500 transition ${className}`}
             {...rest}
         >
-            <Search className='cursor-pointer' onClick={() => setAutocompleteVisible(!autocompleteVisible)} />
+            <Search
+                className='cursor-pointer'
+                onClick={() => setAutocompleteVisible(!autocompleteVisible)}
+            />
             <div
                 className={`absolute top-full right-1/2 translate-x-1/3 pt-7 z-30 rounded-sm transition ${
-                    autocompleteVisible ? "opacity-100" : "opacity-0"
-                } ${autocompleteVisible ? "pointer-events-auto" : "pointer-events-none"}`}
+                    autocompleteVisible ? 'opacity-100' : 'opacity-0'
+                } ${autocompleteVisible ? 'pointer-events-auto' : 'pointer-events-none'}`}
             >
                 <ThemeProvider theme={theme}>
                     <Autocomplete
                         id='site-search'
                         sx={{
                             width: 300,
-                            bgcolor: "#fff",
-                            borderRadius: "0.25rem",
-                            "& .MuiFormLabel-root-MuiInputLabel-root.MuiFocused": { color: "red" },
+                            bgcolor: '#fff',
+                            borderRadius: '0.25rem',
+                            '& .MuiFormLabel-root-MuiInputLabel-root.MuiFocused': { color: 'red' },
                         }}
                         open={autocompleteVisible}
                         options={products}
                         loading={autocompleteVisible && products.length === 0}
                         loadingText='Loading Snazziness...'
                         value={value}
-                        onChange={(event, newValue) => typeof newValue !== "string" && setValue(newValue)}
+                        onChange={(_, newValue) => typeof newValue !== 'string' && setValue(newValue)}
                         openOnFocus
                         clearOnEscape
                         onBlur={handleClearAndCloseInput}
                         onClose={handleClearAndCloseInput}
-                        getOptionLabel={(product) => (typeof product !== "string" ? product?.title : "")}
-                        renderOption={(props, product) => (
-                            <li {...props}>
-                                <Link
-                                    href={`/retail/products/${
-                                        product.title.includes("|")
-                                            ? formatProductTitleAsURL(product.title)
-                                            : product.listing_id
-                                    }`}
+                        getOptionLabel={(product) => product?.title ?? ''}
+                        renderOption={(props, product) => {
+                            const { key, ...rest } = props;
+                            return (
+                                <li
+                                    key={key}
+                                    {...rest}
                                 >
-                                    <a className='flex items-center gap-4'>
-                                        <div className='flex-grow flex-shrink-0 w-20 h-20 mr-4'>
-                                            {product && product.images?.length > 0 && (
+                                    <Link
+                                        href={`/retail/products/${
+                                            product.title?.includes('|')
+                                                ? formatProductTitleAsURL(product.title)
+                                                : product.listing_id
+                                        }`}
+                                        className='flex items-center gap-4'
+                                    >
+                                        <div className='grow shrink-0 w-20 h-20 mr-4'>
+                                            {product && (product.images?.length ?? 0) > 0 && (
                                                 <Image
                                                     width={75}
                                                     height={75}
-                                                    src={product?.images?.[0].url_75x75}
+                                                    src={product?.images?.[0].url_75x75 ?? ''}
                                                     className='w-full'
                                                     alt={`Thumbnail sized main listing image for ${product.title}`}
                                                 />
                                             )}
                                         </div>
-                                        <div className='flex-grow-0 line-clamp-2'>
-                                            {product?.title.split("|")[0].trim()}
+                                        <div className='grow-0 line-clamp-2'>
+                                            {product?.title?.split('|')[0].trim()}
                                         </div>
-                                    </a>
-                                </Link>
-                            </li>
-                        )}
+                                    </Link>
+                                </li>
+                            );
+                        }}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
@@ -139,7 +147,7 @@ export default function SiteSearch({ className = "", ...rest }: SiteSearchProps)
                                 color='bluegreen'
                                 inputProps={{
                                     ...params.inputProps,
-                                    autoComplete: "new-password", // disable autocomplete and autofill
+                                    autoComplete: 'new-password', // disable autocomplete and autofill
                                 }}
                             />
                         )}

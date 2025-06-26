@@ -1,10 +1,16 @@
-import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
-import { wrap } from "popmotion";
-import ArrowForwardIosRounded from "@mui/icons-material/ArrowForwardIosRounded";
-import ArrowBackIosRounded from "@mui/icons-material/ArrowBackIosRounded";
-import { ListingImage } from "../types/EtsyAPITypes";
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
+// Nextjs 13 broke blurDataURL (need to convert to base64), so we're using the legacy image component
+// https://github.com/vercel/next.js/issues/42140
+import LegacyImage from 'next/legacy/image';
+import { motion, AnimatePresence } from 'motion/react';
+import { wrap } from 'popmotion';
+import ArrowForwardIosRounded from '@mui/icons-material/ArrowForwardIosRounded';
+import ArrowBackIosRounded from '@mui/icons-material/ArrowBackIosRounded';
+import { ListingImage } from '@/types/EtsyAPITypes';
+import { ListingImageMin } from '@/types/Types';
 
 const enterExitDistance = 250;
 const variants = {
@@ -40,17 +46,17 @@ const swipePower = (offset, velocity) => {
 };
 
 export interface ImageGalleryProps {
-    images: ListingImage[];
+    images: ListingImage[] | ListingImageMin[];
     productTitle?: string;
 }
 
-export default function ImageGallery({ images = [], productTitle = "" }: ImageGalleryProps) {
+export default function ImageGallery({ images = [], productTitle = '' }: ImageGalleryProps) {
     const [[page, direction], setPage] = useState([0, 0]);
     const [isAnimating, setIsAnimating] = useState(false);
     const [initialAnimationComplete, setInitialAnimationComplete] = useState(false);
 
     // array of thumbnail refs for scrolling to active thumbnail
-    const thumbnailRefs = useRef([]);
+    const thumbnailRefs = useRef<(HTMLDivElement | null)[]>([]);
 
     // We only have 3 images, but we paginate them absolutely (ie 1, 2, 3, 4, 5...) and
     // then wrap that within 0-2 to find our image ID in the array below. By passing an
@@ -81,7 +87,7 @@ export default function ImageGallery({ images = [], productTitle = "" }: ImageGa
     };
 
     useEffect(() => {
-        thumbnailRefs.current?.[page]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+        thumbnailRefs.current?.[page]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
     }, [page]);
 
     useEffect(() => {
@@ -100,26 +106,29 @@ export default function ImageGallery({ images = [], productTitle = "" }: ImageGa
             setInitialAnimationComplete(true);
         }
     }, [isAnimating, initialAnimationComplete]);
+    console.log('images', images);
 
     return (
         <div>
-            <div className='flex flex-col md:flex-row gap-4 max-w-sm md:max-w-screen-lg'>
+            <div className='flex flex-col md:flex-row gap-4 max-w-sm md:max-w-(--breakpoint-lg)'>
                 <div className='order-2 md:order-1 max-w-screen md:w-auto overflow-auto md:overflow-auto noScrollbar'>
                     <div className='relative flex md:flex-col gap-2 md:min-h-full md:h-0 p-2'>
                         {images?.map((img, ind) => (
                             <div
                                 key={`thumbnail-${ind}`}
-                                ref={(el) => (thumbnailRefs.current[ind] = el)}
-                                className={`flex w-20 h-20 md:w-auto md:h-auto flex-shrink-0 rounded-lg cursor-pointer ${
-                                    ind !== page ? "hover:scale-105" : ""
-                                } transition ${ind === page ? "scale-105 border-2 border-bluegreen-500" : ""}`}
+                                ref={(el) => {
+                                    thumbnailRefs.current[ind] = el;
+                                }}
+                                className={`flex w-20 h-20 aspect-square md:w-auto md:h-auto shrink-0 rounded-lg cursor-pointer ${
+                                    ind !== page ? 'hover:scale-105' : ''
+                                } transition ${ind === page ? 'scale-105 border-2 border-bluegreen-500' : ''}`}
                                 onClick={() => handleThumbnailClick(ind)}
                             >
                                 <Image
                                     src={img.url_170x135}
                                     width={100}
                                     height={100}
-                                    objectFit='cover'
+                                    style={{ objectFit: 'cover' }}
                                     className={`rounded-md aspect-square`}
                                     alt={`Product image thumbnail ${ind + 1} for ${productTitle}`}
                                     priority
@@ -128,18 +137,22 @@ export default function ImageGallery({ images = [], productTitle = "" }: ImageGa
                         ))}
                     </div>
                 </div>
-                <div className='relative order-1 md:order-2 group p-2'>
-                    <AnimatePresence initial={false} custom={direction} mode='wait'>
+                <div className='relative order-1 md:order-2 group p-2 h-full'>
+                    <AnimatePresence
+                        initial={false}
+                        custom={direction}
+                        mode='wait'
+                    >
                         <motion.div
                             key={`gallery-image-${page}`}
-                            className='flex self-start justify-center items-center  rounded-sm aspect-square shadow-light'
+                            className='flex self-start justify-center items-center  rounded-xs aspect-square shadow-light'
                             custom={direction}
                             variants={variants}
                             initial='enter'
                             animate='center'
                             exit='exit'
                             transition={{
-                                x: { type: "spring", stiffness: 300, damping: 30 },
+                                x: { type: 'spring', stiffness: 300, damping: 30 },
                                 opacity: { duration: 0.2 },
                             }}
                             drag='x'
@@ -157,7 +170,7 @@ export default function ImageGallery({ images = [], productTitle = "" }: ImageGa
                             onAnimationStart={() => setIsAnimating(true)}
                             onAnimationComplete={() => setIsAnimating(false)}
                         >
-                            <Image
+                            <LegacyImage
                                 src={images[imageIndex].url_fullxfull}
                                 width={442}
                                 height={442}
@@ -166,6 +179,7 @@ export default function ImageGallery({ images = [], productTitle = "" }: ImageGa
                                 placeholder='blur'
                                 blurDataURL={images[imageIndex].url_75x75}
                                 alt={`Product gallery image ${page + 1} for ${productTitle}`}
+                                loading='eager'
                                 priority
                             />
                         </motion.div>

@@ -1,10 +1,10 @@
-import { useState } from "react";
-import Link from "next/link";
-import { motion, easeOut } from "framer-motion";
-import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
-import MenuListItem from "../MenuListItem";
-import HoverStyledAnchor from "../HoverStyledAnchor";
-import { MenuItemType } from "../../../types/Types";
+import { useState } from 'react';
+import Link from 'next/link';
+import { motion } from 'motion/react';
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
+import MenuListItem from '../MenuListItem';
+import HoverStyledAnchor from '../HoverStyledAnchor';
+import { MenuItemType } from '@/types/Types';
 
 const variants = {
     open: {
@@ -32,7 +32,7 @@ export const MenuItem = ({ menuItem, ...rest }: MenuItemProps) => {
 
     return (
         <motion.li
-            className={`m-0 p-0 mb-10 text-lg flex items-center cursor-pointer ${menuItem.submenu ? "menuParent" : ""}`}
+            className={`m-0 p-0 mb-10 text-lg flex items-center cursor-pointer ${menuItem.submenu ? 'menuParent' : ''}`}
             variants={variants}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
@@ -42,8 +42,14 @@ export const MenuItem = ({ menuItem, ...rest }: MenuItemProps) => {
             <>
                 <div className='flex items-center justify-between w-full'>
                     {menuItem.isLink ? (
-                        <Link href={menuItem.link} passHref>
-                            <HoverStyledAnchor className='navItem' onClick={() => setsubmenuOpen(!submenuOpen)}>
+                        <Link
+                            href={menuItem.link ?? ''}
+                            passHref
+                        >
+                            <HoverStyledAnchor
+                                className='navItem'
+                                onClick={() => setsubmenuOpen(!submenuOpen)}
+                            >
                                 {menuItem.displayText}
                             </HoverStyledAnchor>
                         </Link>
@@ -60,8 +66,8 @@ export const MenuItem = ({ menuItem, ...rest }: MenuItemProps) => {
                 {menuItem.submenu && (
                     <motion.ul
                         className='menuChildren'
-                        key={`sub-menu-list-${menuItem.displayText.replace(" ", "-")}`}
-                        animate={submenuOpen ? "open" : "collapsed"}
+                        key={`sub-menu-list-${menuItem.displayText.replace(' ', '-')}`}
+                        animate={submenuOpen ? 'open' : 'collapsed'}
                         variants={{
                             open: {
                                 opacity: 1,
@@ -71,16 +77,19 @@ export const MenuItem = ({ menuItem, ...rest }: MenuItemProps) => {
                             collapsed: {
                                 opacity: 0,
                                 height: 0,
-                                overflow: "hidden",
+                                overflow: 'hidden',
                                 transition: { staggerChildren: 0.05, staggerDirection: -1 },
                             },
                         }}
                         initial='collapsed'
-                        transition={{ type: "tween", duration: 0.2, ease: [0.27, 0.03, 0.58, 1] }} // https://cubic-bezier.com/#.27,.03,.58,1
+                        transition={{ type: 'tween', duration: 0.2, ease: [0.27, 0.03, 0.58, 1] }} // https://cubic-bezier.com/#.27,.03,.58,1
                     >
                         {menuItem.submenu.map((sub) => (
-                            <MenuListItem key={`sub-menu-${sub.displayText.replace(" ", "-")}`}>
-                                <Link href={sub.link} passHref>
+                            <MenuListItem key={`sub-menu-${sub.displayText.replace(' ', '-')}`}>
+                                <Link
+                                    href={sub.link ?? ''}
+                                    passHref
+                                >
                                     <HoverStyledAnchor>{sub.displayText}</HoverStyledAnchor>
                                 </Link>
                             </MenuListItem>

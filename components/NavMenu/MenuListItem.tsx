@@ -1,8 +1,8 @@
-import type { ReactNode } from "react";
-import { motion } from "framer-motion";
+import type { ReactNode } from 'react';
+import { motion } from 'motion/react';
 
-const widescreenComponent = "hidden md:flex md:flex-col items-start py-6";
-const mobileComponent = "flex flex-col items-start py-6";
+const widescreenComponent = 'hidden md:flex md:flex-col items-start py-6';
+const mobileComponent = 'flex flex-col items-start py-6';
 
 const variants = {
     open: {

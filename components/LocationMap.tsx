@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Wrapper, Status } from "@googlemaps/react-wrapper";
+import { useEffect, useRef, useState } from 'react';
+import { Wrapper, Status } from '@googlemaps/react-wrapper';
 
 export default function LocationMap() {
     const ref = useRef<HTMLDivElement>(null);
@@ -16,8 +16,15 @@ export default function LocationMap() {
         }
     }, [map]);
 
+    if (!process.env.GOOGLE_MAPS_KEY) {
+        return null;
+    }
+
     return (
-        <Wrapper apiKey={process.env.GOOGLE_MAPS_KEY} render={render}>
+        <Wrapper
+            apiKey={process.env.GOOGLE_MAPS_KEY}
+            render={render}
+        >
             <div ref={ref} />
         </Wrapper>
     );

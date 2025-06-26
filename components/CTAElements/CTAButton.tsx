@@ -1,5 +1,5 @@
-import {forwardRef, ReactNode} from "react";
-import CTAStyling from "./CTAStyling";
+import { forwardRef, JSX, ReactNode } from 'react';
+import CTAStyling from './CTAStyling';
 
 export interface CTAButtonProps {
     children: ReactNode;
@@ -7,8 +7,8 @@ export interface CTAButtonProps {
     disabled?: boolean;
 }
 
-const CTAButton = forwardRef<HTMLButtonElement, CTAButtonProps & JSX.IntrinsicElements["button"]>(
-    ({ children, className = "", disabled = false, ...rest }, ref) => {
+const CTAButton = forwardRef<HTMLButtonElement, CTAButtonProps & JSX.IntrinsicElements['button']>(
+    ({ children, className = '', disabled = false, ...rest }, ref) => {
         return (
             <button
                 ref={ref}
@@ -21,6 +21,6 @@ const CTAButton = forwardRef<HTMLButtonElement, CTAButtonProps & JSX.IntrinsicEl
     }
 );
 
-CTAButton.displayName = "CTAButton";
+CTAButton.displayName = 'CTAButton';
 
 export default CTAButton;

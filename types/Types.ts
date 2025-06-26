@@ -1,22 +1,23 @@
-import { ListingImage, Money, ShopListingResponse, ShopProductionPartner, ShopSectionResponse } from "./EtsyAPITypes";
+import { ListingImage, Money, ShopListingResponse, ShopProductionPartner, ShopSectionResponse } from './EtsyAPITypes';
 
-export type ListingImageMin = Pick<ListingImage, "url_75x75" | "url_170x135" | "url_fullxfull">;
+export type ListingImageMin = Pick<ListingImage, 'url_75x75' | 'url_170x135' | 'url_fullxfull'>;
 
 export type ProductMinAPIData = Pick<
     ShopListingResponse,
-    | "listing_id"
-    | "title"
-    | "description"
-    | "shop_section_id"
-    | "original_creation_timestamp"
-    | "num_favorers"
-    | "url"
-    | "production_partners"
-    | "quantity"
-    | "tags"
+    | 'listing_id'
+    | 'title'
+    | 'description'
+    | 'shop_section_id'
+    | 'original_creation_timestamp'
+    | 'num_favorers'
+    | 'url'
+    | 'production_partners'
+    | 'quantity'
+    | 'tags'
 > & {
     images: ListingImageMin[];
     price?: Money;
+    facebookAppId?: string;
 };
 
 export interface Product {
@@ -45,4 +46,4 @@ export interface Dimensions {
     height: number;
 }
 
-export type CategoriesMinAPIData = Pick<ShopSectionResponse, "shop_section_id" | "title">;
+export type CategoriesMinAPIData = Pick<ShopSectionResponse, 'shop_section_id' | 'title'>;

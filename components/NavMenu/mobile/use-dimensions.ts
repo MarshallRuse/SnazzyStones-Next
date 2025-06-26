@@ -1,5 +1,5 @@
-import { MutableRefObject, useEffect, useRef } from "react";
-import { Dimensions } from "../../../types/Types";
+import { MutableRefObject, useEffect, useRef } from 'react';
+import { Dimensions } from '@/types/Types';
 
 // Naive implementation - in reality would want to attach
 // a window or resize listener. Also use state/layoutEffect instead of ref/effect
