@@ -93,7 +93,7 @@ export default async function Home() {
                     </p>
                     <p>
                         We hope you enjoy checking out our site. We are busy adding new pieces to our web-page in order
-                        to bring Snazzy Stones to the online world, so please check in again to see what's new!
+                        to bring Snazzy Stones to the online world, so please check in again to see what&apos;s new!
                     </p>
                 </TextContainer>
             </section>
@@ -151,7 +151,7 @@ export default async function Home() {
                     <h2 className='overlayText'>Interested in Finding Us in Person?</h2>
                     <p className='overlayText'>
                         We can be found at multiple venues each week throughout the spring, summer, and autumn. Take a
-                        look at our schedule to see if we'll be at a show near you!
+                        look at our schedule to see if we&apos;ll be at a show near you!
                     </p>
                     <Link href='/our-shows'>
                         <CTALink>FIND US!</CTALink>

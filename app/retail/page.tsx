@@ -9,7 +9,7 @@ import { ShopListingCondensed } from '@/types/EtsyAPITypes';
 import FadingHeader from '@/components/FadingHeader';
 import { Metadata } from 'next';
 
-export const revalidate = 48 * 60 * 60; // revalidate every two days
+export const revalidate = 172800; //48 * 60 * 60; revalidate every two days
 
 export const metadata: Metadata = {
     title: 'Shop | Snazzy Stones',

@@ -6,8 +6,8 @@ export interface APIReviewsResponse {
     error?: string;
 }
 
-export async function GET(_: Request, { params }: { params: { listing_id: string } }) {
-    const listing_id = params.listing_id;
+export async function GET(_: Request, { params }: { params: Promise<{ listing_id: string }> }) {
+    const { listing_id } = await params;
     const product_id = Number(listing_id);
 
     if (!process.env.ETSY_API_KEYSTRING) {

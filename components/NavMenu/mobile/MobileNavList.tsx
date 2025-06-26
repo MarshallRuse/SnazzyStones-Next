@@ -25,7 +25,7 @@ export const MobileNavList = () => {
         }
 
         getCategories();
-    }, []);
+    }, [menu]);
 
     return (
         <motion.ul

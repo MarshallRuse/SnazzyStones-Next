@@ -54,7 +54,7 @@ export default function OurStory() {
                     className='text-white'
                 >
                     <p className='leading-loose'>
-                        A passion for rocks and minerals led me to study geology at Queen's University, and later
+                        A passion for rocks and minerals led me to study geology at Queen&apos;s University, and later
                         gemmology at the Gemmological Association of Great Britain (Gem-A) . That, combined with a love
                         of travel brought me to Snazzy Stones.
                     </p>
