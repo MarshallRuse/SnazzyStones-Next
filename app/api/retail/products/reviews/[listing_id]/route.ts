@@ -1,4 +1,5 @@
 import { ListingReviewResponse, ListingReview } from '@/types/EtsyAPITypes';
+import { getEtsyApiKey } from '@/utils/fetching/etsy.util';
 import { NextResponse } from 'next/server';
 
 export interface APIReviewsResponse {
@@ -10,17 +11,18 @@ export async function GET(_: Request, { params }: { params: Promise<{ listing_id
     const { listing_id } = await params;
     const product_id = Number(listing_id);
 
-    if (!process.env.ETSY_API_KEYSTRING) {
+    const apiKey = getEtsyApiKey();
+    if (!apiKey) {
         return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
     }
 
     try {
         const listingReviewsResponse = await fetch(
-            `https://openapi.etsy.com/v3/application/listings/${product_id}/reviews?limit=100`,
+            `https://api.etsy.com/v3/application/listings/${product_id}/reviews?limit=100`,
             {
                 method: 'GET',
                 headers: {
-                    'x-api-key': process.env.ETSY_API_KEYSTRING,
+                    'x-api-key': apiKey,
                 },
             }
         );

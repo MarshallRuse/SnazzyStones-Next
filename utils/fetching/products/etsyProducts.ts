@@ -5,6 +5,7 @@ import Bottleneck from 'bottleneck';
 import { Redis } from '@upstash/redis';
 import { ShopListingResponse, ShopListingsResponse } from '@/types/EtsyAPITypes';
 import { ProductMinAPIData } from '@/types/Types';
+import { getEtsyApiKey } from '../etsy.util';
 
 // Comment out if using kv
 const redis = new Redis({
@@ -26,7 +27,7 @@ export async function fetchProductsFromEtsy({
     limit = 100,
 }: FetchProductsParams = {}): Promise<ShopListingResponse[] | null> {
     try {
-        const apiKey = process.env.ETSY_API_KEYSTRING;
+        const apiKey = getEtsyApiKey();
 
         if (!apiKey) {
             throw new Error('ETSY_API_KEYSTRING is not set');
@@ -39,8 +40,8 @@ export async function fetchProductsFromEtsy({
         });
 
         const url = categoryId
-            ? `https://openapi.etsy.com/v3/application/shops/${process.env.ETSY_SHOP_ID}/shop-sections/listings?shop_section_ids=${categoryId}&limit=${limit}`
-            : `https://openapi.etsy.com/v3/application/shops/${process.env.ETSY_SHOP_ID}/listings/active?limit=${limit}`;
+            ? `https://api.etsy.com/v3/application/shops/${process.env.ETSY_SHOP_ID}/shop-sections/listings?shop_section_ids=${categoryId}&limit=${limit}`
+            : `https://api.etsy.com/v3/application/shops/${process.env.ETSY_SHOP_ID}/listings/active?limit=${limit}`;
 
         // get all active shop listings
         const activeShopListingsResponse = await limiter.schedule(() =>
@@ -59,7 +60,7 @@ export async function fetchProductsFromEtsy({
                 const listingIds = activeShopListings.map((listing) => listing.listing_id).join(',');
                 const listingImagesResponse = await limiter.schedule(() =>
                     fetch(
-                        `https://openapi.etsy.com/v3/application/listings/batch?listing_ids=${listingIds}&includes=Images`,
+                        `https://api.etsy.com/v3/application/listings/batch?listing_ids=${listingIds}&includes=Images`,
                         {
                             method: 'GET',
                             headers: {
@@ -122,7 +123,6 @@ export async function fetchProductsFromCache({
 
     // if more than 48 hours since last fetch, fetch again
     if (timeSinceLastEtsyFetch === undefined || Date.now() - Number(timeSinceLastEtsyFetch) > 1000 * 60 * 60 * 48) {
-        console.log('fetching products from etsy');
         const products = await setProductsCache({ categoryId: null, fetchImages: true }); // fetch all products
         return products;
     }

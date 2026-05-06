@@ -13,26 +13,35 @@ const variants = {
 };
 
 export const MobileNavList = () => {
-    const [menu, setMenu] = useState(menuContents);
+    const [menu, setMenu] = useState(() =>
+        menuContents.map((item) => ({
+            ...item,
+            submenu: item.submenu ? [...item.submenu] : item.submenu,
+        })),
+    );
 
     useEffect(() => {
         async function getCategories() {
             const shopCategories = await fetchCategoryMenuItems();
-            const menuCopy = [...menu];
-            const shopIndex = menuCopy.findIndex((menuItem) => menuItem.link === '/retail');
-            menuCopy[shopIndex].submenu = shopCategories;
-            setMenu(menuCopy);
+            setMenu((prev) => {
+                const next = prev.map((item) => ({ ...item }));
+                const shopIndex = next.findIndex((menuItem) => menuItem.link === '/retail');
+                if (shopIndex !== -1) {
+                    next[shopIndex] = { ...next[shopIndex], submenu: shopCategories };
+                }
+                return next;
+            });
         }
 
         getCategories();
-    }, [menu]);
+    }, []);
 
     return (
         <motion.ul
             variants={variants}
             className='m-0 px-16 py-6 absolute top-24 w-full'
         >
-            {menuContents.map((menuItem, index) => (
+            {menu.map((menuItem, index) => (
                 <MenuItem
                     menuItem={menuItem}
                     key={`mobile-menu-item-${index}`}
