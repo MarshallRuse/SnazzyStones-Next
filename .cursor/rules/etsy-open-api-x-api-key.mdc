@@ -1,0 +1,16 @@
+---
+description: Etsy Open API v3 x-api-key header format (keystring:shared secret)
+alwaysApply: true
+---
+
+# Etsy Open API v3 — `x-api-key` header
+
+For this project, **all Open API v3 requests** must send the `x-api-key` header as **`{keystring}:{sharedSecret}`** — the Etsy App API Key **keystring** and **shared secret** from [Your Apps](https://www.etsy.com/developers/your-apps), **separated by a colon (`:`)**.
+
+This matches Etsy’s own listings tutorial, not “keystring only”.
+
+**Reference:** [Listings tutorial — Authentication](https://developers.etsy.com/documentation/tutorials/listings)
+
+**Implementation:** `utils/fetching/etsy.util.ts` — `getEtsyApiKey()` uses `ETSY_API_KEYSTRING` and `ETSY_API_SHARED_SECRET` and returns `` `${keystring}:${sharedsecret}` ``.
+
+Do not change this to keystring-only unless Etsy’s official docs for this integration explicitly say otherwise.

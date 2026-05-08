@@ -187,7 +187,7 @@ function AnimatedReviewEntry({ review }: { review: ListingReview }) {
 					<div className="rounded-md shadow-light w-fit shrink-0">
 						<button
 							type="button"
-							className="group relative block rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bluegreen-500 cursor-zoom-in"
+							className="group relative block h-[200px] w-[200px] shrink-0 overflow-hidden rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bluegreen-500 cursor-zoom-in"
 							aria-label={`View enlarged customer photo for ${review.rating} star review`}
 							aria-haspopup="dialog"
 							aria-expanded={lightboxOpen}
@@ -195,11 +195,10 @@ function AnimatedReviewEntry({ review }: { review: ListingReview }) {
 						>
 							<Image
 								src={review.image_url_fullxfull}
-								width={200}
-								height={200}
-								style={{ objectFit: "cover" }}
+								fill
+								sizes="200px"
 								alt=""
-								className="rounded-md pointer-events-none"
+								className="object-cover pointer-events-none"
 								aria-hidden
 							/>
 							<span
