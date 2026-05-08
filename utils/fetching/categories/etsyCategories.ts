@@ -3,6 +3,7 @@
 import { Redis } from '@upstash/redis';
 import { ShopSectionResponse } from '@/types/EtsyAPITypes';
 import { CategoriesMinAPIData } from '@/types/Types';
+import { getEtsyApiKey } from '../etsy.util';
 
 // Comment out if using kv
 const redis = new Redis({
@@ -11,15 +12,16 @@ const redis = new Redis({
 });
 
 export async function fetchCategoriesFromEtsy(): Promise<ShopSectionResponse[]> {
-    const apiKey = process.env.ETSY_API_KEYSTRING;
+    const apiKey = getEtsyApiKey();
 
     if (!apiKey) {
         throw new Error('ETSY_API_KEYSTRING is not set');
     }
 
     // get a list of Etsy shop sections from which to draw category names
+    try {
     const sectionsResponse = await fetch(
-        `https://openapi.etsy.com/v3/application/shops/${process.env.ETSY_SHOP_ID}/sections`,
+        `https://api.etsy.com/v3/application/shops/${process.env.ETSY_SHOP_ID}/sections`,
         {
             method: 'GET',
             headers: {
@@ -27,8 +29,12 @@ export async function fetchCategoriesFromEtsy(): Promise<ShopSectionResponse[]> 
             },
         }
     );
-    const { results: categories }: { results: ShopSectionResponse[] } = await sectionsResponse.json();
-    return categories.filter((cat) => cat.active_listing_count > 0);
+        const { results: categories }: { results: ShopSectionResponse[] } = await sectionsResponse.json();
+        return categories?.filter((cat) => cat?.active_listing_count > 0) ?? [];
+    } catch (error) {
+        console.error('Error fetching categories from Etsy:', error);
+        return [];
+    }
 }
 
 async function setCategoriesCache() {
