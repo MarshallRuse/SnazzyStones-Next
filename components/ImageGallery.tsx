@@ -4,7 +4,8 @@ import KeyboardArrowUpRounded from "@mui/icons-material/KeyboardArrowUpRounded";
 import SearchRounded from "@mui/icons-material/SearchRounded";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-// Nextjs 13 broke blurDataURL (need to convert to base64), so we're using the legacy image component
+// Main carousel uses next/legacy/image: Etsy thumbnail URLs work as blur placeholders without
+// base64 conversion (next/image is stricter). Deprecated in Next 16 — revisit when migrating blur pipeline.
 // https://github.com/vercel/next.js/issues/42140
 import LegacyImage from "next/legacy/image";
 import { wrap } from "popmotion";

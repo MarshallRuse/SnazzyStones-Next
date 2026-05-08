@@ -33,3 +33,5 @@ yarn-error.log*
 
 # tsconfig build info
 tsconfig.buildinfo
+tsconfig.tsbuildinfo
+*.tsbuildinfo

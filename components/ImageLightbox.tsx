@@ -3,6 +3,7 @@
 import CloseRounded from "@mui/icons-material/CloseRounded";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
+// See ImageGallery.tsx — legacy/image retained for blur compatibility with remote Etsy URLs.
 import LegacyImage from "next/legacy/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
