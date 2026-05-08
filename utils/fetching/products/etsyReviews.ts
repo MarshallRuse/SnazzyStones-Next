@@ -5,12 +5,8 @@ import type {
 import { getEtsyApiKey } from "../etsy.util";
 
 export async function fetchReviewsFromEtsy(product_id: number) {
-	const apiKey = getEtsyApiKey();
-	if (!apiKey) {
-		throw new Error("API key not configured");
-	}
-
 	try {
+		const apiKey = getEtsyApiKey();
 		const listingReviewsResponse = await fetch(
 			`https://api.etsy.com/v3/application/listings/${product_id}/reviews?limit=100`,
 			{
@@ -18,8 +14,20 @@ export async function fetchReviewsFromEtsy(product_id: number) {
 				headers: {
 					"x-api-key": apiKey,
 				},
+				cache: "no-store",
 			},
 		);
+
+		if (!listingReviewsResponse.ok) {
+			const errorBody = await listingReviewsResponse.text();
+			console.error("Etsy reviews request failed:", {
+				listingId: product_id,
+				status: listingReviewsResponse.status,
+				statusText: listingReviewsResponse.statusText,
+				body: errorBody.slice(0, 500),
+			});
+			return [];
+		}
 
 		const listingReviews: ListingReviewResponse =
 			await listingReviewsResponse.json();
