@@ -1,37 +1,69 @@
 "use client";
 
-import ArrowBackIosRounded from "@mui/icons-material/ArrowBackIosRounded";
-import ArrowForwardIosRounded from "@mui/icons-material/ArrowForwardIosRounded";
+import KeyboardArrowUpRounded from "@mui/icons-material/KeyboardArrowUpRounded";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 // Nextjs 13 broke blurDataURL (need to convert to base64), so we're using the legacy image component
 // https://github.com/vercel/next.js/issues/42140
 import LegacyImage from "next/legacy/image";
 import { wrap } from "popmotion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { ListingImage } from "@/types/EtsyAPITypes";
 import type { ListingImageMin } from "@/types/Types";
 
 const enterExitDistance = 250;
-const variants = {
-	enter: (direction) => {
-		return {
-			x: direction > 0 ? enterExitDistance : -enterExitDistance,
+
+function galleryVariants(axis: "x" | "y") {
+	const primary = axis === "y" ? "y" : "x";
+	const secondary = axis === "y" ? "x" : "y";
+	return {
+		enter: (direction: number) => ({
+			[primary]: direction > 0 ? enterExitDistance : -enterExitDistance,
+			[secondary]: 0,
 			opacity: 0,
-		};
-	},
-	center: {
-		zIndex: 1,
-		x: 0,
-		opacity: 1,
-	},
-	exit: (direction) => {
-		return {
+		}),
+		center: {
+			zIndex: 1,
+			x: 0,
+			y: 0,
+			opacity: 1,
+		},
+		exit: (direction: number) => ({
 			zIndex: 0,
-			x: direction < 0 ? enterExitDistance : -enterExitDistance,
+			[primary]: direction < 0 ? enterExitDistance : -enterExitDistance,
+			[secondary]: 0,
 			opacity: 0,
-		};
+		}),
+	};
+}
+
+const verticalTransitionConfig = {
+	y: {
+		type: "spring" as const,
+		stiffness: 300,
+		damping: 30,
 	},
+	opacity: { duration: 0.2 },
+};
+
+const horizontalTransitionConfig = {
+	x: {
+		type: "spring" as const,
+		stiffness: 300,
+		damping: 30,
+	},
+	opacity: { duration: 0.2 },
+};
+
+const getTransitionConfig = (isMdUp: boolean) => {
+	return isMdUp ? verticalTransitionConfig : horizontalTransitionConfig;
+};
+
+const verticalDragConstraints = { top: 0, bottom: 0 };
+const horizontalDragConstraints = { left: 0, right: 0 };
+
+const getDragConstraints = (isMdUp: boolean) => {
+	return isMdUp ? verticalDragConstraints : horizontalDragConstraints;
 };
 
 /**
@@ -41,9 +73,12 @@ const variants = {
  * just distance thresholds and velocity > 0.
  */
 const swipeConfidenceThreshold = 10000;
-const swipePower = (offset, velocity) => {
+const swipePower = (offset: number, velocity: number) => {
 	return Math.abs(offset) * velocity;
 };
+
+const navArrowButtonClass =
+	"bg-white text-bluegreen-500 opacity-50 hover:opacity-90 transition rounded-full w-10 h-10 flex justify-center items-center select-none cursor-pointer shrink-0 z-20";
 
 export interface ImageGalleryProps {
 	images: ListingImage[] | ListingImageMin[];
@@ -68,30 +103,75 @@ export default function ImageGallery({
 	// detect it as an entirely new image. So you can infinitely paginate as few as 1 images.
 	const imageIndex = wrap(0, images.length, page);
 
+	// Match Tailwind `md` (768px). Initial false keeps SSR + first client render identical
+	// so Motion's drag axis / touch-action hydrate without mismatch; sync after mount.
+	const [isMdUp, setIsMdUp] = useState(false);
+	useLayoutEffect(() => {
+		const mq = window.matchMedia("(min-width: 768px)");
+		const sync = () => setIsMdUp(mq.matches);
+		sync();
+		mq.addEventListener("change", sync);
+		return () => mq.removeEventListener("change", sync);
+	}, []);
+
+	const variants = useMemo(() => galleryVariants(isMdUp ? "y" : "x"), [isMdUp]);
+
 	const paginate = (newDirection: number, newPage?: number) => {
-		if (!isAnimating) {
-			if (newPage !== undefined && newPage < images.length && newPage >= 0) {
-				setPage([newPage, newDirection]);
-			} else if (
-				page + newDirection < images.length &&
-				page + newDirection >= 0
-			) {
-				setPage([page + newDirection, newDirection]);
-			}
+		const n = images.length;
+		if (isAnimating || n <= 1) return;
+
+		if (newPage !== undefined) {
+			setPage([newPage, newDirection]);
+		} else {
+			const next = (page + newDirection + n) % n;
+			setPage([next, newDirection]);
 		}
 	};
 
 	const handleThumbnailClick = (thumbIndex: number) => {
-		let direction: number | undefined;
-		if (thumbIndex < page) {
-			direction = -1;
-		} else if (thumbIndex > page) {
-			direction = 1;
-		}
-		if (thumbIndex !== page && direction !== undefined) {
-			paginate(direction, thumbIndex);
-		}
+		const n = images.length;
+		if (n <= 1 || thumbIndex === page) return;
+
+		const forward = (thumbIndex - page + n) % n;
+		const backward = (page - thumbIndex + n) % n;
+		const direction = forward <= backward ? 1 : -1;
+		paginate(direction, thumbIndex);
 	};
+
+	const arrowsDisabled = images.length <= 1;
+
+	const thumbnailButtons = images?.map(
+		(img: ListingImageMin | ListingImage, ind: number) => (
+			<button
+				key={`thumbnail-${img.url_170x135}`}
+				ref={(el) => {
+					thumbnailRefs.current[ind] = el;
+				}}
+				type="button"
+				className={`flex w-20 h-20 aspect-square md:w-auto md:h-auto shrink-0 rounded-lg cursor-pointer ${
+					ind !== page ? "hover:scale-105" : ""
+				} transition ${ind === page ? "scale-105 border-2 border-bluegreen-500" : ""}`}
+				onClick={() => handleThumbnailClick(ind)}
+				onKeyDown={(e) => {
+					if (e.key === "Enter" || e.key === " ") {
+						e.preventDefault();
+						handleThumbnailClick(ind);
+					}
+				}}
+				aria-label={`Show thumbnail ${ind + 1}`}
+			>
+				<Image
+					src={img.url_170x135}
+					width={100}
+					height={100}
+					style={{ objectFit: "cover" }}
+					className={`rounded-md aspect-square`}
+					alt={`Product image thumbnail ${ind + 1} for ${productTitle}`}
+					priority
+				/>
+			</button>
+		),
+	);
 
 	useEffect(() => {
 		thumbnailRefs.current?.[page]?.scrollIntoView({
@@ -121,41 +201,62 @@ export default function ImageGallery({
 	return (
 		<div>
 			<div className="flex flex-col md:flex-row gap-4 w-full">
-				<div className="order-2 md:order-1 max-w-screen md:w-24 shrink-0 overflow-auto md:overflow-auto noScrollbar">
-					<div className="relative flex md:flex-col gap-2 md:min-h-full md:h-0 p-2">
-						{images?.map((img: ListingImageMin | ListingImage, ind: number) => (
-							<button
-								key={`thumbnail-${img.url_170x135}`}
-								ref={(el) => {
-									thumbnailRefs.current[ind] = el;
-								}}
-								type="button"
-								className={`flex w-20 h-20 aspect-square md:w-auto md:h-auto shrink-0 rounded-lg cursor-pointer ${
-									ind !== page ? "hover:scale-105" : ""
-								} transition ${ind === page ? "scale-105 border-2 border-bluegreen-500" : ""}`}
-								onClick={() => handleThumbnailClick(ind)}
-								onKeyDown={(e) => {
-									if (e.key === "Enter" || e.key === " ") {
-										e.preventDefault();
-										handleThumbnailClick(ind);
-									}
-								}}
-								aria-label={`Show thumbnail ${ind + 1}`}
-							>
-								<Image
-									src={img.url_170x135}
-									width={100}
-									height={100}
-									style={{ objectFit: "cover" }}
-									className={`rounded-md aspect-square`}
-									alt={`Product image thumbnail ${ind + 1} for ${productTitle}`}
-									priority
-								/>
-							</button>
-						))}
+				<div className="order-2 md:order-1 flex flex-row md:flex-col items-center gap-2 w-full md:w-24 shrink-0 min-w-0">
+					<button
+						type="button"
+						className={`flex md:hidden shrink-0 ${navArrowButtonClass} disabled:opacity-30 disabled:pointer-events-none disabled:hover:opacity-30`}
+						disabled={arrowsDisabled}
+						onClick={() => paginate(-1)}
+						aria-label="Show previous product image"
+					>
+						<KeyboardArrowUpRounded
+							className="-rotate-90"
+							fontSize="small"
+							aria-hidden
+						/>
+					</button>
+					<button
+						type="button"
+						className={`hidden md:flex shrink-0 ${navArrowButtonClass} disabled:opacity-30 disabled:pointer-events-none disabled:hover:opacity-30`}
+						disabled={arrowsDisabled}
+						onClick={() => paginate(-1)}
+						aria-label="Show previous product image"
+					>
+						<KeyboardArrowUpRounded fontSize="small" aria-hidden />
+					</button>
+					<div className="flex-1 min-w-0 md:flex-none max-w-screen md:w-24 shrink-0 md:shrink-0 overflow-x-auto md:overflow-y-auto md:overflow-x-visible noScrollbar md:max-h-[min(70vh,520px)]">
+						<div className="relative flex flex-row md:flex-col gap-2 p-2 md:min-h-0">
+							{thumbnailButtons}
+						</div>
 					</div>
+					<button
+						type="button"
+						className={`flex md:hidden shrink-0 ${navArrowButtonClass} disabled:opacity-30 disabled:pointer-events-none disabled:hover:opacity-30`}
+						disabled={arrowsDisabled}
+						onClick={() => paginate(1)}
+						aria-label="Show next product image"
+					>
+						<KeyboardArrowUpRounded
+							className="rotate-90"
+							fontSize="small"
+							aria-hidden
+						/>
+					</button>
+					<button
+						type="button"
+						className={`hidden md:flex shrink-0 ${navArrowButtonClass} disabled:opacity-30 disabled:pointer-events-none disabled:hover:opacity-30`}
+						disabled={arrowsDisabled}
+						onClick={() => paginate(1)}
+						aria-label="Show next product image"
+					>
+						<KeyboardArrowUpRounded
+							className="rotate-180"
+							fontSize="small"
+							aria-hidden
+						/>
+					</button>
 				</div>
-				<div className="relative order-1 md:order-2 group p-2 h-full flex-1 min-w-0">
+				<div className="relative order-1 md:order-2 p-2 h-full flex-1 min-w-0">
 					<AnimatePresence initial={false} custom={direction} mode="wait">
 						<motion.div
 							key={`gallery-image-${page}`}
@@ -165,19 +266,14 @@ export default function ImageGallery({
 							initial="enter"
 							animate="center"
 							exit="exit"
-							transition={{
-								x: {
-									type: "spring" as const,
-									stiffness: 300,
-									damping: 30,
-								},
-								opacity: { duration: 0.2 },
-							}}
-							drag="x"
-							dragConstraints={{ left: 0, right: 0 }}
+							transition={getTransitionConfig(isMdUp)}
+							drag={isMdUp ? "y" : "x"}
+							dragConstraints={getDragConstraints(isMdUp)}
 							dragElastic={1}
-							onDragEnd={(e, { offset, velocity }) => {
-								const swipe = swipePower(offset.x, velocity.x);
+							onDragEnd={(_e, { offset, velocity }) => {
+								const swipe = isMdUp
+									? swipePower(offset.y, velocity.y)
+									: swipePower(offset.x, velocity.x);
 
 								if (swipe < -swipeConfidenceThreshold) {
 									paginate(1);
@@ -205,26 +301,6 @@ export default function ImageGallery({
 							</div>
 						</motion.div>
 					</AnimatePresence>
-					{page < images.length - 1 && (
-						<button
-							type="button"
-							className="absolute top-1/2 right-3 bg-white text-bluegreen-500 opacity-50 group-hover:opacity-90 transition rounded-full w-10 h-10 flex justify-center items-center select-none cursor-pointer font-bold text-lg z-20"
-							onClick={() => paginate(1)}
-							aria-label="Show next product image"
-						>
-							<ArrowForwardIosRounded />
-						</button>
-					)}
-					{page > 0 && (
-						<button
-							type="button"
-							className="absolute top-1/2 left-3 bg-white text-bluegreen-500 opacity-50 group-hover:opacity-90 transition rounded-full w-10 h-10 flex justify-center items-center select-none cursor-pointer font-bold text-lg z-20"
-							onClick={() => paginate(-1)}
-							aria-label="Show previous product image"
-						>
-							<ArrowBackIosRounded />
-						</button>
-					)}
 				</div>
 			</div>
 		</div>
