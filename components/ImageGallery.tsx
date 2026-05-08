@@ -1,6 +1,7 @@
 "use client";
 
 import KeyboardArrowUpRounded from "@mui/icons-material/KeyboardArrowUpRounded";
+import SearchRounded from "@mui/icons-material/SearchRounded";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 // Nextjs 13 broke blurDataURL (need to convert to base64), so we're using the legacy image component
@@ -8,6 +9,7 @@ import Image from "next/image";
 import LegacyImage from "next/legacy/image";
 import { wrap } from "popmotion";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import ImageLightbox from "@/components/ImageLightbox";
 import type { ListingImage } from "@/types/EtsyAPITypes";
 import type { ListingImageMin } from "@/types/Types";
 
@@ -93,6 +95,7 @@ export default function ImageGallery({
 	const [isAnimating, setIsAnimating] = useState(false);
 	const [initialAnimationComplete, setInitialAnimationComplete] =
 		useState(false);
+	const [lightboxOpen, setLightboxOpen] = useState(false);
 
 	// array of thumbnail refs for scrolling to active thumbnail
 	const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -126,6 +129,18 @@ export default function ImageGallery({
 			const next = (page + newDirection + n) % n;
 			setPage([next, newDirection]);
 		}
+	};
+
+	const openLightbox = () => {
+		// Dialog focus / layout can interrupt Motion so onAnimationComplete never runs;
+		// clear the guard so arrows & thumbnails work again after closing the lightbox.
+		setIsAnimating(false);
+		setLightboxOpen(true);
+	};
+
+	const closeLightbox = () => {
+		setLightboxOpen(false);
+		setIsAnimating(false);
 	};
 
 	const handleThumbnailClick = (thumbIndex: number) => {
@@ -260,7 +275,7 @@ export default function ImageGallery({
 					<AnimatePresence initial={false} custom={direction} mode="wait">
 						<motion.div
 							key={`gallery-image-${page}`}
-							className="self-start rounded-xs aspect-square shadow-light w-full overflow-hidden"
+							className="group relative cursor-zoom-in self-start overflow-hidden rounded-xs aspect-square shadow-light w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-bluegreen-500"
 							custom={direction}
 							variants={variants}
 							initial="enter"
@@ -270,6 +285,18 @@ export default function ImageGallery({
 							drag={isMdUp ? "y" : "x"}
 							dragConstraints={getDragConstraints(isMdUp)}
 							dragElastic={1}
+							tabIndex={0}
+							role="button"
+							aria-label={`View enlarged product image ${page + 1} for ${productTitle}`}
+							aria-haspopup="dialog"
+							aria-expanded={lightboxOpen}
+							onClick={openLightbox}
+							onKeyDown={(e) => {
+								if (e.key === "Enter" || e.key === " ") {
+									e.preventDefault();
+									openLightbox();
+								}
+							}}
 							onDragEnd={(_e, { offset, velocity }) => {
 								const swipe = isMdUp
 									? swipePower(offset.y, velocity.y)
@@ -284,25 +311,40 @@ export default function ImageGallery({
 							onAnimationStart={() => setIsAnimating(true)}
 							onAnimationComplete={() => setIsAnimating(false)}
 						>
-							<div className="w-full">
+							<div className="relative w-full">
 								<LegacyImage
 									src={images[imageIndex].url_fullxfull}
 									width={442}
 									height={442}
 									layout="responsive"
 									objectFit="cover"
-									className="rounded-md w-full h-auto aspect-square shadow-light"
+									className="rounded-md w-full h-auto aspect-square shadow-light pointer-events-none"
 									placeholder="blur"
 									blurDataURL={images[imageIndex].url_75x75}
 									alt={`Product gallery image ${page + 1} for ${productTitle}`}
 									loading="eager"
 									priority
 								/>
+								<span
+									className="pointer-events-none absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-bluegreen-600 opacity-0 shadow-md backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+									aria-hidden
+								>
+									<SearchRounded fontSize="small" />
+								</span>
 							</div>
 						</motion.div>
 					</AnimatePresence>
 				</div>
 			</div>
+			{images.length > 0 ? (
+				<ImageLightbox
+					open={lightboxOpen}
+					onClose={closeLightbox}
+					src={images[imageIndex].url_fullxfull}
+					alt={`Product gallery image ${page + 1} for ${productTitle}`}
+					blurDataURL={images[imageIndex].url_75x75}
+				/>
+			) : null}
 		</div>
 	);
 }
