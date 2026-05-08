@@ -3,8 +3,7 @@
 import CloseRounded from "@mui/icons-material/CloseRounded";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
-// See ImageGallery.tsx — legacy/image retained for blur compatibility with remote Etsy URLs.
-import LegacyImage from "next/legacy/image";
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export interface ImageLightboxProps {
@@ -214,16 +213,17 @@ export default function ImageLightbox({
 					ref={imageContainerRef}
 					className={`relative z-[5] h-[min(85vh,920px)] w-[min(92vw,920px)] max-w-full touch-none ${loupe ? "cursor-none" : "cursor-zoom-in"}`}
 				>
-					<LegacyImage
+					<Image
 						src={src}
 						alt={alt}
-						layout="fill"
-						objectFit="contain"
+						fill
+						sizes="min(92vw, 920px)"
+						style={{ objectFit: "contain" }}
 						className="rounded-lg select-none"
 						{...(blurDataURL
 							? { placeholder: "blur" as const, blurDataURL }
 							: { placeholder: "empty" as const })}
-						priority={open}
+						preload={open}
 					/>
 				</div>
 				{loupe ? (

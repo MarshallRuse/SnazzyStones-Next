@@ -187,7 +187,7 @@ export default function ProductList({
 											secondaryImageUrl =
 												prod.images[secImageInd - 1]?.url_fullxfull;
 											secondaryImagePlaceholderUrl =
-												prod.images[secImageInd - 1]?.url_75x75;
+												prod.images[secImageInd - 1]?.blurDataURL ?? "";
 										}
 									}
 
@@ -195,7 +195,7 @@ export default function ProductList({
 										<ProductListingCard
 											key={prod.listing_id}
 											imagePrimary={prod.images[0].url_fullxfull}
-											imagePlaceholder={prod.images[0].url_75x75}
+											imagePlaceholder={prod.images[0].blurDataURL}
 											imageSecondary={secondaryImageUrl}
 											imageSecondaryPlaceholder={secondaryImagePlaceholderUrl}
 											productCategory={
@@ -248,7 +248,7 @@ export default function ProductList({
 									secondaryImageUrl =
 										prod.images[secImageInd - 1]?.url_fullxfull;
 									secondaryImagePlaceholderUrl =
-										prod.images[secImageInd - 1]?.url_75x75;
+										prod.images[secImageInd - 1]?.blurDataURL ?? "";
 								}
 							}
 
@@ -256,7 +256,7 @@ export default function ProductList({
 								<ProductListingCard
 									key={prod.listing_id}
 									imagePrimary={prod.images[0].url_fullxfull}
-									imagePlaceholder={prod.images[0].url_75x75}
+									imagePlaceholder={prod.images[0].blurDataURL}
 									imageSecondary={secondaryImageUrl}
 									imageSecondaryPlaceholder={secondaryImagePlaceholderUrl}
 									productCategory={

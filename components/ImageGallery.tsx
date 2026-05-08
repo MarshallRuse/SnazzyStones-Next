@@ -4,14 +4,9 @@ import KeyboardArrowUpRounded from "@mui/icons-material/KeyboardArrowUpRounded";
 import SearchRounded from "@mui/icons-material/SearchRounded";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-// Main carousel uses next/legacy/image: Etsy thumbnail URLs work as blur placeholders without
-// base64 conversion (next/image is stricter). Deprecated in Next 16 — revisit when migrating blur pipeline.
-// https://github.com/vercel/next.js/issues/42140
-import LegacyImage from "next/legacy/image";
 import { wrap } from "popmotion";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import ImageLightbox from "@/components/ImageLightbox";
-import type { ListingImage } from "@/types/EtsyAPITypes";
 import type { ListingImageMin } from "@/types/Types";
 
 const enterExitDistance = 250;
@@ -84,7 +79,7 @@ const navArrowButtonClass =
 	"bg-white text-bluegreen-500 opacity-50 hover:opacity-90 transition rounded-full w-10 h-10 flex justify-center items-center select-none cursor-pointer shrink-0 z-20";
 
 export interface ImageGalleryProps {
-	images: ListingImage[] | ListingImageMin[];
+	images: ListingImageMin[];
 	productTitle?: string;
 }
 
@@ -106,6 +101,7 @@ export default function ImageGallery({
 	// absolute page index as the `motion` component's `key` prop, `AnimatePresence` will
 	// detect it as an entirely new image. So you can infinitely paginate as few as 1 images.
 	const imageIndex = wrap(0, images.length, page);
+	const activeImage = images[imageIndex];
 
 	// Match Tailwind `md` (768px). Initial false keeps SSR + first client render identical
 	// so Motion's drag axis / touch-action hydrate without mismatch; sync after mount.
@@ -157,7 +153,7 @@ export default function ImageGallery({
 	const arrowsDisabled = images.length <= 1;
 
 	const thumbnailButtons = images?.map(
-		(img: ListingImageMin | ListingImage, ind: number) => (
+		(img: ListingImageMin, ind: number) => (
 			<button
 				key={`thumbnail-${img.url_170x135}`}
 				ref={(el) => {
@@ -313,18 +309,22 @@ export default function ImageGallery({
 							onAnimationComplete={() => setIsAnimating(false)}
 						>
 							<div className="relative w-full">
-								<LegacyImage
-									src={images[imageIndex].url_fullxfull}
+								<Image
+									src={activeImage.url_fullxfull}
 									width={442}
 									height={442}
-									layout="responsive"
-									objectFit="cover"
-									className="rounded-md w-full h-auto aspect-square shadow-light pointer-events-none"
-									placeholder="blur"
-									blurDataURL={images[imageIndex].url_75x75}
+									sizes="100vw"
+									style={{
+										width: "100%",
+										height: "auto",
+										objectFit: "cover",
+									}}
+									className="rounded-md aspect-square shadow-light pointer-events-none"
+									placeholder={activeImage.blurDataURL ? "blur" : "empty"}
+									blurDataURL={activeImage.blurDataURL}
 									alt={`Product gallery image ${page + 1} for ${productTitle}`}
 									loading="eager"
-									priority
+									preload
 								/>
 								<span
 									className="pointer-events-none absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-bluegreen-600 opacity-0 shadow-md backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
@@ -343,7 +343,7 @@ export default function ImageGallery({
 					onClose={closeLightbox}
 					src={images[imageIndex].url_fullxfull}
 					alt={`Product gallery image ${page + 1} for ${productTitle}`}
-					blurDataURL={images[imageIndex].url_75x75}
+					blurDataURL={images[imageIndex].blurDataURL}
 				/>
 			) : null}
 		</div>

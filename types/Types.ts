@@ -1,6 +1,8 @@
-import { ListingImage, Money, ShopListingResponse, ShopProductionPartner, ShopSectionResponse } from './EtsyAPITypes';
+import type { ListingImage, Money, ShopListingResponse, ShopProductionPartner, ShopSectionResponse } from './EtsyAPITypes';
 
-export type ListingImageMin = Pick<ListingImage, 'url_75x75' | 'url_170x135' | 'url_fullxfull'>;
+export type ListingImageMin = Pick<ListingImage, 'url_75x75' | 'url_170x135' | 'url_fullxfull'> & {
+    blurDataURL?: string;
+};
 
 export type ProductMinAPIData = Pick<
     ShopListingResponse,

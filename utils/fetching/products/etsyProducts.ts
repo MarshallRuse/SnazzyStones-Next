@@ -3,8 +3,9 @@ import Bottleneck from 'bottleneck';
 //Name both cache SDK imports redis so they can be swapped out if one were to blow through the cache limit
 //import { kv as redis } from "@vercel/kv";
 import { Redis } from '@upstash/redis';
-import { ShopListingResponse, ShopListingsResponse } from '@/types/EtsyAPITypes';
-import { ProductMinAPIData } from '@/types/Types';
+import type { ShopListingResponse, ShopListingsResponse } from '@/types/EtsyAPITypes';
+import type { ProductMinAPIData } from '@/types/Types';
+import { fetchImageAsDataURL } from '@/utils/images/blurDataURL';
 import { getEtsyApiKey } from '../etsy.util';
 
 // Comment out if using kv
@@ -88,17 +89,19 @@ async function setProductsCache({ categoryId = null, fetchImages = true, limit =
         return [];
     }
 
-    const minimalProductsData: ProductMinAPIData[] = products.map((product) => {
-        return {
+    const minimalProductsData: ProductMinAPIData[] = await Promise.all(
+        products.map(async (product) => ({
             listing_id: product.listing_id,
             title: product.title,
             description: product.description,
-            images:
-                product.images?.map((image) => ({
+            images: await Promise.all(
+                product.images?.map(async (image) => ({
                     url_75x75: image.url_75x75,
                     url_170x135: image.url_170x135,
                     url_fullxfull: image.url_fullxfull,
+                    blurDataURL: await fetchImageAsDataURL(image.url_75x75),
                 })) ?? [],
+            ),
             //price: product.price,
             shop_section_id: product.shop_section_id,
             original_creation_timestamp: product.original_creation_timestamp,
@@ -107,8 +110,8 @@ async function setProductsCache({ categoryId = null, fetchImages = true, limit =
             production_partners: product.production_partners,
             quantity: product.quantity,
             tags: product.tags,
-        };
-    });
+        })),
+    );
     await redis.set('products', JSON.stringify(minimalProductsData));
     await redis.set('timeSinceLastEtsyFetch', Date.now());
     return minimalProductsData;
@@ -116,7 +119,6 @@ async function setProductsCache({ categoryId = null, fetchImages = true, limit =
 
 export async function fetchProductsFromCache({
     categoryId = null,
-    fetchImages = true,
     limit = 100,
 }: FetchProductsParams = {}): Promise<ProductMinAPIData[]> {
     const timeSinceLastEtsyFetch = await redis.get('timeSinceLastEtsyFetch');
@@ -131,8 +133,12 @@ export async function fetchProductsFromCache({
 
     if (cachedProducts && cachedProducts.length > 0) {
         let selectedProducts = cachedProducts;
+        if (cachedProducts.some((product) => product.images.some((image) => image.url_75x75 && !image.blurDataURL))) {
+            selectedProducts = await setProductsCache({ categoryId: null, fetchImages: true });
+        }
+
         if (categoryId) {
-            selectedProducts = cachedProducts.filter((product) => product.shop_section_id === categoryId);
+            selectedProducts = selectedProducts.filter((product) => product.shop_section_id === categoryId);
         }
         if (limit && limit < selectedProducts.length) {
             selectedProducts = selectedProducts.slice(0, limit);
