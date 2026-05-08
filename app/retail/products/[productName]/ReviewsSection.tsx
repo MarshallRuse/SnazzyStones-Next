@@ -1,5 +1,6 @@
 "use client";
 
+import SearchRounded from "@mui/icons-material/SearchRounded";
 import StarRateRounded from "@mui/icons-material/StarRateRounded";
 import dayjs from "dayjs";
 import he from "he";
@@ -8,6 +9,7 @@ import Image from "next/image";
 import { type ReactNode, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import type { APIReviewsResponse } from "@/app/api/retail/products/reviews/[listing_id]/route";
+import ImageLightbox from "@/components/ImageLightbox";
 import type { ListingReview } from "@/types/EtsyAPITypes";
 
 const STAR_ROW_DELAY_CHILDREN = 0.04;
@@ -121,6 +123,7 @@ function animatedReviewParagraphNodes(
 function AnimatedReviewEntry({ review }: { review: ListingReview }) {
 	const decoded = he.decode(review.review ?? "");
 	const dateFadeDelay = dateFadeDelayAfterStarsEnter(review.rating);
+	const [lightboxOpen, setLightboxOpen] = useState(false);
 
 	const { ref: starRowRef, inView: starRowInView } = useInView({
 		threshold: 0.35,
@@ -181,14 +184,36 @@ function AnimatedReviewEntry({ review }: { review: ListingReview }) {
 					)}
 				</motion.p>
 				{review.image_url_fullxfull && (
-					<div className="rounded-md shadow-light w-fit">
-						<Image
+					<div className="rounded-md shadow-light w-fit shrink-0">
+						<button
+							type="button"
+							className="group relative block rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bluegreen-500 cursor-zoom-in"
+							aria-label={`View enlarged customer photo for ${review.rating} star review`}
+							aria-haspopup="dialog"
+							aria-expanded={lightboxOpen}
+							onClick={() => setLightboxOpen(true)}
+						>
+							<Image
+								src={review.image_url_fullxfull}
+								width={200}
+								height={200}
+								style={{ objectFit: "cover" }}
+								alt=""
+								className="rounded-md pointer-events-none"
+								aria-hidden
+							/>
+							<span
+								className="pointer-events-none absolute bottom-2 right-2 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-bluegreen-600 opacity-0 shadow-md backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+								aria-hidden
+							>
+								<SearchRounded fontSize="small" />
+							</span>
+						</button>
+						<ImageLightbox
+							open={lightboxOpen}
+							onClose={() => setLightboxOpen(false)}
 							src={review.image_url_fullxfull}
-							width={200}
-							height={200}
-							style={{ objectFit: "cover" }}
-							alt={`A photo accompanying the ${review.rating} star review`}
-							className="rounded-md"
+							alt={`Customer photo for ${review.rating} star review`}
 						/>
 					</div>
 				)}
