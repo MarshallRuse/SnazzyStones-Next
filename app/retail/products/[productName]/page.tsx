@@ -4,13 +4,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { type ReactNode, Suspense } from "react";
+import { Suspense } from "react";
 import CTALink from "@/components/CTAElements/CTALink";
 import ImageGallery from "@/components/ImageGallery";
 import ProductPageFallbackSkeleton from "@/components/ProductPageFallbackSkeleton";
 import { fetchCategoriesFromCache } from "@/utils/fetching/categories/etsyCategories";
 import { fetchProductsFromCache } from "@/utils/fetching/products/etsyProducts";
 import formatProductTitleAsURL from "@/utils/formatProductTitleAsURL";
+import ProductPageDescription from "./ProductPageDescription";
 import ReviewsSection from "./ReviewsSection";
 import ShareButtons from "./ShareButtons";
 
@@ -18,40 +19,6 @@ interface ProductPageProps {
 	params: Promise<{
 		productName: string;
 	}>;
-}
-
-function renderDescriptionParagraphs(description: string) {
-	return description
-		.split("\n")
-		.filter((line) => line !== "")
-		.map((line) => he.decode(line))
-		.map((line, index) => (
-			// biome-ignore lint/suspicious/noArrayIndexKey: index is stable for this use case
-			<p key={`description-line-${index}`} className="mb-0 text-lg first:mt-0">
-				{line
-					.split(" ")
-					.map((word) =>
-						word.substring(0, 8) === "https://" ? (
-							<a
-								key={`description-link-${word}`}
-								href={word}
-								target="_blank"
-								rel="noreferrer"
-								className="text-bluegreen-500 break-all navItem"
-							>
-								{word}
-							</a>
-						) : (
-							word
-						),
-					)
-					.reduce<ReactNode[] | null>((accumulator, element) => {
-						if (accumulator === null) return [element];
-						accumulator.push(" ", element);
-						return accumulator;
-					}, null)}
-			</p>
-		));
 }
 
 // Generate metadata
@@ -129,13 +96,18 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
 	return (
 		<>
-			<section className="grid md:grid-cols-[3fr_2fr] md:grid-flow-row auto-rows-max gap-10 py-16 w-full max-w-6xl xl:max-w-7xl 2xl:max-w-[90rem] justify-center mx-auto px-4 sm:px-6 lg:px-8">
-				<Suspense fallback={<ProductPageFallbackSkeleton />}>
-					<ImageGallery images={product.images} productTitle={product.title} />
-				</Suspense>
+			<section className="grid md:grid-cols-[3fr_2fr] md:grid-flow-row md:items-stretch gap-4 py-16 w-full max-w-6xl xl:max-w-7xl 2xl:max-w-[90rem] justify-center mx-auto px-4 sm:px-6 lg:px-8">
+				<div className="min-w-0 md:self-start">
+					<Suspense fallback={<ProductPageFallbackSkeleton />}>
+						<ImageGallery
+							images={product.images}
+							productTitle={product.title}
+						/>
+					</Suspense>
+				</div>
 
-				<div className="flex flex-col text-sm text-slate-500 w-full min-w-0 max-w-xl md:max-w-none pt-2">
-					<nav className="flex flex-nowrap">
+				<div className="flex flex-col text-sm text-slate-500 w-full min-w-0 max-w-xl md:max-w-none pt-2 md:h-0 md:min-h-full md:overflow-hidden md:pl-6">
+					<nav className="flex flex-nowrap shrink-0">
 						<Link
 							href="/"
 							className="text-bluegreen-500 navItem max-w-max inline-flex mx-1"
@@ -154,7 +126,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 							</>
 						)}
 					</nav>
-					<div className="flex flex-col md:flex-row items-start md:items-center md:gap-4 mb-12 md:mb-0 text-blueyonder-500">
+					<div className="flex flex-col md:flex-row items-start md:items-center md:gap-4 mb-12 md:mb-0 text-blueyonder-500 shrink-0">
 						<h1 className="text-2xl mt-4 font-semibold mb-4 md:mb-auto">
 							{product.title}
 						</h1>
@@ -188,17 +160,18 @@ export default async function ProductPage({ params }: ProductPageProps) {
                             )
                         )}
                     </p> */}
-					<div className="max-h-56 mt-4 overflow-y-auto subtleScrollbar">
-						{product && renderDescriptionParagraphs(product.description)}
-					</div>
-					<p className="text-base">
+					<ProductPageDescription
+						key={product.listing_id}
+						description={product.description}
+					/>
+					<p className="text-base shrink-0">
 						<span className="font-semibold">Availability:</span>
 						<span className="text-bluegreen-500">
 							{" "}
 							{product.quantity} in stock
 						</span>
 					</p>
-					<div className="flex flex-col md:flex-row items-center gap-4">
+					<div className="flex flex-col md:flex-row items-center gap-4 shrink-0">
 						<CTALink
 							href={`https://snazzystonesjewelry.etsy.com/listing/${product.listing_id}`}
 							target="_blank"
@@ -215,7 +188,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 							</div>
 						)}
 					</div>
-					<div className="mt-8">
+					<div className="mt-8 shrink-0 mx-auto md:mx-0">
 						<ShareButtons
 							productURL={productURL}
 							facebookAppId={product.facebookAppId}
