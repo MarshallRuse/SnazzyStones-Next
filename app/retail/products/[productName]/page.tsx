@@ -129,12 +129,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
 	return (
 		<>
-			<section className="grid md:grid-cols-2 md:grid-flow-row auto-rows-max gap-10 py-16 md:max-w-(--breakpoint-lg) justify-center mx-auto px-4">
+			<section className="grid md:grid-cols-[3fr_2fr] md:grid-flow-row auto-rows-max gap-10 py-16 w-full max-w-6xl xl:max-w-7xl 2xl:max-w-[90rem] justify-center mx-auto px-4 sm:px-6 lg:px-8">
 				<Suspense fallback={<ProductPageFallbackSkeleton />}>
 					<ImageGallery images={product.images} productTitle={product.title} />
 				</Suspense>
 
-				<div className="flex flex-col row-span-2 text-sm text-slate-500 max-w-sm md:max-w-lg pt-2">
+				<div className="flex flex-col text-sm text-slate-500 w-full min-w-0 max-w-xl md:max-w-none pt-2">
 					<nav className="flex flex-nowrap">
 						<Link
 							href="/"
@@ -215,12 +215,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
 							</div>
 						)}
 					</div>
+					<div className="mt-8">
+						<ShareButtons
+							productURL={productURL}
+							facebookAppId={product.facebookAppId}
+						/>
+					</div>
 				</div>
-
-				<ShareButtons
-					productURL={productURL}
-					facebookAppId={product.facebookAppId}
-				/>
 			</section>
 
 			<Suspense>

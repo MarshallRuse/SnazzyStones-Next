@@ -24,7 +24,7 @@ export default function ReviewsSection({ listingId }: { listingId: string }) {
 	}, [listingId]);
 
 	return (
-		<section className="px-4 py-16 md:max-w-(--breakpoint-lg) mx-auto border-t border-slate-100">
+		<section className="w-full max-w-6xl xl:max-w-7xl 2xl:max-w-[90rem] px-4 sm:px-6 lg:px-8 py-16 mx-auto border-t border-slate-100">
 			<h2 className="text-blueyonder-500">
 				Reviews{" "}
 				{reviews.length > 0 ? (
