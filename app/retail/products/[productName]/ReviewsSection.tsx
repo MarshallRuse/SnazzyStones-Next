@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import he from "he";
 import { motion, type Variants } from "motion/react";
 import Image from "next/image";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import type { APIReviewsResponse } from "@/app/api/retail/products/reviews/[listing_id]/route";
 import ImageLightbox from "@/components/ImageLightbox";
@@ -120,10 +120,21 @@ function animatedReviewParagraphNodes(
 	return nodes;
 }
 
-function AnimatedReviewEntry({ review }: { review: ListingReview }) {
+function AnimatedReviewEntry({
+	review,
+	reviewPhotoIndex,
+	onOpenReviewLightbox,
+	reviewLightboxOpen,
+	reviewLightboxActiveIndex,
+}: {
+	review: ListingReview;
+	reviewPhotoIndex?: number;
+	onOpenReviewLightbox: (index: number) => void;
+	reviewLightboxOpen: boolean;
+	reviewLightboxActiveIndex: number;
+}) {
 	const decoded = he.decode(review.review ?? "");
 	const dateFadeDelay = dateFadeDelayAfterStarsEnter(review.rating);
-	const [lightboxOpen, setLightboxOpen] = useState(false);
 
 	const { ref: starRowRef, inView: starRowInView } = useInView({
 		threshold: 0.35,
@@ -183,15 +194,19 @@ function AnimatedReviewEntry({ review }: { review: ListingReview }) {
 						`review-${review.created_timestamp}`,
 					)}
 				</motion.p>
-				{review.image_url_fullxfull && (
+				{review.image_url_fullxfull && reviewPhotoIndex !== undefined && (
 					<div className="rounded-md shadow-light w-fit shrink-0">
 						<button
 							type="button"
 							className="group relative block h-[200px] w-[200px] shrink-0 overflow-hidden rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bluegreen-500 cursor-zoom-in"
 							aria-label={`View enlarged customer photo for ${review.rating} star review`}
 							aria-haspopup="dialog"
-							aria-expanded={lightboxOpen}
-							onClick={() => setLightboxOpen(true)}
+							aria-expanded={
+								reviewLightboxOpen &&
+								reviewPhotoIndex !== undefined &&
+								reviewPhotoIndex === reviewLightboxActiveIndex
+							}
+							onClick={() => onOpenReviewLightbox(reviewPhotoIndex)}
 						>
 							<Image
 								src={review.image_url_fullxfull}
@@ -208,12 +223,6 @@ function AnimatedReviewEntry({ review }: { review: ListingReview }) {
 								<SearchRounded fontSize="small" />
 							</span>
 						</button>
-						<ImageLightbox
-							open={lightboxOpen}
-							onClose={() => setLightboxOpen(false)}
-							src={review.image_url_fullxfull}
-							alt={`Customer photo for ${review.rating} star review`}
-						/>
 					</div>
 				)}
 			</div>
@@ -223,6 +232,35 @@ function AnimatedReviewEntry({ review }: { review: ListingReview }) {
 
 export default function ReviewsSection({ listingId }: { listingId: string }) {
 	const [reviews, setReviews] = useState<ListingReview[]>([]);
+	const [reviewLightboxOpen, setReviewLightboxOpen] = useState(false);
+	const [reviewLightboxIndex, setReviewLightboxIndex] = useState(0);
+
+	const sortedReviews = useMemo(
+		() =>
+			[...reviews].sort((a, b) => b.created_timestamp - a.created_timestamp),
+		[reviews],
+	);
+
+	const reviewPhotoSlides = useMemo(
+		() =>
+			sortedReviews
+				.filter((r) => r.image_url_fullxfull)
+				.map((r) => ({
+					src: r.image_url_fullxfull as string,
+					alt: `Customer photo for ${r.rating} star review`,
+				})),
+		[sortedReviews],
+	);
+
+	const reviewEntries = useMemo(() => {
+		let reviewPhotoIdx = 0;
+		return sortedReviews.map((review) => {
+			const photoIndex = review.image_url_fullxfull
+				? reviewPhotoIdx++
+				: undefined;
+			return { review, reviewPhotoIndex: photoIndex };
+		});
+	}, [sortedReviews]);
 
 	useEffect(() => {
 		const fetchReviews = async () => {
@@ -235,6 +273,16 @@ export default function ReviewsSection({ listingId }: { listingId: string }) {
 
 		fetchReviews();
 	}, [listingId]);
+
+	useEffect(() => {
+		if (reviewPhotoSlides.length === 0) {
+			setReviewLightboxOpen(false);
+			return;
+		}
+		if (reviewLightboxIndex >= reviewPhotoSlides.length) {
+			setReviewLightboxIndex(reviewPhotoSlides.length - 1);
+		}
+	}, [reviewPhotoSlides.length, reviewLightboxIndex]);
 
 	return (
 		<section className="w-full max-w-6xl xl:max-w-7xl 2xl:max-w-[90rem] px-4 sm:px-6 lg:px-8 py-16 mx-auto border-t border-slate-100">
@@ -255,14 +303,28 @@ export default function ReviewsSection({ listingId }: { listingId: string }) {
 					</span>
 				)}
 			</h2>
-			{reviews
-				?.sort((a, b) => b.created_timestamp - a.created_timestamp)
-				.map((review) => (
-					<AnimatedReviewEntry
-						key={`review-${review.created_timestamp}`}
-						review={review}
-					/>
-				))}
+			{reviewEntries.map(({ review, reviewPhotoIndex }) => (
+				<AnimatedReviewEntry
+					key={`review-${review.created_timestamp}`}
+					review={review}
+					reviewPhotoIndex={reviewPhotoIndex}
+					onOpenReviewLightbox={(index) => {
+						setReviewLightboxIndex(index);
+						setReviewLightboxOpen(true);
+					}}
+					reviewLightboxOpen={reviewLightboxOpen}
+					reviewLightboxActiveIndex={reviewLightboxIndex}
+				/>
+			))}
+			{reviewPhotoSlides.length > 0 ? (
+				<ImageLightbox
+					open={reviewLightboxOpen}
+					onClose={() => setReviewLightboxOpen(false)}
+					slides={reviewPhotoSlides}
+					activeIndex={reviewLightboxIndex}
+					onActiveIndexChange={setReviewLightboxIndex}
+				/>
+			) : null}
 		</section>
 	);
 }

@@ -152,38 +152,46 @@ export default function ImageGallery({
 
 	const arrowsDisabled = images.length <= 1;
 
-	const thumbnailButtons = images?.map(
-		(img: ListingImageMin, ind: number) => (
-			<button
-				key={`thumbnail-${img.url_170x135}`}
-				ref={(el) => {
-					thumbnailRefs.current[ind] = el;
-				}}
-				type="button"
-				className={`flex w-20 h-20 aspect-square md:w-auto md:h-auto shrink-0 rounded-lg cursor-pointer ${
-					ind !== page ? "hover:scale-105" : ""
-				} transition ${ind === page ? "scale-105 border-2 border-bluegreen-500" : ""}`}
-				onClick={() => handleThumbnailClick(ind)}
-				onKeyDown={(e) => {
-					if (e.key === "Enter" || e.key === " ") {
-						e.preventDefault();
-						handleThumbnailClick(ind);
-					}
-				}}
-				aria-label={`Show thumbnail ${ind + 1}`}
-			>
-				<Image
-					src={img.url_170x135}
-					width={100}
-					height={100}
-					style={{ objectFit: "cover" }}
-					className={`rounded-md aspect-square`}
-					alt={`Product image thumbnail ${ind + 1} for ${productTitle}`}
-					priority
-				/>
-			</button>
-		),
+	const lightboxSlides = useMemo(
+		() =>
+			images.map((img, i) => ({
+				src: img.url_fullxfull,
+				alt: `Product gallery image ${i + 1} for ${productTitle}`,
+				blurDataURL: img.blurDataURL,
+			})),
+		[images, productTitle],
 	);
+
+	const thumbnailButtons = images?.map((img: ListingImageMin, ind: number) => (
+		<button
+			key={`thumbnail-${img.url_170x135}`}
+			ref={(el) => {
+				thumbnailRefs.current[ind] = el;
+			}}
+			type="button"
+			className={`flex w-20 h-20 aspect-square md:w-auto md:h-auto shrink-0 rounded-lg cursor-pointer ${
+				ind !== page ? "hover:scale-105" : ""
+			} transition ${ind === page ? "scale-105 border-2 border-bluegreen-500" : ""}`}
+			onClick={() => handleThumbnailClick(ind)}
+			onKeyDown={(e) => {
+				if (e.key === "Enter" || e.key === " ") {
+					e.preventDefault();
+					handleThumbnailClick(ind);
+				}
+			}}
+			aria-label={`Show thumbnail ${ind + 1}`}
+		>
+			<Image
+				src={img.url_170x135}
+				width={100}
+				height={100}
+				style={{ objectFit: "cover" }}
+				className={`rounded-md aspect-square`}
+				alt={`Product image thumbnail ${ind + 1} for ${productTitle}`}
+				priority
+			/>
+		</button>
+	));
 
 	useEffect(() => {
 		thumbnailRefs.current?.[page]?.scrollIntoView({
@@ -341,9 +349,16 @@ export default function ImageGallery({
 				<ImageLightbox
 					open={lightboxOpen}
 					onClose={closeLightbox}
-					src={images[imageIndex].url_fullxfull}
-					alt={`Product gallery image ${page + 1} for ${productTitle}`}
-					blurDataURL={images[imageIndex].blurDataURL}
+					slides={lightboxSlides}
+					activeIndex={imageIndex}
+					onActiveIndexChange={(next) => {
+						const n = images.length;
+						if (n <= 1) return;
+						const forward = (next - imageIndex + n) % n;
+						const backward = (imageIndex - next + n) % n;
+						const direction = forward <= backward ? 1 : -1;
+						paginate(direction, next);
+					}}
 				/>
 			) : null}
 		</div>

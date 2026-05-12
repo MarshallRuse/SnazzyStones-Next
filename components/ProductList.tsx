@@ -1,12 +1,15 @@
 "use client";
 
-import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import type { ShopListingCondensed } from "@/types/EtsyAPITypes";
 import type { CategoriesMinAPIData, ProductMinAPIData } from "@/types/Types";
 import formatProductTitleAsURL from "@/utils/formatProductTitleAsURL";
 import ProductListingCard from "./ProductListingCard";
+import ProductSortSelect, {
+	DEFAULT_SORT_OPTION,
+	type SortOption,
+} from "./ProductSortSelect";
 
 export interface ProductListProps {
 	backgroundColor?: boolean;
@@ -21,7 +24,7 @@ export default function ProductList({
 	backgroundColor = true,
 	sortable = true,
 }: ProductListProps) {
-	const [sortOption, setSortOption] = useState("date-added-newest");
+	const [sortOption, setSortOption] = useState<SortOption>(DEFAULT_SORT_OPTION);
 	// Default to mobile column count for server-side rendering to avoid hydration mismatch
 	const [columnCount, setColumnCount] = useState(1);
 	const [isMounted, setIsMounted] = useState(false);
@@ -55,7 +58,8 @@ export default function ProductList({
 
 	const sortedProducts = () => {
 		const list = products?.length ? [...products] : [];
-		switch (sortOption) {
+		const { value } = sortOption;
+		switch (value) {
 			case "date-added-newest":
 				return list.sort(
 					(prodA, prodB) =>
@@ -112,30 +116,7 @@ export default function ProductList({
 			} grid sm:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-14 px-4 md:px-32 py-6 relative`}
 		>
 			{sortable && (
-				<div className="opacity-100 pt-4 col-span-3">
-					<Box sx={{ minWidth: 120 }}>
-						<FormControl>
-							<InputLabel id="sort-products-select">Sort by...</InputLabel>
-							<Select
-								labelId="sort-products-select-label"
-								id="sort-products-select"
-								value={sortOption}
-								label="Sort by..."
-								onChange={(e) => setSortOption(e.target.value)}
-							>
-								<MenuItem value={"date-added-newest"}>
-									Date Added (Newest)
-								</MenuItem>
-								<MenuItem value={"date-added-oldest"}>
-									Date Added (Oldest)
-								</MenuItem>
-								<MenuItem value={"most-popular"}>Most Popular</MenuItem>
-								{/* <MenuItem value={"price-lowest"}>Price (Lowest)</MenuItem>
-                            <MenuItem value={"price-highest"}>Price (Highest)</MenuItem> */}
-							</Select>
-						</FormControl>
-					</Box>
-				</div>
+				<ProductSortSelect value={sortOption} onChange={setSortOption} />
 			)}
 			<div className="col-span-3 lg:col-span-4 relative">
 				{/* Only render row-based layout after component mounts on client-side */}
