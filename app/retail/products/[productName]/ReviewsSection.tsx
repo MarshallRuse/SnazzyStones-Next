@@ -2,6 +2,7 @@
 
 import SearchRounded from "@mui/icons-material/SearchRounded";
 import StarRateRounded from "@mui/icons-material/StarRateRounded";
+import { Skeleton } from "@mui/material";
 import dayjs from "dayjs";
 import he from "he";
 import { motion, type Variants } from "motion/react";
@@ -230,8 +231,30 @@ function AnimatedReviewEntry({
 	);
 }
 
+/** Shown while review data is fetched from the API. */
+function ReviewsSectionSkeleton() {
+	return (
+		<section
+			className="w-full max-w-6xl xl:max-w-7xl 2xl:max-w-[90rem] px-4 sm:px-6 lg:px-8 py-16 mx-auto border-t border-slate-100"
+			aria-hidden
+		>
+			<Skeleton variant="text" className="max-w-md mb-8" height={48} />
+			{[0, 1, 2].map((i) => (
+				<div key={`review-skel-${i}`} className="py-4 border-b border-slate-100">
+					<div className="flex items-end gap-4 mb-4">
+						<Skeleton variant="rectangular" width={140} height={28} />
+						<Skeleton variant="text" width={160} height={24} />
+					</div>
+					<Skeleton variant="rectangular" className="max-w-2xl" height={72} />
+				</div>
+			))}
+		</section>
+	);
+}
+
 export default function ReviewsSection({ listingId }: { listingId: string }) {
 	const [reviews, setReviews] = useState<ListingReview[]>([]);
+	const [isLoadingReviews, setIsLoadingReviews] = useState(true);
 	const [reviewLightboxOpen, setReviewLightboxOpen] = useState(false);
 	const [reviewLightboxIndex, setReviewLightboxIndex] = useState(0);
 
@@ -263,15 +286,28 @@ export default function ReviewsSection({ listingId }: { listingId: string }) {
 	}, [sortedReviews]);
 
 	useEffect(() => {
+		let cancelled = false;
 		const fetchReviews = async () => {
-			const reviewsResponse = await fetch(
-				`/api/retail/products/reviews/${listingId}`,
-			);
-			const reviewsData: APIReviewsResponse = await reviewsResponse.json();
-			setReviews(reviewsData.reviews || []);
+			setIsLoadingReviews(true);
+			try {
+				const reviewsResponse = await fetch(
+					`/api/retail/products/reviews/${listingId}`,
+				);
+				const reviewsData: APIReviewsResponse = await reviewsResponse.json();
+				if (!cancelled) {
+					setReviews(reviewsData.reviews || []);
+				}
+			} finally {
+				if (!cancelled) {
+					setIsLoadingReviews(false);
+				}
+			}
 		};
 
-		fetchReviews();
+		void fetchReviews();
+		return () => {
+			cancelled = true;
+		};
 	}, [listingId]);
 
 	useEffect(() => {
@@ -283,6 +319,10 @@ export default function ReviewsSection({ listingId }: { listingId: string }) {
 			setReviewLightboxIndex(reviewPhotoSlides.length - 1);
 		}
 	}, [reviewPhotoSlides.length, reviewLightboxIndex]);
+
+	if (isLoadingReviews) {
+		return <ReviewsSectionSkeleton />;
+	}
 
 	return (
 		<section className="w-full max-w-6xl xl:max-w-7xl 2xl:max-w-[90rem] px-4 sm:px-6 lg:px-8 py-16 mx-auto border-t border-slate-100">

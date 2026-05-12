@@ -4,10 +4,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import CTALink from "@/components/CTAElements/CTALink";
 import ImageGallery from "@/components/ImageGallery";
-import ProductPageFallbackSkeleton from "@/components/ProductPageFallbackSkeleton";
 import { fetchCategoriesFromCache } from "@/utils/fetching/categories/etsyCategories";
 import { fetchProductsFromCache } from "@/utils/fetching/products/etsyProducts";
 import formatProductTitleAsURL from "@/utils/formatProductTitleAsURL";
@@ -98,12 +96,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
 		<>
 			<section className="grid md:grid-cols-[3fr_2fr] md:grid-flow-row md:items-stretch gap-4 py-16 w-full max-w-6xl xl:max-w-7xl 2xl:max-w-[90rem] justify-center mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="min-w-0 md:self-start">
-					<Suspense fallback={<ProductPageFallbackSkeleton />}>
-						<ImageGallery
-							images={product.images}
-							productTitle={product.title}
-						/>
-					</Suspense>
+					<ImageGallery
+						images={product.images}
+						productTitle={product.title}
+					/>
 				</div>
 
 				<div className="flex flex-col text-sm text-slate-500 w-full min-w-0 max-w-xl md:max-w-none pt-2 md:h-0 md:min-h-full md:overflow-hidden md:pl-6">
@@ -197,9 +193,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 				</div>
 			</section>
 
-			<Suspense>
-				<ReviewsSection listingId={product.listing_id.toString()} />
-			</Suspense>
+			<ReviewsSection listingId={product.listing_id.toString()} />
 		</>
 	);
 }
