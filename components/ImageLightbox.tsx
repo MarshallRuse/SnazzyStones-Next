@@ -265,7 +265,7 @@ export default function ImageLightbox({
 				e.stopPropagation();
 				goPrev();
 			}}
-			className={`${navButtonClass} ${sideNavVisibility} absolute top-1/2 left-8 -translate-y-1/2 sm:left-10 md:left-12`}
+			className={`${navButtonClass} ${sideNavVisibility} absolute top-1/2 left-8 -translate-y-1/2 sm:left-10 md:left-30`}
 			aria-label="Previous image"
 		>
 			<KeyboardArrowLeftRounded fontSize="medium" aria-hidden />
@@ -282,7 +282,7 @@ export default function ImageLightbox({
 				e.stopPropagation();
 				goNext();
 			}}
-			className={`${navButtonClass} ${sideNavVisibility} absolute top-1/2 right-8 -translate-y-1/2 sm:right-10 md:right-12`}
+			className={`${navButtonClass} ${sideNavVisibility} absolute top-1/2 right-8 -translate-y-1/2 sm:right-10 md:right-30`}
 			aria-label="Next image"
 		>
 			<KeyboardArrowRightRounded fontSize="medium" aria-hidden />
