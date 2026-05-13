@@ -4,13 +4,9 @@ import KeyboardArrowUpRounded from "@mui/icons-material/KeyboardArrowUpRounded";
 import SearchRounded from "@mui/icons-material/SearchRounded";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-// Nextjs 13 broke blurDataURL (need to convert to base64), so we're using the legacy image component
-// https://github.com/vercel/next.js/issues/42140
-import LegacyImage from "next/legacy/image";
 import { wrap } from "popmotion";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import ImageLightbox from "@/components/ImageLightbox";
-import type { ListingImage } from "@/types/EtsyAPITypes";
 import type { ListingImageMin } from "@/types/Types";
 
 const enterExitDistance = 250;
@@ -83,13 +79,16 @@ const navArrowButtonClass =
 	"bg-white text-bluegreen-500 opacity-50 hover:opacity-90 transition rounded-full w-10 h-10 flex justify-center items-center select-none cursor-pointer shrink-0 z-20";
 
 export interface ImageGalleryProps {
-	images: ListingImage[] | ListingImageMin[];
+	images: ListingImageMin[];
 	productTitle?: string;
+	/** When images are missing, used for a fallback link to Etsy. */
+	listingId?: number;
 }
 
 export default function ImageGallery({
 	images = [],
 	productTitle = "",
+	listingId,
 }: ImageGalleryProps) {
 	const [[page, direction], setPage] = useState([0, 0]);
 	const [isAnimating, setIsAnimating] = useState(false);
@@ -104,7 +103,10 @@ export default function ImageGallery({
 	// then wrap that within 0-2 to find our image ID in the array below. By passing an
 	// absolute page index as the `motion` component's `key` prop, `AnimatePresence` will
 	// detect it as an entirely new image. So you can infinitely paginate as few as 1 images.
-	const imageIndex = wrap(0, images.length, page);
+	const imageIndex =
+		images.length > 0 ? wrap(0, images.length, page) : 0;
+	const galleryPrimary =
+		images.length > 0 ? (images[imageIndex] ?? images[0]) : undefined;
 
 	// Match Tailwind `md` (768px). Initial false keeps SSR + first client render identical
 	// so Motion's drag axis / touch-action hydrate without mismatch; sync after mount.
@@ -155,38 +157,46 @@ export default function ImageGallery({
 
 	const arrowsDisabled = images.length <= 1;
 
-	const thumbnailButtons = images?.map(
-		(img: ListingImageMin | ListingImage, ind: number) => (
-			<button
-				key={`thumbnail-${img.url_170x135}`}
-				ref={(el) => {
-					thumbnailRefs.current[ind] = el;
-				}}
-				type="button"
-				className={`flex w-20 h-20 aspect-square md:w-auto md:h-auto shrink-0 rounded-lg cursor-pointer ${
-					ind !== page ? "hover:scale-105" : ""
-				} transition ${ind === page ? "scale-105 border-2 border-bluegreen-500" : ""}`}
-				onClick={() => handleThumbnailClick(ind)}
-				onKeyDown={(e) => {
-					if (e.key === "Enter" || e.key === " ") {
-						e.preventDefault();
-						handleThumbnailClick(ind);
-					}
-				}}
-				aria-label={`Show thumbnail ${ind + 1}`}
-			>
-				<Image
-					src={img.url_170x135}
-					width={100}
-					height={100}
-					style={{ objectFit: "cover" }}
-					className={`rounded-md aspect-square`}
-					alt={`Product image thumbnail ${ind + 1} for ${productTitle}`}
-					priority
-				/>
-			</button>
-		),
+	const lightboxSlides = useMemo(
+		() =>
+			images.map((img, i) => ({
+				src: img.url_fullxfull,
+				alt: `Product gallery image ${i + 1} for ${productTitle}`,
+				blurDataURL: img.blurDataURL,
+			})),
+		[images, productTitle],
 	);
+
+	const thumbnailButtons = images?.map((img: ListingImageMin, ind: number) => (
+		<button
+			key={`thumbnail-${img.url_170x135}`}
+			ref={(el) => {
+				thumbnailRefs.current[ind] = el;
+			}}
+			type="button"
+			className={`flex w-20 h-20 aspect-square md:w-auto md:h-auto shrink-0 rounded-lg cursor-pointer ${
+				ind !== page ? "hover:scale-105" : ""
+			} transition ${ind === page ? "scale-105 border-2 border-bluegreen-500" : ""}`}
+			onClick={() => handleThumbnailClick(ind)}
+			onKeyDown={(e) => {
+				if (e.key === "Enter" || e.key === " ") {
+					e.preventDefault();
+					handleThumbnailClick(ind);
+				}
+			}}
+			aria-label={`Show thumbnail ${ind + 1}`}
+		>
+			<Image
+				src={img.url_170x135}
+				width={100}
+				height={100}
+				style={{ objectFit: "cover" }}
+				className={`rounded-md aspect-square`}
+				alt={`Product image thumbnail ${ind + 1} for ${productTitle}`}
+				priority
+			/>
+		</button>
+	));
 
 	useEffect(() => {
 		thumbnailRefs.current?.[page]?.scrollIntoView({
@@ -215,6 +225,25 @@ export default function ImageGallery({
 
 	return (
 		<div>
+			{images.length === 0 ? (
+				<div className="flex min-h-[280px] flex-col items-center justify-center gap-4 rounded-md border border-slate-200 bg-slate-50 p-8 text-center text-slate-600">
+					<p className="text-base">
+						Product photos are temporarily unavailable. You can still view this
+						item on Etsy.
+					</p>
+					{listingId != null ? (
+						<a
+							href={`https://snazzystonesjewelry.etsy.com/listing/${listingId}`}
+							target="_blank"
+							rel="noreferrer"
+							className="text-bluegreen-600 font-medium underline navItem"
+						>
+							View on Etsy
+						</a>
+					) : null}
+				</div>
+			) : (
+				<>
 			<div className="flex flex-col md:flex-row gap-4 w-full">
 				<div className="order-2 md:order-1 flex flex-row md:flex-col items-center gap-2 w-full md:w-24 shrink-0 min-w-0">
 					<button
@@ -312,19 +341,25 @@ export default function ImageGallery({
 							onAnimationComplete={() => setIsAnimating(false)}
 						>
 							<div className="relative w-full">
-								<LegacyImage
-									src={images[imageIndex].url_fullxfull}
+								{galleryPrimary ? (
+								<Image
+									src={galleryPrimary.url_fullxfull}
 									width={442}
 									height={442}
-									layout="responsive"
-									objectFit="cover"
-									className="rounded-md w-full h-auto aspect-square shadow-light pointer-events-none"
-									placeholder="blur"
-									blurDataURL={images[imageIndex].url_75x75}
+									sizes="100vw"
+									style={{
+										width: "100%",
+										height: "auto",
+										objectFit: "cover",
+									}}
+									className="rounded-md aspect-square shadow-light pointer-events-none"
+									placeholder={galleryPrimary.blurDataURL ? "blur" : "empty"}
+									blurDataURL={galleryPrimary.blurDataURL}
 									alt={`Product gallery image ${page + 1} for ${productTitle}`}
 									loading="eager"
-									priority
+									preload
 								/>
+								) : null}
 								<span
 									className="pointer-events-none absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-bluegreen-600 opacity-0 shadow-md backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
 									aria-hidden
@@ -336,15 +371,22 @@ export default function ImageGallery({
 					</AnimatePresence>
 				</div>
 			</div>
-			{images.length > 0 ? (
-				<ImageLightbox
-					open={lightboxOpen}
-					onClose={closeLightbox}
-					src={images[imageIndex].url_fullxfull}
-					alt={`Product gallery image ${page + 1} for ${productTitle}`}
-					blurDataURL={images[imageIndex].url_75x75}
-				/>
-			) : null}
+			<ImageLightbox
+				open={lightboxOpen}
+				onClose={closeLightbox}
+				slides={lightboxSlides}
+				activeIndex={imageIndex}
+				onActiveIndexChange={(next) => {
+					const n = images.length;
+					if (n <= 1) return;
+					const forward = (next - imageIndex + n) % n;
+					const backward = (imageIndex - next + n) % n;
+					const direction = forward <= backward ? 1 : -1;
+					paginate(direction, next);
+				}}
+			/>
+				</>
+			)}
 		</div>
 	);
 }

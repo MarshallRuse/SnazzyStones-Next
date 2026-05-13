@@ -1,12 +1,15 @@
 "use client";
 
-import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import type { ShopListingCondensed } from "@/types/EtsyAPITypes";
 import type { CategoriesMinAPIData, ProductMinAPIData } from "@/types/Types";
 import formatProductTitleAsURL from "@/utils/formatProductTitleAsURL";
 import ProductListingCard from "./ProductListingCard";
+import ProductSortSelect, {
+	DEFAULT_SORT_OPTION,
+	type SortOption,
+} from "./ProductSortSelect";
 
 export interface ProductListProps {
 	backgroundColor?: boolean;
@@ -21,7 +24,7 @@ export default function ProductList({
 	backgroundColor = true,
 	sortable = true,
 }: ProductListProps) {
-	const [sortOption, setSortOption] = useState("date-added-newest");
+	const [sortOption, setSortOption] = useState<SortOption>(DEFAULT_SORT_OPTION);
 	// Default to mobile column count for server-side rendering to avoid hydration mismatch
 	const [columnCount, setColumnCount] = useState(1);
 	const [isMounted, setIsMounted] = useState(false);
@@ -55,7 +58,8 @@ export default function ProductList({
 
 	const sortedProducts = () => {
 		const list = products?.length ? [...products] : [];
-		switch (sortOption) {
+		const { value } = sortOption;
+		switch (value) {
 			case "date-added-newest":
 				return list.sort(
 					(prodA, prodB) =>
@@ -112,30 +116,7 @@ export default function ProductList({
 			} grid sm:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-14 px-4 md:px-32 py-6 relative`}
 		>
 			{sortable && (
-				<div className="opacity-100 pt-4 col-span-3">
-					<Box sx={{ minWidth: 120 }}>
-						<FormControl>
-							<InputLabel id="sort-products-select">Sort by...</InputLabel>
-							<Select
-								labelId="sort-products-select-label"
-								id="sort-products-select"
-								value={sortOption}
-								label="Sort by..."
-								onChange={(e) => setSortOption(e.target.value)}
-							>
-								<MenuItem value={"date-added-newest"}>
-									Date Added (Newest)
-								</MenuItem>
-								<MenuItem value={"date-added-oldest"}>
-									Date Added (Oldest)
-								</MenuItem>
-								<MenuItem value={"most-popular"}>Most Popular</MenuItem>
-								{/* <MenuItem value={"price-lowest"}>Price (Lowest)</MenuItem>
-                            <MenuItem value={"price-highest"}>Price (Highest)</MenuItem> */}
-							</Select>
-						</FormControl>
-					</Box>
-				</div>
+				<ProductSortSelect value={sortOption} onChange={setSortOption} />
 			)}
 			<div className="col-span-3 lg:col-span-4 relative">
 				{/* Only render row-based layout after component mounts on client-side */}
@@ -164,17 +145,24 @@ export default function ProductList({
 								viewport={{ once: true, amount: 0.3 }}
 							>
 								{rowProducts.map((prod, colIndex) => {
+									const desc =
+										typeof prod.description === "string"
+											? prod.description
+											: "";
+									const primary = prod.images?.[0];
+									if (!primary?.url_fullxfull) return null;
+
 									const tag = "[mod:";
 									let secondaryImageUrl = "";
 									let secondaryImagePlaceholderUrl = "";
-									const stringModIndex = prod.description.indexOf(tag);
+									const stringModIndex = desc.indexOf(tag);
 
 									if (stringModIndex !== -1) {
-										const closingBracketIndex = prod.description
+										const closingBracketIndex = desc
 											.slice(stringModIndex)
 											.indexOf("]");
 										const secImageInd = parseInt(
-											prod.description
+											desc
 												.slice(
 													stringModIndex + tag.length,
 													stringModIndex + closingBracketIndex,
@@ -185,17 +173,17 @@ export default function ProductList({
 										if (!Number.isNaN(secImageInd)) {
 											// Note secondary images are 1-indexed for simplicity of user's counting
 											secondaryImageUrl =
-												prod.images[secImageInd - 1]?.url_fullxfull;
+												prod.images?.[secImageInd - 1]?.url_fullxfull ?? "";
 											secondaryImagePlaceholderUrl =
-												prod.images[secImageInd - 1]?.url_75x75;
+												prod.images?.[secImageInd - 1]?.blurDataURL ?? "";
 										}
 									}
 
 									return (
 										<ProductListingCard
 											key={prod.listing_id}
-											imagePrimary={prod.images[0].url_fullxfull}
-											imagePlaceholder={prod.images[0].url_75x75}
+											imagePrimary={primary.url_fullxfull}
+											imagePlaceholder={primary.blurDataURL ?? ""}
 											imageSecondary={secondaryImageUrl}
 											imageSecondaryPlaceholder={secondaryImagePlaceholderUrl}
 											productCategory={
@@ -225,17 +213,24 @@ export default function ProductList({
 					// Simple grid display during server-side rendering to prevent hydration errors
 					<div className="grid sm:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-14 py-2">
 						{sortedProducts().map((prod) => {
+							const desc =
+								typeof prod.description === "string"
+									? prod.description
+									: "";
+							const primary = prod.images?.[0];
+							if (!primary?.url_fullxfull) return null;
+
 							const tag = "[mod:";
 							let secondaryImageUrl = "";
 							let secondaryImagePlaceholderUrl = "";
-							const stringModIndex = prod.description.indexOf(tag);
+							const stringModIndex = desc.indexOf(tag);
 
 							if (stringModIndex !== -1) {
-								const closingBracketIndex = prod.description
+								const closingBracketIndex = desc
 									.slice(stringModIndex)
 									.indexOf("]");
 								const secImageInd = parseInt(
-									prod.description
+									desc
 										.slice(
 											stringModIndex + tag.length,
 											stringModIndex + closingBracketIndex,
@@ -246,17 +241,17 @@ export default function ProductList({
 								if (!Number.isNaN(secImageInd)) {
 									// Note secondary images are 1-indexed for simplicity of user's counting
 									secondaryImageUrl =
-										prod.images[secImageInd - 1]?.url_fullxfull;
+										prod.images?.[secImageInd - 1]?.url_fullxfull ?? "";
 									secondaryImagePlaceholderUrl =
-										prod.images[secImageInd - 1]?.url_75x75;
+										prod.images?.[secImageInd - 1]?.blurDataURL ?? "";
 								}
 							}
 
 							return (
 								<ProductListingCard
 									key={prod.listing_id}
-									imagePrimary={prod.images[0].url_fullxfull}
-									imagePlaceholder={prod.images[0].url_75x75}
+									imagePrimary={primary.url_fullxfull}
+									imagePlaceholder={primary.blurDataURL ?? ""}
 									imageSecondary={secondaryImageUrl}
 									imageSecondaryPlaceholder={secondaryImagePlaceholderUrl}
 									productCategory={

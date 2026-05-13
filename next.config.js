@@ -2,7 +2,18 @@
 const nextConfig = {
     reactStrictMode: true,
     images: {
-        domains: ['i.etsystatic.com', 'scontent.cdninstagram.com'],
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'i.etsystatic.com',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'scontent.cdninstagram.com',
+                pathname: '/**',
+            },
+        ],
     },
 };
 

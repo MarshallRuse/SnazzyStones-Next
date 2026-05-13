@@ -1,17 +1,32 @@
 "use client";
 
 import CloseRounded from "@mui/icons-material/CloseRounded";
+import KeyboardArrowLeftRounded from "@mui/icons-material/KeyboardArrowLeftRounded";
+import KeyboardArrowRightRounded from "@mui/icons-material/KeyboardArrowRightRounded";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
-import LegacyImage from "next/legacy/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import Skeleton from "@mui/material/Skeleton";
+import Image from "next/image";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+export type ImageLightboxSlide = {
+	src: string;
+	alt: string;
+	blurDataURL?: string;
+};
 
 export interface ImageLightboxProps {
 	open: boolean;
 	onClose: () => void;
-	src: string;
-	alt: string;
+	/** Single-image usage; ignored when `slides` is non-empty */
+	src?: string;
+	alt?: string;
 	blurDataURL?: string;
+	/** When length > 1, prev/next controls are shown */
+	slides?: ImageLightboxSlide[];
+	/** Controlled index (pair with `onActiveIndexChange` for multi-slide) */
+	activeIndex?: number;
+	onActiveIndexChange?: (index: number) => void;
 }
 
 const LOUPE_SIZE = 336;
@@ -22,6 +37,9 @@ const DISMISS_MOVE_THRESHOLD_SQ =
 /** Viewport padding when clamping the loupe position */
 const LOUPE_VIEWPORT_PAD = 12;
 
+const navButtonClass =
+	"z-[45] flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full bg-white text-bluegreen-500 opacity-90 shadow-md transition hover:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bluegreen-500";
+
 function clamp(n: number, min: number, max: number) {
 	return Math.min(Math.max(n, min), max);
 }
@@ -30,8 +48,11 @@ export default function ImageLightbox({
 	open,
 	onClose,
 	src,
-	alt,
+	alt = "",
 	blurDataURL,
+	slides: slidesProp,
+	activeIndex: activeIndexProp,
+	onActiveIndexChange,
 }: ImageLightboxProps) {
 	const imageContainerRef = useRef<HTMLDivElement>(null);
 	const dismissPointerRef = useRef<{
@@ -40,6 +61,77 @@ export default function ImageLightbox({
 		y: number;
 		moved: boolean;
 	} | null>(null);
+
+	const resolvedSlides = useMemo((): ImageLightboxSlide[] => {
+		if (slidesProp?.length) return slidesProp;
+		if (src)
+			return [{ src, alt: alt ?? "", ...(blurDataURL ? { blurDataURL } : {}) }];
+		return [];
+	}, [slidesProp, src, alt, blurDataURL]);
+
+	const slideCount = resolvedSlides.length;
+	const controlled =
+		activeIndexProp !== undefined && onActiveIndexChange !== undefined;
+	const [internalIndex, setInternalIndex] = useState(0);
+	const [imageLoaded, setImageLoaded] = useState(false);
+
+	const prevOpenRef = useRef(open);
+	useEffect(() => {
+		if (open && !prevOpenRef.current && !controlled && slideCount > 1) {
+			setInternalIndex(0);
+		}
+		prevOpenRef.current = open;
+	}, [open, controlled, slideCount]);
+
+	const rawIndex =
+		controlled && activeIndexProp !== undefined
+			? activeIndexProp
+			: internalIndex;
+	const activeIndex = clamp(rawIndex, 0, Math.max(0, slideCount - 1));
+	const activeSlide = resolvedSlides[activeIndex] ?? resolvedSlides[0];
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentionally reset when the visible image URL changes (body does not read `src` but must re-run on it).
+	useEffect(() => {
+		setImageLoaded(false);
+	}, [activeSlide?.src]);
+
+	const setIndex = useCallback(
+		(next: number) => {
+			const n = slideCount;
+			if (n <= 0) return;
+			const clamped = clamp(next, 0, n - 1);
+			if (controlled) onActiveIndexChange?.(clamped);
+			else setInternalIndex(clamped);
+		},
+		[controlled, onActiveIndexChange, slideCount],
+	);
+
+	const goPrev = useCallback(() => {
+		if (slideCount <= 1) return;
+		setIndex((activeIndex - 1 + slideCount) % slideCount);
+	}, [activeIndex, setIndex, slideCount]);
+
+	const goNext = useCallback(() => {
+		if (slideCount <= 1) return;
+		setIndex((activeIndex + 1) % slideCount);
+	}, [activeIndex, setIndex, slideCount]);
+
+	useEffect(() => {
+		if (!open || slideCount <= 1) return;
+
+		const onKeyDown = (e: KeyboardEvent) => {
+			if (e.key === "ArrowLeft") {
+				e.preventDefault();
+				goPrev();
+			} else if (e.key === "ArrowRight") {
+				e.preventDefault();
+				goNext();
+			}
+		};
+
+		window.addEventListener("keydown", onKeyDown);
+		return () => window.removeEventListener("keydown", onKeyDown);
+	}, [open, slideCount, goPrev, goNext]);
 
 	const [loupe, setLoupe] = useState<{
 		left: number;
@@ -151,6 +243,85 @@ export default function ImageLightbox({
 		}
 	}, [open, hideLoupe]);
 
+	const showNav = slideCount > 1;
+	/** Next's built-in blur uses an SVG that stretches with `preserveAspectRatio: none` when dimensions exist, which smears against `object-fit: contain`. We draw our own layer with `background-size: contain` instead. */
+	const hasCustomBlur = Boolean(activeSlide.blurDataURL);
+	const showCustomBlurPlaceholder = hasCustomBlur && !imageLoaded;
+	const showImageSkeleton = !hasCustomBlur && !imageLoaded;
+	const stopNavPropagation = (e: React.SyntheticEvent) => {
+		e.stopPropagation();
+	};
+
+	const sideNavVisibility =
+		"hidden md:flex max-md:[@media(min-aspect-ratio:1/1)]:flex";
+
+	const navPrev = showNav ? (
+		<button
+			type="button"
+			key="nav-prev"
+			onPointerDown={stopNavPropagation}
+			onPointerUp={stopNavPropagation}
+			onClick={(e) => {
+				e.stopPropagation();
+				goPrev();
+			}}
+			className={`${navButtonClass} ${sideNavVisibility} absolute top-1/2 left-8 -translate-y-1/2 sm:left-10 md:left-30`}
+			aria-label="Previous image"
+		>
+			<KeyboardArrowLeftRounded fontSize="medium" aria-hidden />
+		</button>
+	) : null;
+
+	const navNext = showNav ? (
+		<button
+			type="button"
+			key="nav-next"
+			onPointerDown={stopNavPropagation}
+			onPointerUp={stopNavPropagation}
+			onClick={(e) => {
+				e.stopPropagation();
+				goNext();
+			}}
+			className={`${navButtonClass} ${sideNavVisibility} absolute top-1/2 right-8 -translate-y-1/2 sm:right-10 md:right-30`}
+			aria-label="Next image"
+		>
+			<KeyboardArrowRightRounded fontSize="medium" aria-hidden />
+		</button>
+	) : null;
+
+	const navRowPortrait = showNav ? (
+		<div className="mt-2 flex w-full max-w-md shrink-0 flex-row items-center justify-center gap-6 px-8 md:hidden [@media(min-aspect-ratio:1/1)]:hidden">
+			<button
+				type="button"
+				onPointerDown={stopNavPropagation}
+				onPointerUp={stopNavPropagation}
+				onClick={(e) => {
+					e.stopPropagation();
+					goPrev();
+				}}
+				className={navButtonClass}
+				aria-label="Previous image"
+			>
+				<KeyboardArrowLeftRounded fontSize="medium" aria-hidden />
+			</button>
+			<button
+				type="button"
+				onPointerDown={stopNavPropagation}
+				onPointerUp={stopNavPropagation}
+				onClick={(e) => {
+					e.stopPropagation();
+					goNext();
+				}}
+				className={navButtonClass}
+				aria-label="Next image"
+			>
+				<KeyboardArrowRightRounded fontSize="medium" aria-hidden />
+			</button>
+		</div>
+	) : null;
+
+	if (!activeSlide) return null;
+
 	return (
 		<Dialog
 			open={open}
@@ -194,7 +365,7 @@ export default function ImageLightbox({
 						border: 0,
 					}}
 				>
-					{alt}
+					{activeSlide.alt}
 				</DialogTitle>
 				<button
 					type="button"
@@ -209,21 +380,58 @@ export default function ImageLightbox({
 				>
 					<CloseRounded fontSize="medium" aria-hidden />
 				</button>
-				<div
-					ref={imageContainerRef}
-					className={`relative z-[5] h-[min(85vh,920px)] w-[min(92vw,920px)] max-w-full touch-none ${loupe ? "cursor-none" : "cursor-zoom-in"}`}
-				>
-					<LegacyImage
-						src={src}
-						alt={alt}
-						layout="fill"
-						objectFit="contain"
-						className="rounded-lg select-none"
-						{...(blurDataURL
-							? { placeholder: "blur" as const, blurDataURL }
-							: { placeholder: "empty" as const })}
-						priority={open}
-					/>
+				{navPrev}
+				{navNext}
+				<div className="relative z-[5] flex w-full max-w-full flex-col items-center md:block md:h-[min(85vh,920px)] md:w-[min(92vw,920px)]">
+					<div
+						ref={imageContainerRef}
+						className={`relative z-[5] h-[min(85vh,920px)] w-[min(92vw,920px)] max-w-full touch-none max-md:[@media(max-aspect-ratio:1/1)]:max-h-[min(calc(85vh-5.5rem),920px)] ${loupe ? "cursor-none" : "cursor-zoom-in"}`}
+					>
+						{showCustomBlurPlaceholder ? (
+							<div
+								className="pointer-events-none absolute inset-0 z-[1] rounded-lg bg-no-repeat"
+								style={{
+									backgroundImage: `url(${activeSlide.blurDataURL})`,
+									backgroundPosition: "50% 50%",
+									backgroundSize: "contain",
+								}}
+								aria-hidden
+							/>
+						) : null}
+						{showImageSkeleton ? (
+							<Skeleton
+								variant="rounded"
+								animation="pulse"
+								className="pointer-events-none z-[1] rounded-lg"
+								sx={{
+									position: "absolute",
+									top: 0,
+									left: 0,
+									right: 0,
+									bottom: 0,
+									width: "100%",
+									height: "100%",
+									borderRadius: 1,
+									bgcolor: "rgba(255, 255, 255, 0.14)",
+								}}
+								aria-hidden
+							/>
+						) : null}
+						<Image
+							key={activeSlide.src}
+							src={activeSlide.src}
+							alt={activeSlide.alt}
+							fill
+							sizes="min(92vw, 920px)"
+							style={{ objectFit: "contain" }}
+							className="relative z-[2] rounded-lg select-none"
+							placeholder="empty"
+							preload={open}
+							onLoad={() => setImageLoaded(true)}
+							onError={() => setImageLoaded(true)}
+						/>
+					</div>
+					{navRowPortrait}
 				</div>
 				{loupe ? (
 					<div
@@ -233,7 +441,7 @@ export default function ImageLightbox({
 							top: loupe.top,
 							width: LOUPE_SIZE,
 							height: LOUPE_SIZE,
-							backgroundImage: `url(${src})`,
+							backgroundImage: `url(${activeSlide.src})`,
 							backgroundRepeat: "no-repeat",
 							backgroundSize: `${loupe.bgW}px ${loupe.bgH}px`,
 							backgroundPosition: `${loupe.bgX}px ${loupe.bgY}px`,
