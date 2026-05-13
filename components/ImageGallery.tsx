@@ -81,11 +81,14 @@ const navArrowButtonClass =
 export interface ImageGalleryProps {
 	images: ListingImageMin[];
 	productTitle?: string;
+	/** When images are missing, used for a fallback link to Etsy. */
+	listingId?: number;
 }
 
 export default function ImageGallery({
 	images = [],
 	productTitle = "",
+	listingId,
 }: ImageGalleryProps) {
 	const [[page, direction], setPage] = useState([0, 0]);
 	const [isAnimating, setIsAnimating] = useState(false);
@@ -100,8 +103,10 @@ export default function ImageGallery({
 	// then wrap that within 0-2 to find our image ID in the array below. By passing an
 	// absolute page index as the `motion` component's `key` prop, `AnimatePresence` will
 	// detect it as an entirely new image. So you can infinitely paginate as few as 1 images.
-	const imageIndex = wrap(0, images.length, page);
-	const activeImage = images[imageIndex];
+	const imageIndex =
+		images.length > 0 ? wrap(0, images.length, page) : 0;
+	const galleryPrimary =
+		images.length > 0 ? (images[imageIndex] ?? images[0]) : undefined;
 
 	// Match Tailwind `md` (768px). Initial false keeps SSR + first client render identical
 	// so Motion's drag axis / touch-action hydrate without mismatch; sync after mount.
@@ -220,6 +225,25 @@ export default function ImageGallery({
 
 	return (
 		<div>
+			{images.length === 0 ? (
+				<div className="flex min-h-[280px] flex-col items-center justify-center gap-4 rounded-md border border-slate-200 bg-slate-50 p-8 text-center text-slate-600">
+					<p className="text-base">
+						Product photos are temporarily unavailable. You can still view this
+						item on Etsy.
+					</p>
+					{listingId != null ? (
+						<a
+							href={`https://snazzystonesjewelry.etsy.com/listing/${listingId}`}
+							target="_blank"
+							rel="noreferrer"
+							className="text-bluegreen-600 font-medium underline navItem"
+						>
+							View on Etsy
+						</a>
+					) : null}
+				</div>
+			) : (
+				<>
 			<div className="flex flex-col md:flex-row gap-4 w-full">
 				<div className="order-2 md:order-1 flex flex-row md:flex-col items-center gap-2 w-full md:w-24 shrink-0 min-w-0">
 					<button
@@ -317,8 +341,9 @@ export default function ImageGallery({
 							onAnimationComplete={() => setIsAnimating(false)}
 						>
 							<div className="relative w-full">
+								{galleryPrimary ? (
 								<Image
-									src={activeImage.url_fullxfull}
+									src={galleryPrimary.url_fullxfull}
 									width={442}
 									height={442}
 									sizes="100vw"
@@ -328,12 +353,13 @@ export default function ImageGallery({
 										objectFit: "cover",
 									}}
 									className="rounded-md aspect-square shadow-light pointer-events-none"
-									placeholder={activeImage.blurDataURL ? "blur" : "empty"}
-									blurDataURL={activeImage.blurDataURL}
+									placeholder={galleryPrimary.blurDataURL ? "blur" : "empty"}
+									blurDataURL={galleryPrimary.blurDataURL}
 									alt={`Product gallery image ${page + 1} for ${productTitle}`}
 									loading="eager"
 									preload
 								/>
+								) : null}
 								<span
 									className="pointer-events-none absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-bluegreen-600 opacity-0 shadow-md backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
 									aria-hidden
@@ -345,22 +371,22 @@ export default function ImageGallery({
 					</AnimatePresence>
 				</div>
 			</div>
-			{images.length > 0 ? (
-				<ImageLightbox
-					open={lightboxOpen}
-					onClose={closeLightbox}
-					slides={lightboxSlides}
-					activeIndex={imageIndex}
-					onActiveIndexChange={(next) => {
-						const n = images.length;
-						if (n <= 1) return;
-						const forward = (next - imageIndex + n) % n;
-						const backward = (imageIndex - next + n) % n;
-						const direction = forward <= backward ? 1 : -1;
-						paginate(direction, next);
-					}}
-				/>
-			) : null}
+			<ImageLightbox
+				open={lightboxOpen}
+				onClose={closeLightbox}
+				slides={lightboxSlides}
+				activeIndex={imageIndex}
+				onActiveIndexChange={(next) => {
+					const n = images.length;
+					if (n <= 1) return;
+					const forward = (next - imageIndex + n) % n;
+					const backward = (imageIndex - next + n) % n;
+					const direction = forward <= backward ? 1 : -1;
+					paginate(direction, next);
+				}}
+			/>
+				</>
+			)}
 		</div>
 	);
 }

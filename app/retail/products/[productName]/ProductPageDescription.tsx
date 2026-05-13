@@ -47,11 +47,11 @@ function renderDescriptionParagraphs(description: string) {
 }
 
 type ProductPageDescriptionProps = {
-	description: string;
+	description?: string;
 };
 
 export default function ProductPageDescription({
-	description,
+	description = "",
 }: ProductPageDescriptionProps) {
 	const scrollRef = useRef<HTMLDivElement>(null);
 	const contentRef = useRef<HTMLDivElement>(null);
@@ -103,7 +103,9 @@ export default function ProductPageDescription({
 				ref={scrollRef}
 				className="subtleScrollbar min-h-0 flex-1 overflow-y-auto"
 			>
-				<div ref={contentRef}>{renderDescriptionParagraphs(description)}</div>
+				<div ref={contentRef}>
+					{renderDescriptionParagraphs(description ?? "")}
+				</div>
 			</div>
 			<div
 				aria-hidden

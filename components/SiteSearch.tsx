@@ -46,25 +46,27 @@ export default function SiteSearch({
 	};
 
 	useEffect(() => {
-		const fetchProducts = async () => {
-			const apiResponse = await fetch(
-				"/api/retail/products?fields=title,listing_id,images",
-			);
-			if (apiResponse.status === 200) {
-				const responseProducts: APIProductsResponse = await apiResponse.json();
-				setProducts(responseProducts.products);
-			} else {
-				throw new Error(
-					`Error fetching products in SiteSearch: ${apiResponse.status}`,
+		void (async () => {
+			try {
+				const apiResponse = await fetch(
+					"/api/retail/products?fields=title,listing_id,images",
 				);
+				if (apiResponse.status === 200) {
+					const responseProducts: APIProductsResponse =
+						await apiResponse.json();
+					setProducts(responseProducts.products ?? []);
+				} else {
+					console.error(
+						"SiteSearch: products API returned",
+						apiResponse.status,
+					);
+					setProducts([]);
+				}
+			} catch (error) {
+				console.error("SiteSearch: error fetching products", error);
+				setProducts([]);
 			}
-		};
-
-		try {
-			fetchProducts();
-		} catch (error) {
-			console.log(`Error fetching products: ${error}`);
-		}
+		})();
 	}, []);
 
 	useEffect(() => {
@@ -142,7 +144,7 @@ export default function SiteSearch({
 											)}
 										</div>
 										<div className="grow-0 line-clamp-2">
-											{product?.title?.split("|")[0].trim()}
+											{product?.title?.split("|")[0]?.trim() ?? ""}
 										</div>
 									</Link>
 								</li>

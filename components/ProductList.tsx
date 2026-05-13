@@ -145,17 +145,24 @@ export default function ProductList({
 								viewport={{ once: true, amount: 0.3 }}
 							>
 								{rowProducts.map((prod, colIndex) => {
+									const desc =
+										typeof prod.description === "string"
+											? prod.description
+											: "";
+									const primary = prod.images?.[0];
+									if (!primary?.url_fullxfull) return null;
+
 									const tag = "[mod:";
 									let secondaryImageUrl = "";
 									let secondaryImagePlaceholderUrl = "";
-									const stringModIndex = prod.description.indexOf(tag);
+									const stringModIndex = desc.indexOf(tag);
 
 									if (stringModIndex !== -1) {
-										const closingBracketIndex = prod.description
+										const closingBracketIndex = desc
 											.slice(stringModIndex)
 											.indexOf("]");
 										const secImageInd = parseInt(
-											prod.description
+											desc
 												.slice(
 													stringModIndex + tag.length,
 													stringModIndex + closingBracketIndex,
@@ -166,17 +173,17 @@ export default function ProductList({
 										if (!Number.isNaN(secImageInd)) {
 											// Note secondary images are 1-indexed for simplicity of user's counting
 											secondaryImageUrl =
-												prod.images[secImageInd - 1]?.url_fullxfull;
+												prod.images?.[secImageInd - 1]?.url_fullxfull ?? "";
 											secondaryImagePlaceholderUrl =
-												prod.images[secImageInd - 1]?.blurDataURL ?? "";
+												prod.images?.[secImageInd - 1]?.blurDataURL ?? "";
 										}
 									}
 
 									return (
 										<ProductListingCard
 											key={prod.listing_id}
-											imagePrimary={prod.images[0].url_fullxfull}
-											imagePlaceholder={prod.images[0].blurDataURL}
+											imagePrimary={primary.url_fullxfull}
+											imagePlaceholder={primary.blurDataURL ?? ""}
 											imageSecondary={secondaryImageUrl}
 											imageSecondaryPlaceholder={secondaryImagePlaceholderUrl}
 											productCategory={
@@ -206,17 +213,24 @@ export default function ProductList({
 					// Simple grid display during server-side rendering to prevent hydration errors
 					<div className="grid sm:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-14 py-2">
 						{sortedProducts().map((prod) => {
+							const desc =
+								typeof prod.description === "string"
+									? prod.description
+									: "";
+							const primary = prod.images?.[0];
+							if (!primary?.url_fullxfull) return null;
+
 							const tag = "[mod:";
 							let secondaryImageUrl = "";
 							let secondaryImagePlaceholderUrl = "";
-							const stringModIndex = prod.description.indexOf(tag);
+							const stringModIndex = desc.indexOf(tag);
 
 							if (stringModIndex !== -1) {
-								const closingBracketIndex = prod.description
+								const closingBracketIndex = desc
 									.slice(stringModIndex)
 									.indexOf("]");
 								const secImageInd = parseInt(
-									prod.description
+									desc
 										.slice(
 											stringModIndex + tag.length,
 											stringModIndex + closingBracketIndex,
@@ -227,17 +241,17 @@ export default function ProductList({
 								if (!Number.isNaN(secImageInd)) {
 									// Note secondary images are 1-indexed for simplicity of user's counting
 									secondaryImageUrl =
-										prod.images[secImageInd - 1]?.url_fullxfull;
+										prod.images?.[secImageInd - 1]?.url_fullxfull ?? "";
 									secondaryImagePlaceholderUrl =
-										prod.images[secImageInd - 1]?.blurDataURL ?? "";
+										prod.images?.[secImageInd - 1]?.blurDataURL ?? "";
 								}
 							}
 
 							return (
 								<ProductListingCard
 									key={prod.listing_id}
-									imagePrimary={prod.images[0].url_fullxfull}
-									imagePlaceholder={prod.images[0].blurDataURL}
+									imagePrimary={primary.url_fullxfull}
+									imagePlaceholder={primary.blurDataURL ?? ""}
 									imageSecondary={secondaryImageUrl}
 									imageSecondaryPlaceholder={secondaryImagePlaceholderUrl}
 									productCategory={

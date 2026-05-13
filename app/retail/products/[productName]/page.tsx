@@ -33,9 +33,26 @@ export async function generateMetadata({
 
 	if (!product) return {};
 
-	const title = `${product.title.split("|")[0].trim()} | Snazzy Stones`;
-	const description = he.decode(product.description.split("\n")[0].trim());
+	const titleHead =
+		(typeof product.title === "string" ? product.title.split("|")[0] : "")
+			?.trim() || "Product";
+	const title = `${titleHead} | Snazzy Stones`;
+	const firstLine =
+		typeof product.description === "string"
+			? product.description.split("\n")[0]?.trim() ?? ""
+			: "";
+	const description = firstLine
+		? he.decode(firstLine)
+		: "Handmade silver and gemstone jewellery from Snazzy Stones.";
 	const productURL = `https://snazzystones.ca/retail/products/${productName}`;
+	const ogImages =
+		product.images?.map((img, ind) => ({
+			url: img.url_fullxfull,
+			width: 442,
+			height: 442,
+			alt: `Product listing image ${ind + 1} for ${titleHead}`,
+			type: "image/jpeg" as const,
+		})) ?? [];
 
 	return {
 		title,
@@ -44,13 +61,7 @@ export async function generateMetadata({
 			title,
 			description,
 			url: productURL,
-			images: product.images.map((img, ind) => ({
-				url: img.url_fullxfull,
-				width: 442,
-				height: 442,
-				alt: `Product listing image ${ind + 1} for ${product.title.split("|")[0].trim()}`,
-				type: "image/jpeg",
-			})),
+			...(ogImages.length > 0 ? { images: ogImages } : {}),
 			siteName: "SnazzyStones",
 		},
 		twitter: {
@@ -99,6 +110,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 					<ImageGallery
 						images={product.images}
 						productTitle={product.title}
+						listingId={product.listing_id}
 					/>
 				</div>
 
